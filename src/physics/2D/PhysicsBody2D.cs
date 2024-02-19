@@ -6,8 +6,26 @@ using System.Numerics;
 
 namespace PhysicsEngine.src.body;
 
-public class PhysicsBody2D : CollisionBody2D
+public enum ShapeType
 {
+    Circle, Box
+}
+
+public class PhysicsBody2D : World2D
+{
+    // World Transofrm
+    public Vector2 Position;
+    public Vector2 Scale;
+    public float Rotation;
+
+    public ShapeType Shape;
+
+    // Shape Type: Circle
+    public float Radius;
+
+    // Shape Type: Box
+    public float Width;
+    public float Height;
 
     // Whether the object is static or rigid
     public readonly bool IsStatic;
