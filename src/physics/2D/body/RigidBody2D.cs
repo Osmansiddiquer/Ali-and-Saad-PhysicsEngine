@@ -1,4 +1,5 @@
 ﻿using PhysicsEngine.src.physics;
+using PhysicsEngine.src.physics._2D;
 using Raylib_cs;
 using System.Numerics;
 
@@ -28,28 +29,18 @@ public class RigidBody2D : PhysicsBody2D
     public RigidBody2D(Vector2 position, float rotation, Vector2 scale, float mass, float density, float area, 
         float restitution, float radius, float width, float height, ShapeType shape) 
     {
-        Position = position;
-        Rotation = rotation;
-        Scale = scale;
+        Transform = new Transform2D(position, rotation, scale);
+        Dimensions = new Dimensions2D(radius, width, height);
+        Substance = new Substance2D(mass, density, area, restitution);
+
+        Shape = shape;
 
         LinVelocity = 0f;
         RotVelocity = 0f;
 
-        Mass = mass;
-        Density = density;
-        Area = area;
-        Restitution = restitution;
-
-        Shape = shape;
-
-        Area = area;
-        Radius = radius;
-        Width = width;
-        Height = height;
-
         // Create vertices for box shape
         if (shape is ShapeType.Box) {
-            vertices = CreateVerticesBox(Width, Height);
+            vertices = CreateVerticesBox(Dimensions.Width, Dimensions.Height);
             transformedVertices = new Vector2[vertices.Length];
 
             Triangles = CreateTrianglesBox();
@@ -69,7 +60,7 @@ public class RigidBody2D : PhysicsBody2D
     // Move the rigid body (self explanatory)
     public void Move(Vector2 direction)
     {
-        Position += direction;
+        Transform.Translate(direction);
         verticesUpdateRequired = true;
     }
 
@@ -78,9 +69,9 @@ public class RigidBody2D : PhysicsBody2D
         if (verticesUpdateRequired)
         {
             // Create separate matrices for individual transformations
-            Matrix3x2 translationMatrix = Matrix3x2.CreateTranslation(Position);
-            Matrix3x2 rotationMatrix = Matrix3x2.CreateRotation(Rotation);
-            Matrix3x2 scalingMatrix = Matrix3x2.CreateScale(Scale);
+            Matrix3x2 translationMatrix = Matrix3x2.CreateTranslation(Transform.Position);
+            Matrix3x2 rotationMatrix = Matrix3x2.CreateRotation(Transform.Rotation);
+            Matrix3x2 scalingMatrix = Matrix3x2.CreateScale(Transform.Scale);
 
             // Combine transformations in desired order
             Matrix3x2 transformationMatrix = translationMatrix * rotationMatrix * scalingMatrix;

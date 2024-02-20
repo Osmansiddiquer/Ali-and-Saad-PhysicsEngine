@@ -1,10 +1,11 @@
 ﻿namespace PhysicsEngine.src.main;
 
-class Program
+class MainClass
 {
     public static void Main()
     {
         // Start simulation process
-        Process.Start();
+        Process process = new Process();
+        process.Start();
     }
 }

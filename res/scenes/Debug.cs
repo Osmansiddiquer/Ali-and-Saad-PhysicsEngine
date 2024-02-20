@@ -1,5 +1,7 @@
 ﻿using PhysicsEngine.src.body;
+using PhysicsEngine.src.main;
 using PhysicsEngine.src.physics;
+using PhysicsEngine.src.physics._2D.body;
 using Raylib_cs;
 using System.Numerics;
 
@@ -26,11 +28,11 @@ public static class Debug
     // Ready function (Runs on first frame)
     public static void Ready()
     {
-        Process.DisplayFPS = true;
+        Properties.DisplayFPS = true;
     }
 
     // Update function (Runs on every frame)
-    public static void Update(double deltaTime)
+    public static void Update(double delta)
     {
         // Move circles based on input
         float dx = 0f;
@@ -46,7 +48,7 @@ public static class Debug
         if (dx != 0 || dy != 0)
         {
             Vector2 direction = Vector2.Normalize(new Vector2(dx, dy));
-            Vector2 velocity = direction * speed * (float)deltaTime;
+            Vector2 velocity = direction * speed * (float)delta;
 
             // Move the first body
             bodies[0].Move(velocity);
@@ -78,15 +80,7 @@ public static class Debug
         // Update and draw each body
         for (int i = 0; i < bodies.Count; i++)
         {
-            // Access position and radius from the physics body
-            Vector2 position = bodies[i].Position;
-            float rotation = bodies[i].Rotation;
-
-            float width = bodies[i].Width;
-            float height = bodies[i].Height;
-            Vector2 size = new Vector2(width, height);
-
-            Raylib.DrawRectanglePro(new Rectangle(position, size), new Vector2(width / 2, height / 2), rotation, colors[i]);
+            RenderBody2D.RenderPhysicsObject(bodies[i], colors[i]);
         }
     }
 }

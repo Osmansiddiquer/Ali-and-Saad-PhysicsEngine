@@ -42,7 +42,6 @@ public static class Collisions
         }
 
         
-
         // Polygon 2
         for (int i = 0; i < verticesB.Length; i++)
         {
@@ -183,8 +182,8 @@ public static class Collisions
 
                 // Check for circle collision
                 if (CicrcleCollisions(
-                    bodyA.Position, bodyA.Radius,
-                    bodyB.Position, bodyB.Radius,
+                    bodyA.Transform.Position, bodyA.Dimensions.Radius,
+                    bodyB.Transform.Position, bodyB.Dimensions.Radius,
                     out normal, out depth))
                 {
 

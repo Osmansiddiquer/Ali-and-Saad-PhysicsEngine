@@ -1,7 +1,6 @@
-﻿using PhysicsEngine.src.physics;
+﻿using PhysicsEngine.src.physics._2D;
 using PhysicsEngine.src.world;
 using Raylib_cs;
-using System;
 using System.Numerics;
 
 namespace PhysicsEngine.src.body;
@@ -13,19 +12,12 @@ public enum ShapeType
 
 public class PhysicsBody2D : World2D
 {
-    // World Transofrm
-    public Vector2 Position;
-    public Vector2 Scale;
-    public float Rotation;
+   
+    protected ShapeType Shape;
 
-    public ShapeType Shape;
-
-    // Shape Type: Circle
-    public float Radius;
-
-    // Shape Type: Box
-    public float Width;
-    public float Height;
+    public Transform2D Transform;
+    public Dimensions2D Dimensions;
+    public Substance2D Substance;
 
     // Whether the object is static or rigid
     public readonly bool IsStatic;
@@ -64,8 +56,6 @@ public class PhysicsBody2D : World2D
         // Let Depth = 1f for 2D
         // Assuming a circle in 2D is a cylinder in 3D
         float mass = area * 1f * density;
-
-        Raylib.DrawCircleV(position, radius, color) ;
 
         // Create a new physics body
         body2D = !isStatic

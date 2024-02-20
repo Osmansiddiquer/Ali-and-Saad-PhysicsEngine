@@ -1,25 +1,17 @@
 ﻿using PhysicsEngine.res.scenes;
+using PhysicsEngine.src.main;
 using Raylib_cs;
 
-public static class Process
+public class Process
 {
-    public const int DEFAULT_SCRN_WDTH = 960;
-    public const int DEFAULT_SCRN_HGHT = 640;
-    private const string TITLE = "Physics Engine";
-
-    public static bool DisplayFPS = true;
-    public static bool Fullscreen = false;
-    public static bool EnableVSync = true;
-    public static int MaxFPS = 60;
-
     // Define percentages for element positions and sizes
     private const float FPS_POSITION_X_PERCENTAGE = 0.9f;
     private const float FPS_POSITION_Y_PERCENTAGE = 0.0375f;
 
-    private static float fpsPositionX;
-    private static float fpsPositionY;
+    private float fpsPositionX;
+    private float fpsPositionY;
 
-    public static void Start()
+    public void Start()
     {
         Init(); // Initialize the program
         Loop(); // Process loop
@@ -29,18 +21,20 @@ public static class Process
     }
 
     // Initialization 
-    private static void Init()
+    private void Init()
     {
-        Raylib.SetConfigFlags(ConfigFlags.ResizableWindow); // Enable resizable window
-        Raylib.InitWindow(DEFAULT_SCRN_WDTH, DEFAULT_SCRN_HGHT, TITLE); // Initialize Window
-        Raylib.SetTargetFPS(MaxFPS); // Set max FPS
+        // Initialize Window
+        Raylib.InitWindow(Properties.ScreenWidth, 
+            Properties.ScreenHeight, Properties.Title);
+
+        Raylib.SetTargetFPS(Properties.MaxFPS); // Set max 
 
         // Begin simulation
         Debug.Ready();
     }
 
     // Game loop
-    private static void Loop()
+    private void Loop()
     {
         while (!Raylib.WindowShouldClose())
         {
@@ -52,11 +46,12 @@ public static class Process
             fpsPositionY = Raylib.GetScreenHeight() * FPS_POSITION_Y_PERCENTAGE;
 
             // Show FPS to screen
-            if (DisplayFPS)
+            if (Properties.DisplayFPS)
             {
                 // Draw FPS using calculated position
                 Raylib.DrawFPS((int)fpsPositionX, (int)fpsPositionY);
             }
+
 
             // Update the simulation program
             Debug.Update((double)Raylib.GetFrameTime());
