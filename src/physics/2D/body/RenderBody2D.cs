@@ -7,6 +7,7 @@ namespace PhysicsEngine.src.physics._2D.body;
 
 public static class RenderBody2D
 {
+    // Render the shape for a physics body
     public static void RenderPhysicsObject(PhysicsBody2D body, Color color)
     {
         Vector2 position = body.Transform.Position;
@@ -14,11 +15,17 @@ public static class RenderBody2D
 
         float width = body.Dimensions.Width;
         float height = body.Dimensions.Height;
+        float radius = body.Dimensions.Radius;
         Vector2 size = new Vector2(width, height);
 
-        Raylib.DrawRectanglePro(new Rectangle(position, size), new Vector2(width / 2, height / 2), rotation, color);
-    }
+        if (body.Shape is ShapeType.Box) { 
+            Raylib.DrawRectanglePro(new Rectangle(position, size), new Vector2(width / 2, height / 2), rotation, color); 
+        }
 
-    // Access position and radius from the physics body
+        else {
+            Raylib.DrawCircleV(position, radius, color);
+        }
+        
+    }
 
 }

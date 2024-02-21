@@ -70,7 +70,9 @@ public static class Debug
                 string errorMessage;
 
                 // Create bodies using positions and colors
-                PhysicsBody2D.CreateBoxBody(positions[i], 0f, Vector2.One, colors[i], 1f, 0.5f, 64, 64, false, out body, out errorMessage);
+                if (i == 0) { PhysicsBody2D.CreateCircleBody(positions[i], Vector2.One, colors[i], 1f, 0.5f, 32, false, out body, out errorMessage); }
+                else { PhysicsBody2D.CreateBoxBody(positions[i], 0f, Vector2.One, colors[i], 1f, 0.5f, 64, 64, false, out body, out errorMessage); }
+                
 
                 // Add bodies to the list
                 bodies.Add((RigidBody2D)body);

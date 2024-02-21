@@ -13,7 +13,7 @@ public enum ShapeType
 public class PhysicsBody2D : World2D
 {
    
-    protected ShapeType Shape;
+    public ShapeType Shape;
 
     public Transform2D Transform;
     public Dimensions2D Dimensions;
