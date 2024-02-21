@@ -10,7 +10,7 @@ public enum ShapeType
     Circle, Box
 }
 
-public class PhysicsBody2D : World2D
+public class PhysicsBody2D : PhysicsWorld2D
 {
    
     public ShapeType Shape;

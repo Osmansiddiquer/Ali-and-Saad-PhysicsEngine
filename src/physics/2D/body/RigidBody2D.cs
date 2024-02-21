@@ -68,13 +68,17 @@ public class RigidBody2D : PhysicsBody2D
     {
         if (verticesUpdateRequired)
         {
+            Vector2 position = Transform.Position;
+            float rotation = Transform.Rotation * (float)MathF.PI / 180f;
+            Vector2 scale = Transform.Scale;
+
             // Create separate matrices for individual transformations
-            Matrix3x2 translationMatrix = Matrix3x2.CreateTranslation(Transform.Position);
-            Matrix3x2 rotationMatrix = Matrix3x2.CreateRotation(Transform.Rotation);
-            Matrix3x2 scalingMatrix = Matrix3x2.CreateScale(Transform.Scale);
+            Matrix3x2 translationMatrix = Matrix3x2.CreateTranslation(position);
+            Matrix3x2 rotationMatrix = Matrix3x2.CreateRotation(rotation);
+            Matrix3x2 scalingMatrix = Matrix3x2.CreateScale(scale);
 
             // Combine transformations in desired order
-            Matrix3x2 transformationMatrix = translationMatrix * rotationMatrix * scalingMatrix;
+            Matrix3x2 transformationMatrix = rotationMatrix * translationMatrix  ;
 
             // Update transformed vertices using the combined matrix
             for (int i = 0; i < vertices.Length; i++)

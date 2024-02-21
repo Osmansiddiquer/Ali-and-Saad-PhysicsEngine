@@ -2,12 +2,13 @@
 using PhysicsEngine.src.main;
 using PhysicsEngine.src.physics;
 using PhysicsEngine.src.physics._2D.body;
+using PhysicsEngine.src.world;
 using Raylib_cs;
 using System.Numerics;
 
 namespace PhysicsEngine.res.scenes;
 
-public static class Debug
+public class Debug : PhysicsWorld2D
 {
     // Member variables
     private static List<Color> colors;
@@ -71,7 +72,7 @@ public static class Debug
 
                 // Create bodies using positions and colors
                 if (i == 0) { PhysicsBody2D.CreateCircleBody(positions[i], Vector2.One, colors[i], 1f, 0.5f, 32, false, out body, out errorMessage); }
-                else { PhysicsBody2D.CreateBoxBody(positions[i], 0f, Vector2.One, colors[i], 1f, 0.5f, 64, 64, false, out body, out errorMessage); }
+                else { PhysicsBody2D.CreateBoxBody(positions[i], 25f, Vector2.One, colors[i], 1f, 0.5f, 64, 64, false, out body, out errorMessage); }
                 
 
                 // Add bodies to the list
