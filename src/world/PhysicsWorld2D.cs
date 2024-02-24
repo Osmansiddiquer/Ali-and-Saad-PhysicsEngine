@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace PhysicsEngine.src.world;
+﻿namespace PhysicsEngine.src.world;
 public class PhysicsWorld2D
 {
     // Constraints

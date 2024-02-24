@@ -1,6 +1,4 @@
-﻿using PhysicsEngine.src.physics;
-using PhysicsEngine.src.physics._2D;
-using Raylib_cs;
+﻿using PhysicsEngine.src.physics._2D;
 using System.Numerics;
 
 namespace PhysicsEngine.src.body;
@@ -8,26 +6,22 @@ namespace PhysicsEngine.src.body;
 public class RigidBody2D : PhysicsBody2D
 {
     // Velocity of the body
-    private float LinVelocity;
-    private float RotVelocity;
+    public Vector2 LinVelocity;
+    public float RotVelocity;
 
-    // Physics attributes
-    public readonly float Mass;
-    public readonly float Density;
-    public readonly float Area;
-    public readonly float Restitution;
+    // Force applied to the body
+    public Vector2 Force;
 
     // Vertices (For collision handling)
     private readonly Vector2[]? vertices;
     private Vector2[]? transformedVertices;
+    private bool verticesUpdateRequired;
 
     public readonly int[]? Triangles;
 
-    public bool verticesUpdateRequired;
-
     // Constructor
-    public RigidBody2D(Vector2 position, float rotation, Vector2 scale, float mass, float density, float area, 
-        float restitution, float radius, float width, float height, ShapeType shape) 
+    public RigidBody2D(Vector2 position, float rotation, Vector2 scale, float mass, float density, float area,
+        float restitution, float radius, float width, float height, ShapeType shape)
     {
         Transform = new Transform2D(position, rotation, scale);
         Dimensions = new Dimensions2D(radius, width, height);
@@ -35,8 +29,10 @@ public class RigidBody2D : PhysicsBody2D
 
         Shape = shape;
 
-        LinVelocity = 0f;
+        LinVelocity = Vector2.Zero;
         RotVelocity = 0f;
+
+        Force = Vector2.Zero;
 
         // Create vertices for box shape
         if (shape is ShapeType.Box) {
@@ -58,10 +54,33 @@ public class RigidBody2D : PhysicsBody2D
     }
 
     // Move the rigid body (self explanatory)
-    public void Move(Vector2 direction)
+    public void Translate(Vector2 amount)
     {
-        Transform.Translate(direction);
+        Transform.Translate(amount);
         verticesUpdateRequired = true;
+    }
+
+    public void Rotate(float angle)
+    {
+        Transform.Rotate(angle);
+        verticesUpdateRequired = true;
+    }
+
+    public void ApplyForce(Vector2 amount)
+    {
+        Force = amount;
+    }
+
+    public void Motion()
+    {
+        LinVelocity += Force / Substance.Mass;
+
+        Transform.Translate(LinVelocity);
+        Transform.Rotate(RotVelocity);
+        
+        verticesUpdateRequired = true;
+
+        Force = Vector2.Zero;
     }
 
     public Vector2[] GetTransformedVertices()
@@ -75,10 +94,10 @@ public class RigidBody2D : PhysicsBody2D
             // Create separate matrices for individual transformations
             Matrix3x2 translationMatrix = Matrix3x2.CreateTranslation(position);
             Matrix3x2 rotationMatrix = Matrix3x2.CreateRotation(rotation);
-            Matrix3x2 scalingMatrix = Matrix3x2.CreateScale(scale);
+            //Matrix3x2 scalingMatrix = Matrix3x2.CreateScale(scale);
 
             // Combine transformations in desired order
-            Matrix3x2 transformationMatrix = rotationMatrix * translationMatrix  ;
+            Matrix3x2 transformationMatrix = rotationMatrix * translationMatrix;
 
             // Update transformed vertices using the combined matrix
             for (int i = 0; i < vertices.Length; i++)

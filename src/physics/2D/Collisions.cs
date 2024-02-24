@@ -1,5 +1,4 @@
 ﻿using PhysicsEngine.src.body;
-using Raylib_cs;
 using System.Numerics;
 
 namespace PhysicsEngine.src.physics;
@@ -12,6 +11,7 @@ public static class Collisions
     private static bool CircPolyCollision(Vector2 centerC, float radius, Vector2[] vertices, 
         out Vector2 normal, out float depth)
     {
+        // Initializing variables for calculation
         normal = Vector2.Zero;
         depth = float.MaxValue;
 
@@ -299,6 +299,7 @@ public static class Collisions
                                       bodyA.GetTransformedVertices(), out normal, out depth))
                     {
                         CollisionPush(bodyA, bodyB, normal, depth);
+                        ResolveCollision(bodyA, bodyB, normal, depth);
                     }
                 }
 
@@ -308,6 +309,7 @@ public static class Collisions
                                           bodyB.GetTransformedVertices(), out normal, out depth))
                     {
                         CollisionPush(bodyA, bodyB, normal, depth);
+                        ResolveCollision(bodyA, bodyB, normal, depth);
                     }
                 }
 
@@ -323,6 +325,7 @@ public static class Collisions
                             out normal, out depth))
                         {
                             CollisionPush(bodyA, bodyB, normal, depth);
+                            ResolveCollision(bodyA, bodyB, normal, depth);
                         }
                     }
 
@@ -335,28 +338,46 @@ public static class Collisions
                             out normal, out depth))
                         {
                             CollisionPush(bodyA, bodyB, normal, depth);
+                            ResolveCollision(bodyA, bodyB, normal, depth);
+                            Console.WriteLine(bodyB.LinVelocity);
                         }
                     }
-
-  
                 }
-  
+                
+
             }
         }
     }
 
+    private static void ResolveCollision(RigidBody2D bodyA, RigidBody2D bodyB, Vector2 normal, float depth)
+    {
+        // Relative velocity of the 2 bodies
+        Vector2 velocity = bodyB.LinVelocity - bodyA.LinVelocity;
+
+        // Restitution of bodies
+        float restitution = MathF.Min(bodyA.Substance.Restitution, bodyB.Substance.Restitution);
+
+        // Impulse of collisions
+        float impulse = -((1 + restitution) * Vector2.Dot(velocity, normal)) / ((1f / bodyA.Substance.Mass) + (1f / bodyB.Substance.Mass));
+
+        // Calculate velocity after collision
+        bodyA.LinVelocity -= impulse / bodyA.Substance.Mass * normal;
+        bodyB.LinVelocity += impulse / bodyA.Substance.Mass * normal;
+    }
+
     private static void CollisionPush(RigidBody2D bodyA, RigidBody2D bodyB, Vector2 normal, float depth)
     {
-        
+
         // Calculate the direction each body needs to be pushed in
         Vector2 direction = normal * depth * 0.5f;
         
         // Adjust direction for circle and circle collisions
         direction *= 
-            (bodyA.Shape is ShapeType.Circle && bodyB.Shape is ShapeType.Circle) ? -1f : 1f;
+            (bodyA.Shape is ShapeType.Circle && bodyB.Shape is ShapeType.Circle || 
+            bodyA.Shape is ShapeType.Box && bodyB.Shape is ShapeType.Circle) ? -1f : 1f;
 
-        bodyA.Move(-direction);
-        bodyB.Move(direction);  
+        bodyA.Translate(-direction);
+        bodyB.Translate(direction);  
     }
 
 }
