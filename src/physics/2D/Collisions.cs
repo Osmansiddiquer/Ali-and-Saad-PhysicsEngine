@@ -30,6 +30,7 @@ public static class Collisions
             // Get an edge and it's perpendicular axis
             Vector2 edge = vertexB - vertexA;
             axis = new Vector2(-edge.Y, edge.X);
+            axis = Vector2.Normalize(axis);
 
             // Project vertices to the normal axis
             ProjectVertices(vertices, axis, out minA, out maxA);
@@ -52,6 +53,7 @@ public static class Collisions
         // Get closest vertex to circle center
         Vector2 closestVertex = vertices[FindClosestPolygonVertex(centerC, vertices)];
         axis = closestVertex - centerC;
+        axis = Vector2.Normalize(axis);
 
         // Project vertices to the normal axis
         ProjectVertices(vertices, axis, out minA, out maxA);
@@ -68,10 +70,6 @@ public static class Collisions
             depth = axisDepth;
             normal = axis;
         }
-
-        // Get the collision normal and depth
-        depth /= normal.Length();
-        normal = Vector2.Normalize(normal);
 
         // Center of polygon
         Vector2 centerP = GetPolygonCenter(vertices);
@@ -151,6 +149,7 @@ public static class Collisions
             // Get an edge and it's perpendicular axis
             Vector2 edge = vertexB - vertexA;
             Vector2 axis = new Vector2(-edge.Y, edge.X);
+            axis = Vector2.Normalize(axis);
 
             // Project vertices to the normal axis
             ProjectVertices(verticesA, axis, out float minA, out float maxA);
@@ -183,6 +182,7 @@ public static class Collisions
             // Project vertices to the normal axis
             ProjectVertices(verticesA, axis, out float minA, out float maxA);
             ProjectVertices(verticesB, axis, out float minB, out float maxB);
+            axis = Vector2.Normalize(axis);
 
             // No collision
             if (minA >= maxB || minB >= maxA)  
@@ -196,10 +196,6 @@ public static class Collisions
                 normal = axis;
             }
         }
-
-        // Get the collision normal and depth
-        depth /= normal.Length();
-        normal = Vector2.Normalize(normal);
 
         // Center of polygons
         Vector2 centerA = GetPolygonCenter(verticesA);

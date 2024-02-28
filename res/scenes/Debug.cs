@@ -19,7 +19,6 @@ public class Debug : PhysicsWorld2D
     private static float rotation = 1f;
     private static Vector2 force = Vector2.Zero;
 
-
     // Constructor for initialization
     static Debug()
     {
@@ -52,14 +51,28 @@ public class Debug : PhysicsWorld2D
         if (Raylib.IsKeyDown(KeyboardKey.Up)) dy--;
         else if (Raylib.IsKeyDown(KeyboardKey.Down)) dy++;
 
-        if (Raylib.IsKeyDown(KeyboardKey.R)) bodies[0].Rotate(rotation);
+        float xAxis = Raylib.GetGamepadAxisMovement(0, GamepadAxis.LeftX);
+        float yAxis = Raylib.GetGamepadAxisMovement(0, GamepadAxis.LeftY);
 
-        if (dx != 0 || dy != 0)
+        if (Raylib.IsGamepadAvailable(0))
         {
-            Vector2 direction = Vector2.Normalize(new Vector2(dx, dy)) * (float)delta;
+            Vector2 direction = new Vector2(xAxis, yAxis) * (float)delta;
             force = direction * magnitude;
             bodies[0].ApplyForce(force);
+
         }
+
+        else
+        {
+            if (dx != 0 || dy != 0)
+            {
+                Vector2 direction = Vector2.Normalize(new Vector2(dx, dy)) * (float)delta;
+                force = direction * magnitude;
+                bodies[0].ApplyForce(force);
+            }
+            
+        }
+
 
         for (int i = 0; i < bodies.Count; i++) { bodies[i].Motion(); }
 

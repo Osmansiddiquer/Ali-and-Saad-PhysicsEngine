@@ -38,6 +38,7 @@ public class Process
     {
         while (!Raylib.WindowShouldClose())
         {
+            
             Raylib.BeginDrawing();
             Raylib.ClearBackground(Color.Black);
 
@@ -51,7 +52,6 @@ public class Process
                 // Draw FPS using calculated position
                 Raylib.DrawFPS((int)fpsPositionX, (int)fpsPositionY);
             }
-
 
             // Update the simulation program
             Debug.Update((double)Raylib.GetFrameTime());
