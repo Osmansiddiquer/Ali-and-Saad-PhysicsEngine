@@ -13,7 +13,7 @@ public class Debug : PhysicsWorld2D
     // Member variables
     private static List<Color> colors;
 
-    private static List<RigidBody2D> bodies;
+    private static List<PhysicsBody2D> bodies;
 
     private static List<Vector2> positions;
     private static float rotation = 1f;
@@ -22,10 +22,10 @@ public class Debug : PhysicsWorld2D
     // Constructor for initialization
     static Debug()
     {
-        colors = new List<Color>() { Color.Red, Color.White };
+        colors = new List<Color>() { Color.Red, Color.White, Color.White };
 
-        bodies = new List<RigidBody2D>();
-        positions = new List<Vector2>() { new Vector2(64, 320), new Vector2(480, 320) };
+        bodies = new List<PhysicsBody2D>();
+        positions = new List<Vector2>() { new Vector2(64, 320), new Vector2(480, 320), new Vector2(480, 600) };
     }
 
     // Ready function (Runs on first frame)
@@ -58,8 +58,9 @@ public class Debug : PhysicsWorld2D
         {
             Vector2 direction = new Vector2(xAxis, yAxis) * (float)delta;
             force = direction * magnitude;
-            bodies[0].ApplyForce(force);
 
+            RigidBody2D body = (RigidBody2D)bodies[0];
+            body.ApplyForce(force);
         }
 
         else
@@ -68,13 +69,25 @@ public class Debug : PhysicsWorld2D
             {
                 Vector2 direction = Vector2.Normalize(new Vector2(dx, dy)) * (float)delta;
                 force = direction * magnitude;
-                bodies[0].ApplyForce(force);
+
+                if (bodies[0] is RigidBody2D)
+                {
+                    RigidBody2D body = (RigidBody2D)bodies[0];
+                    body.ApplyForce(force);
+                }
             }
             
         }
 
 
-        for (int i = 0; i < bodies.Count; i++) { bodies[i].Motion(); }
+        for (int i = 0; i < 2; i++)
+        {
+            if (bodies[i] is RigidBody2D)
+            {
+                RigidBody2D body = (RigidBody2D)bodies[i];
+                body.Motion();
+            }
+        }
 
     }
 
@@ -86,16 +99,28 @@ public class Debug : PhysicsWorld2D
         {
             for (int i = 0; i < positions.Count; i++)
             {
-                PhysicsBody2D body;
+                RigidBody2D rigidBody;
+                StaticBody2D staticBody;
                 string errorMessage;
 
-                // Create bodies using positions and colors
-                PhysicsBody2D.CreateCircleBody(positions[i], Vector2.One, colors[i], 1f, 0.5f, 32, false, out body, out errorMessage); 
+                if (i < 2)
+                {
+                    // Create bodies using positions and colors
+                    PhysicsBody2D.CreateRigidBody(positions[i], 0f, Vector2.One, 1, 0.5f, ShapeType.Circle, 32f, 0f, 0f, out rigidBody, out errorMessage);
 
-                // Add bodies to the list
-                bodies.Add((RigidBody2D)body);
+                    // Add bodies to the list
+                    bodies.Add(rigidBody);
+                }
+
+                else
+                {
+                    PhysicsBody2D.CreateStaticBody(positions[i], 0f, Vector2.One, 0.5f, ShapeType.Box, 0f, 64f, 960f, out staticBody, out errorMessage);
+                    bodies.Add(staticBody);
+                }
+
             }
         }
+
 
         // Update and draw each body
         for (int i = 0; i < bodies.Count; i++)

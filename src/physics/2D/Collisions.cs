@@ -274,15 +274,15 @@ public static class Collisions
     }
 
     // Move objects when they collide
-    public static void HandleCollision(List<RigidBody2D> bodies)
+    public static void HandleCollision(List<PhysicsBody2D> bodies)
     {
         for (int i = 0; i < bodies.Count; i++)
         {
-            RigidBody2D bodyA = bodies[i];
+            PhysicsBody2D bodyA = bodies[i];
 
             for (int j = i + 1; j < bodies.Count; j++)
             {
-                RigidBody2D bodyB = bodies[j];
+                PhysicsBody2D bodyB = bodies[j];
 
                 // Collision normal and depth
                 Vector2 normal;
@@ -335,7 +335,6 @@ public static class Collisions
                         {
                             CollisionPush(bodyA, bodyB, normal, depth);
                             ResolveCollision(bodyA, bodyB, normal, depth);
-                            Console.WriteLine(bodyB.LinVelocity);
                         }
                     }
                 }
@@ -345,7 +344,7 @@ public static class Collisions
         }
     }
 
-    private static void ResolveCollision(RigidBody2D bodyA, RigidBody2D bodyB, Vector2 normal, float depth)
+    private static void ResolveCollision(PhysicsBody2D bodyA, PhysicsBody2D bodyB, Vector2 normal, float depth)
     {
         // Relative velocity of the 2 bodies
         Vector2 velocity = bodyB.LinVelocity - bodyA.LinVelocity;
@@ -358,10 +357,10 @@ public static class Collisions
 
         // Calculate velocity after collision
         bodyA.LinVelocity -= impulse / bodyA.Substance.Mass * normal;
-        bodyB.LinVelocity += impulse / bodyA.Substance.Mass * normal;
+        bodyB.LinVelocity += impulse / bodyB.Substance.Mass * normal;
     }
 
-    private static void CollisionPush(RigidBody2D bodyA, RigidBody2D bodyB, Vector2 normal, float depth)
+    private static void CollisionPush(PhysicsBody2D bodyA, PhysicsBody2D bodyB, Vector2 normal, float depth)
     {
 
         // Calculate the direction each body needs to be pushed in
@@ -372,8 +371,31 @@ public static class Collisions
             (bodyA.Shape is ShapeType.Circle && bodyB.Shape is ShapeType.Circle || 
             bodyA.Shape is ShapeType.Box && bodyB.Shape is ShapeType.Circle) ? -1f : 1f;
 
-        bodyA.Translate(-direction);
-        bodyB.Translate(direction);  
+        if (bodyA is RigidBody2D && bodyB is StaticBody2D)
+        {
+            RigidBody2D rigidBodyA = (RigidBody2D)bodyA;
+            rigidBodyA.Translate(-direction);
+        }
+       
+        else if (bodyB is RigidBody2D && bodyA is StaticBody2D)
+        {
+            RigidBody2D rigidBodyB = (RigidBody2D)bodyB;
+            rigidBodyB.Translate(direction);
+        }
+
+        else if (bodyA is RigidBody2D && bodyB is RigidBody2D)
+        {
+            RigidBody2D rigidBodyA = (RigidBody2D)bodyA;
+            RigidBody2D rigidBodyB = (RigidBody2D)bodyB;
+
+            rigidBodyA.Translate(-direction);
+            rigidBodyB.Translate(direction);
+        }
+
+        else
+        {
+            return;
+        }
     }
 
 }

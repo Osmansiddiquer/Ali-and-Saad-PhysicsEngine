@@ -5,9 +5,7 @@ namespace PhysicsEngine.src.body;
 
 public class RigidBody2D : PhysicsBody2D
 {
-    // Velocity of the body
-    public Vector2 LinVelocity;
-    public float RotVelocity;
+
 
     // Force applied to the body
     public Vector2 Force;
@@ -25,7 +23,7 @@ public class RigidBody2D : PhysicsBody2D
     {
         Transform = new Transform2D(position, rotation, scale);
         Dimensions = new Dimensions2D(radius, width, height);
-        Substance = new Substance2D(mass, density, area, restitution);
+        Substance = new Substance2D(mass, density, area, restitution, false);
 
         Shape = shape;
 
