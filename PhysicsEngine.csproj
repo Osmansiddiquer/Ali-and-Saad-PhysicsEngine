@@ -9,13 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="Raylib-cs">
-      <HintPath>..\..\..\..\Libraries\C#\Raylib-cs-master\Raylib-cs\bin\Debug\net6.0\Raylib-cs.dll</HintPath>
-    </Reference>
+    <Folder Include="src\gui\" />
+    <Folder Include="src\physics\2D\body\Projectile\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="src\gui\" />
+    <Reference Include="Raylib-cs">
+      <HintPath>D:\Ray Lib\Raylib-cs-master\Raylib-cs\bin\Debug\net6.0\Raylib-cs.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

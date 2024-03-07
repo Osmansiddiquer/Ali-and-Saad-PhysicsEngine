@@ -39,6 +39,14 @@ public class Debug : PhysicsWorld2D
     {
         Draw();
         Collisions.HandleCollision(bodies);
+        foreach (PhysicsBody2D body in bodies)
+        {
+            if (body is RigidBody2D)
+            {
+                RigidBody2D rigidBody = (RigidBody2D)body;
+                rigidBody.process();
+            }
+        } 
 
         // Move circles based on input
         float dx = 0f;
@@ -75,8 +83,7 @@ public class Debug : PhysicsWorld2D
                     RigidBody2D body = (RigidBody2D)bodies[0];
                     body.ApplyForce(force);
                 }
-            }
-            
+            }            
         }
 
 
@@ -103,7 +110,7 @@ public class Debug : PhysicsWorld2D
                 StaticBody2D staticBody;
                 string errorMessage;
 
-                if (i < 2)
+                if (i < 3)
                 {
                     // Create bodies using positions and colors
                     PhysicsBody2D.CreateRigidBody(positions[i], 0f, Vector2.One, 1, 0.5f, ShapeType.Circle, 32f, 0f, 0f, out rigidBody, out errorMessage);

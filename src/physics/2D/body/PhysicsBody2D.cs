@@ -59,10 +59,14 @@ public class PhysicsBody2D : PhysicsWorld2D
         // For 2D plane, we can assume depth to be 1
         float mass = area * density;
 
+        GravityComponent gravityComponent = new GravityComponent();
+        List<Component> components = new List<Component>();
+        components.Add(gravityComponent);
+
         // Create a rigid body 
         body2D = shape == ShapeType.Circle ?
-                 new RigidBody2D(position, rotation, scale, mass, density, area, restitution, radius, 0f, 0f, ShapeType.Circle) :
-                 new RigidBody2D(position, rotation, scale, mass, density, area, restitution, 0f, width, height, ShapeType.Box);
+                 new RigidBody2D(position, rotation, scale, mass, density, area, restitution, radius, 0f, 0f, ShapeType.Circle, components) :
+                 new RigidBody2D(position, rotation, scale, mass, density, area, restitution, 0f, width, height, ShapeType.Box, components);
 
         return true;
     }

@@ -1,12 +1,12 @@
 ﻿using PhysicsEngine.src.physics._2D;
+using System.ComponentModel;
 using System.Numerics;
+
 
 namespace PhysicsEngine.src.body;
 
 public class RigidBody2D : PhysicsBody2D
 {
-
-
     // Force applied to the body
     public Vector2 Force;
 
@@ -17,9 +17,11 @@ public class RigidBody2D : PhysicsBody2D
 
     public readonly int[]? Triangles;
 
+    public List<Component> components = new List<Component>();
+
     // Constructor
     public RigidBody2D(Vector2 position, float rotation, Vector2 scale, float mass, float density, float area,
-        float restitution, float radius, float width, float height, ShapeType shape)
+        float restitution, float radius, float width, float height, ShapeType shape, List<Component> components)
     {
         Transform = new Transform2D(position, rotation, scale);
         Dimensions = new Dimensions2D(radius, width, height);
@@ -31,6 +33,8 @@ public class RigidBody2D : PhysicsBody2D
         RotVelocity = 0f;
 
         Force = Vector2.Zero;
+
+        this.components = components;
 
         // Create vertices for box shape
         if (shape is ShapeType.Box) {
@@ -150,6 +154,14 @@ public class RigidBody2D : PhysicsBody2D
 
         return vertices;
 
+    }
+
+    public void process()
+    {
+        foreach(Component component in components)
+        {
+            component.runComponent(this);
+        }
     }
 }
 
