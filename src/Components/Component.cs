@@ -1,13 +1,9 @@
 ﻿using PhysicsEngine.src.body;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
+namespace PhysicsEngine.src.components;
 public class Component
 {
-    public virtual void runComponent(RigidBody2D body)
+    public virtual void RunComponent(RigidBody2D body)
     {
         // Run the component
     }

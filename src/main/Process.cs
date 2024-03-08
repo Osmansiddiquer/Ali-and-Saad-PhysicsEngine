@@ -30,7 +30,7 @@ public class Process
         Raylib.SetTargetFPS(Properties.MaxFPS); // Set max 
 
         // Begin simulation
-        Debug.Ready();
+        Scene.Ready();
     }
 
     // Game loop
@@ -54,7 +54,7 @@ public class Process
             }
 
             // Update the simulation program
-            Debug.Update((double)Raylib.GetFrameTime());
+            Scene.Update((double)Raylib.GetFrameTime());
 
             Raylib.EndDrawing();
         }
