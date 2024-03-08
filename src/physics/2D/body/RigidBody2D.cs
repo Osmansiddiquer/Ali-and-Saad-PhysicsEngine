@@ -10,6 +10,7 @@ public class RigidBody2D : PhysicsBody2D
     // Force applied to the body
     public Vector2 Force;
 
+
     // Vertices (For collision handling)
     private readonly Vector2[]? vertices;
     private Vector2[]? transformedVertices;
@@ -18,6 +19,7 @@ public class RigidBody2D : PhysicsBody2D
     public readonly int[]? Triangles;
 
     public List<Component> components = new List<Component>();
+
 
     // Constructor
     public RigidBody2D(Vector2 position, float rotation, Vector2 scale, float mass, float density, float area,
