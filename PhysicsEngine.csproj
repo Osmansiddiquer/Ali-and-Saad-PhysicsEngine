@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -9,13 +9,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="src\physics\2D\body\Projectile\**" />
+    <EmbeddedResource Remove="src\physics\2D\body\Projectile\**" />
+    <None Remove="src\physics\2D\body\Projectile\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="src\gui\" />
-    <Folder Include="src\physics\2D\body\Projectile\" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="Raylib-cs">
-      <HintPath>D:\Ray Lib\Raylib-cs-master\Raylib-cs\bin\Debug\net6.0\Raylib-cs.dll</HintPath>
+      <HintPath>..\..\..\..\Libraries\C#\Raylib-cs-master\Raylib-cs\bin\Debug\net6.0\Raylib-cs.dll</HintPath>
     </Reference>
   </ItemGroup>
 
