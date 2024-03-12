@@ -2,6 +2,7 @@
 using Raylib_cs;
 using System.Numerics;
 using PhysicsEngine.src.components;
+using PhysicsEngine.src.physics._2D.body;
 
 namespace PhysicsEngine.src.world;
 public class PhysicsWorld2D
@@ -79,7 +80,7 @@ public class PhysicsWorld2D
         components.Add(motionComponent);
 
         // Create a rigid body 
-        body2D = new RigidBody2D(position, rotation, scale, mass, density, area, restitution, radius, 0f, 0f, ShapeType.Circle, components);
+        body2D = new RigidCircle2D(position, rotation, scale, mass, density, area, restitution, radius, components);
 
         return true;
     }
@@ -123,7 +124,7 @@ public class PhysicsWorld2D
         components.Add(motionComponent);
 
         // Create a rigid body 
-        body2D = new RigidBody2D(position, rotation, scale, mass, density, area, restitution, 0f, width, height, ShapeType.Box, components);
+        body2D = new RigidBox2D(position, rotation, scale, mass, density, area, restitution, width, height, components);
 
         return true;
     }
@@ -156,7 +157,7 @@ public class PhysicsWorld2D
         float mass = float.MaxValue;
 
         // Create a static body
-        body2D = new StaticBody2D(position, rotation, scale, mass, restitution, area, radius, 0f, 0f, ShapeType.Circle);
+        body2D = new StaticCircle2D(position, rotation, scale, mass, restitution, area, radius);
 
         return true;
     }
@@ -189,7 +190,7 @@ public class PhysicsWorld2D
         float mass = float.MaxValue;
 
         // Create a static body
-        body2D = new StaticBody2D(position, rotation, scale, mass, area, restitution, 0f, width, height, ShapeType.Box);
+        body2D = new StaticBox2D(position, rotation, scale, mass, area, restitution, width, height);
 
         return true;
     }

@@ -15,8 +15,8 @@ public class PhysicsBody2D : PhysicsWorld2D
     public ShapeType Shape;
 
     public Transform2D Transform;
-    public Dimensions2D Dimensions;
-    public Substance2D Substance;
+    public Dimensions2D? Dimensions;
+    public Substance2D? Substance;
 
     // Velocity of the body
     public Vector2 LinVelocity;
@@ -28,6 +28,11 @@ public class PhysicsBody2D : PhysicsWorld2D
     public bool verticesUpdateRequired;
 
     protected int[]? Triangles;
+
+    public PhysicsBody2D(Vector2 position, float rotation, Vector2 scale)
+    {
+        Transform = new Transform2D(position, rotation, scale);
+    }
 
     public Vector2[] GetTransformedVertices()
     {
@@ -56,25 +61,20 @@ public class PhysicsBody2D : PhysicsWorld2D
         return transformedVertices;
     }
 
-    protected void MapVertices(ShapeType shape)
+    protected void MapVerticesBox()
     {
-        // Create vertices for box shape
-        if (shape is ShapeType.Box)
-        {
-            vertices = CreateVerticesBox(Dimensions.Width, Dimensions.Height);
-            transformedVertices = new Vector2[vertices.Length];
+        vertices = CreateVerticesBox(Dimensions.Width, Dimensions.Height);
+        transformedVertices = new Vector2[vertices.Length];
 
-            Triangles = CreateTrianglesBox();
-        }
+        Triangles = CreateTrianglesBox();
+    }
 
-        // No vertices for circle
-        else
-        {
-            vertices = null;
-            transformedVertices = null;
+    protected void MapVerticesCircle()
+    {
+        vertices = null;
+        transformedVertices = null;
 
-            Triangles = null;
-        }
+        Triangles = null;
     }
 
     // Create triangles for the box shape
