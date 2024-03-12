@@ -42,11 +42,7 @@ public class Scene : PhysicsWorld2D
 
         foreach (PhysicsBody2D body in bodies)
         {
-            if (body is RigidBody2D)
-            {
-                RigidBody2D rigidBody = (RigidBody2D)body;
-                rigidBody.RunComponents();
-            }
+            body.RunComponents();
         }
     }
 

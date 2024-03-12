@@ -49,7 +49,7 @@ public class RigidBody2D : PhysicsBody2D
         Force = amount;
     }
 
-    public void RunComponents()
+    public override void RunComponents()
     {
         foreach(Component component in components)
         {

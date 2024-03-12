@@ -15,7 +15,7 @@ public class PhysicsBody2D : PhysicsWorld2D
     public ShapeType Shape;
 
     public Transform2D Transform;
-    public Dimensions2D? Dimensions;
+    public Dimensions2D Dimensions;
     public Substance2D? Substance;
 
     // Velocity of the body
@@ -118,6 +118,12 @@ public class PhysicsBody2D : PhysicsWorld2D
         vertices[3] = new Vector2(left, bottom);
 
         return vertices;
+
+    }
+
+    // Method to be overriden
+    public virtual void RunComponents()
+    {
 
     }
 }
