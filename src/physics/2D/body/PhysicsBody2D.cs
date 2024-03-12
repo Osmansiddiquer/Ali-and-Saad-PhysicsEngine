@@ -1,6 +1,5 @@
 ﻿using PhysicsEngine.src.physics._2D;
 using PhysicsEngine.src.world;
-using Raylib_cs;
 using System.Numerics;
 
 namespace PhysicsEngine.src.body;
@@ -46,7 +45,7 @@ public class PhysicsBody2D : PhysicsWorld2D
             // Combine transformations in desired order
             Matrix3x2 transformationMatrix = rotationMatrix * translationMatrix;
 
-            // Update transformed vertices using the combined matrix
+            // Update transformed vertices using the combined matrix n bn
             for (int i = 0; i < vertices.Length; i++)
             {
                 transformedVertices[i] = Vector2.Transform(vertices[i], transformationMatrix);
@@ -121,6 +120,5 @@ public class PhysicsBody2D : PhysicsWorld2D
         return vertices;
 
     }
-
 }
 
