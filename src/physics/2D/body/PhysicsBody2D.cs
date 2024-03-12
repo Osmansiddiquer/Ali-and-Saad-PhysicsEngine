@@ -121,10 +121,8 @@ public class PhysicsBody2D : PhysicsWorld2D
 
     }
 
-    // Method to be overriden
-    public virtual void RunComponents()
-    {
-
-    }
+    // Methods to be overriden
+    public virtual void RunComponents() { }
+    public virtual void Translate(Vector2 amount) { }
 }
 

@@ -32,7 +32,7 @@ public class RigidBody2D : PhysicsBody2D
     }
 
     // Move the rigid body (self explanatory)
-    public void Translate(Vector2 amount)
+    public override void Translate(Vector2 amount)
     {
         Transform.Translate(amount);
         verticesUpdateRequired = true;

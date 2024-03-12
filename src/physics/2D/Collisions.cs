@@ -7,7 +7,6 @@ public static class Collisions
 {
 
     /* Collisions using seperating axis theorem */
-
     private static bool CircPolyCollision(Vector2 centerC, float radius, Vector2[] vertices, 
         out Vector2 normal, out float depth)
     {
@@ -370,31 +369,8 @@ public static class Collisions
             (bodyA.Shape is ShapeType.Circle && bodyB.Shape is ShapeType.Circle || 
             bodyA.Shape is ShapeType.Box && bodyB.Shape is ShapeType.Circle) ? -1f : 1f;
 
-        if (bodyA is RigidBody2D && bodyB is StaticBody2D)
-        {
-            RigidBody2D rigidBodyA = (RigidBody2D)bodyA;
-            rigidBodyA.Translate(-direction);
-        }
-       
-        else if (bodyB is RigidBody2D && bodyA is StaticBody2D)
-        {
-            RigidBody2D rigidBodyB = (RigidBody2D)bodyB;
-            rigidBodyB.Translate(direction);
-        }
-
-        else if (bodyA is RigidBody2D && bodyB is RigidBody2D)
-        {
-            RigidBody2D rigidBodyA = (RigidBody2D)bodyA;
-            RigidBody2D rigidBodyB = (RigidBody2D)bodyB;
-
-            rigidBodyA.Translate(-direction);
-            rigidBodyB.Translate(direction);
-        }
-
-        else
-        {
-            return;
-        }
+        bodyA.Translate(-direction);
+        bodyB.Translate(direction);
     }
 
 }
