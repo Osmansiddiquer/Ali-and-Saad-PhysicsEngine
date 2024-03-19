@@ -31,7 +31,7 @@ public class RigidBody2D : PhysicsBody2D
         verticesUpdateRequired = true;
     }
 
-    // Move the rigid body (self explanatory)
+    // Self explanatory 
     public override void Translate(Vector2 amount)
     {
         Transform.Translate(amount);
@@ -49,6 +49,7 @@ public class RigidBody2D : PhysicsBody2D
         Force = amount;
     }
 
+    // Run the list of components
     public override void RunComponents()
     {
         foreach(Component component in components)

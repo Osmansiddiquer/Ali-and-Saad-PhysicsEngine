@@ -57,9 +57,9 @@ public class Scene : PhysicsWorld2D
             bodies.Add(staticBody);  
         }
 
-        if (Raylib.IsMouseButtonPressed(MouseButton.Left)) {
+        if (Raylib.IsMouseButtonDown(MouseButton.Left)) {
             CreateRigidBody(Raylib.GetMousePosition(), 0f, Vector2.One,
-                1f, 0.5f, 32f, out RigidBody2D rigidBody, out string errorMessage);
+                1f, 1f, 32f, out RigidBody2D rigidBody, out string errorMessage);
 
             bodies.Add(rigidBody);
         }

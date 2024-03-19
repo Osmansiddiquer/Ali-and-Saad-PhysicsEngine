@@ -1,5 +1,4 @@
 ﻿using PhysicsEngine.src.physics._2D;
-using PhysicsEngine.src.world;
 using System.Numerics;
 
 namespace PhysicsEngine.src.body;
@@ -9,11 +8,13 @@ public enum ShapeType
     Circle, Box
 }
 
-public class PhysicsBody2D : PhysicsWorld2D
+public class PhysicsBody2D 
 {
-   
+   // Identifier for shape type
     public ShapeType Shape;
 
+    // Transformation, Dimensions and 
+    // Physical Properties for the body
     public Transform2D Transform;
     public Dimensions2D Dimensions;
     public Substance2D? Substance;
@@ -26,14 +27,15 @@ public class PhysicsBody2D : PhysicsWorld2D
     protected Vector2[]? vertices;
     protected Vector2[]? transformedVertices;
     public bool verticesUpdateRequired;
-
     protected int[]? Triangles;
 
+    // Constructor
     public PhysicsBody2D(Vector2 position, float rotation, Vector2 scale)
     {
         Transform = new Transform2D(position, rotation, scale);
     }
 
+    // Calculate new position of vertices after transformation
     public Vector2[] GetTransformedVertices()
     {
         if (verticesUpdateRequired)
@@ -61,6 +63,7 @@ public class PhysicsBody2D : PhysicsWorld2D
         return transformedVertices;
     }
 
+    // Map the vertices to a box shape
     protected void MapVerticesBox()
     {
         vertices = CreateVerticesBox(Dimensions.Width, Dimensions.Height);
@@ -69,6 +72,7 @@ public class PhysicsBody2D : PhysicsWorld2D
         Triangles = CreateTrianglesBox();
     }
 
+    // Set vertices to null for circle shape
     protected void MapVerticesCircle()
     {
         vertices = null;
