@@ -4,7 +4,7 @@ using System.Numerics;
 
 namespace PhysicsEngine.src.physics;
 
-public static class Collisions
+public static class CollisionDetection
 {
 
     /* Collisions using seperating axis theorem */
@@ -240,35 +240,8 @@ public static class Collisions
         return distance < totalRadii ? true : false;
     }
 
-    // Move objects when they collide
-    public static void HandleCollision(List<PhysicsBody2D> bodies)
-    {
-        float accumulator = 0f;
-        float timestep = Raylib.GetFrameTime();
 
-        while (accumulator < timestep)
-        {
-            for (int i = 0; i < bodies.Count; i++)
-            {
-                PhysicsBody2D bodyA = bodies[i];
-                for (int j = i + 1; j < bodies.Count; j++)
-                {
-                    PhysicsBody2D bodyB = bodies[j];
-
-                    // Resolve collision 
-                    if (CheckCollision(bodyA, bodyB, out Vector2 normal, out float depth))
-                    {
-                        ResolveCollision(bodyA, bodyB, normal, depth);
-                    }
-                    else continue;
-                }
-            }
-
-            accumulator += timestep;
-        }
-    }
-
-    private static bool CheckCollision(PhysicsBody2D bodyA, PhysicsBody2D bodyB, out Vector2 normal, out float depth)
+    public static bool CheckCollision(PhysicsBody2D bodyA, PhysicsBody2D bodyB, out Vector2 normal, out float depth)
     {
         bool collision = false;
 
@@ -311,32 +284,6 @@ public static class Collisions
         return collision;
     }
 
-    private static void ResolveCollision(PhysicsBody2D bodyA, PhysicsBody2D bodyB, Vector2 normal, float depth)
-    {
-        // Relative velocity of the 2 bodies
-        Vector2 velocity = bodyB.LinVelocity - bodyA.LinVelocity;
-
-        // Restitution of bodies
-        float restitution = MathF.Min(bodyA.Substance.Restitution, bodyB.Substance.Restitution);
-
-        // Impulse of collisions
-        float impulse = -((1 + restitution) * Vector2.Dot(velocity, normal)) / ((1f / bodyA.Substance.Mass) + (1f / bodyB.Substance.Mass));
-
-        // Calculate velocity after collision
-        bodyA.LinVelocity -= impulse / bodyA.Substance.Mass * normal;
-        bodyB.LinVelocity += impulse / bodyB.Substance.Mass * normal;
-
-        // Calculate the direction each body needs to be pushed in
-        Vector2 direction = normal * depth * 0.5f;
-
-        // Adjust direction for circle and circle collisions
-        direction *=
-            (bodyA.Shape is ShapeType.Circle && bodyB.Shape is ShapeType.Circle ||
-            bodyA.Shape is ShapeType.Box && bodyB.Shape is ShapeType.Circle) ? -1f : 1f;
-
-        bodyA.Translate(-direction);
-        bodyB.Translate(direction);
-    }
 
 }
 

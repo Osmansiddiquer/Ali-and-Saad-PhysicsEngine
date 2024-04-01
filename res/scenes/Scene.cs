@@ -1,6 +1,7 @@
 ﻿using PhysicsEngine.src.body;
 using PhysicsEngine.src.main;
 using PhysicsEngine.src.physics;
+using PhysicsEngine.src.physics._2D;
 using PhysicsEngine.src.physics._2D.body;
 using PhysicsEngine.src.world;
 using Raylib_cs;
@@ -39,7 +40,7 @@ public class Scene : PhysicsWorld2D
     public static void Update(double delta)
     {
         Draw();
-        Collisions.HandleCollision(bodies);
+        CollisionResolution.HandleCollision(bodies);
 
         foreach (PhysicsBody2D body in bodies) {
             body.RunComponents();
