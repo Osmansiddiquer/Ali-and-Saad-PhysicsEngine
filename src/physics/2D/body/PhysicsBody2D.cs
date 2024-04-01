@@ -174,6 +174,8 @@ public class PhysicsBody2D
 
     // Methods to be overriden
     public virtual void RunComponents() { }
+    public virtual void ApplyForce(Vector2 amount) { }
+
     public virtual void Translate(Vector2 amount) { }
 }
 

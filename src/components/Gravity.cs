@@ -1,4 +1,6 @@
 ﻿using PhysicsEngine.src.body;
+using Raylib_cs;
+
 namespace PhysicsEngine.src.components;
 public class Gravity : Component
 {
@@ -11,6 +13,6 @@ public class Gravity : Component
 
     public void ApplyGravity(RigidBody2D body)
     {
-        body.LinVelocity.Y += 9.81f / 60;
+        body.LinVelocity.Y += 9.81f * Raylib.GetFrameTime();
     }
 }

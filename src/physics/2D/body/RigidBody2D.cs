@@ -47,7 +47,7 @@ public class RigidBody2D : PhysicsBody2D
         AABBUpdateRequired = true;
     }
 
-    public void ApplyForce(Vector2 amount)
+    public override void ApplyForce(Vector2 amount)
     {
         Force = amount;
     }

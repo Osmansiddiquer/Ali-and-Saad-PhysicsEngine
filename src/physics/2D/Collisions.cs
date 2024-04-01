@@ -1,4 +1,5 @@
 ﻿using PhysicsEngine.src.body;
+using Raylib_cs;
 using System.Numerics;
 
 namespace PhysicsEngine.src.physics;
@@ -242,73 +243,72 @@ public static class Collisions
     // Move objects when they collide
     public static void HandleCollision(List<PhysicsBody2D> bodies)
     {
-        for (int i = 0; i < bodies.Count; i++)
+        float accumulator = 0f;
+        float timestep = Raylib.GetFrameTime();
+
+        while (accumulator < timestep)
         {
-            PhysicsBody2D bodyA = bodies[i];
-
-            for (int j = i + 1; j < bodies.Count; j++)
+            for (int i = 0; i < bodies.Count; i++)
             {
-                PhysicsBody2D bodyB = bodies[j];
-
-                // Collision normal and depth
-                Vector2 normal;
-                float depth;
-
-                // Handle collisions between polygon and circle
-                if (bodyA.Shape is ShapeType.Box && bodyB.Shape is ShapeType.Circle)
+                PhysicsBody2D bodyA = bodies[i];
+                for (int j = i + 1; j < bodies.Count; j++)
                 {
-                    if (CircPolyCollision(bodyB.Transform.Position, bodyB.Dimensions.Radius,
-                                      bodyA.Transform.Position, bodyA.GetTransformedVertices(), 
-                                      out normal, out depth))
+                    PhysicsBody2D bodyB = bodies[j];
+
+                    // Resolve collision 
+                    if (CheckCollision(bodyA, bodyB, out Vector2 normal, out float depth))
                     {
-                        CollisionPush(bodyA, bodyB, normal, depth);
                         ResolveCollision(bodyA, bodyB, normal, depth);
                     }
+                    else continue;
                 }
+            }
 
-                else if (bodyA.Shape is ShapeType.Circle && bodyB.Shape is ShapeType.Box)
-                {
-                    if (CircPolyCollision(bodyA.Transform.Position, bodyA.Dimensions.Radius,
-                                          bodyB.Transform.Position, bodyB.GetTransformedVertices(), 
-                                          out normal, out depth))
-                    {
-                        CollisionPush(bodyA, bodyB, normal, depth);
-                        ResolveCollision(bodyA, bodyB, normal, depth);
-                    }
-                }
+            accumulator += timestep;
+        }
+    }
 
-                else
-                {
+    private static bool CheckCollision(PhysicsBody2D bodyA, PhysicsBody2D bodyB, out Vector2 normal, out float depth)
+    {
+        bool collision = false;
 
-                    // Handle circle collision
-                    if (bodyA.Shape is ShapeType.Circle && bodyB.Shape is ShapeType.Circle)
-                    {
-                        if (CicrcleCollisions(
-                            bodyA.Transform.Position, bodyA.Dimensions.Radius,
-                            bodyB.Transform.Position, bodyB.Dimensions.Radius,
-                            out normal, out depth))
-                        {
-                            CollisionPush(bodyA, bodyB, normal, depth);
-                            ResolveCollision(bodyA, bodyB, normal, depth);
-                        }
-                    }
+        // Check collision between bodies of different shapes
+        if (bodyA.Shape != bodyB.Shape)
+        {
+            if (bodyA.Shape == ShapeType.Circle)
+            {
+                collision = CircPolyCollision(bodyA.Transform.Position, bodyA.Dimensions.Radius,
+                    bodyB.Transform.Position, bodyB.GetTransformedVertices(), out normal, out depth);
+            }
 
-                    else
-                    {
-                        // Handle polygon collision
-                        if (PolygonCollisions(
-                            bodyA.Transform.Position, bodyA.GetTransformedVertices(),
-                            bodyB.Transform.Position, bodyB.GetTransformedVertices(),
-                            out normal, out depth))
-                        {
-                            CollisionPush(bodyA, bodyB, normal, depth);
-                            ResolveCollision(bodyA, bodyB, normal, depth);
-                        }
-                    }
-                }
-               
+            else
+            {
+                collision = CircPolyCollision(bodyB.Transform.Position, bodyB.Dimensions.Radius,
+                    bodyA.Transform.Position, bodyA.GetTransformedVertices(), out normal, out depth);
             }
         }
+
+        // Check collision between bodies of the same shapes
+        else
+        {
+            // Circle - Circle Collision
+            if (bodyA.Shape == ShapeType.Circle)
+            {
+                collision = CicrcleCollisions(bodyA.Transform.Position, bodyA.Dimensions.Radius,
+                                      bodyB.Transform.Position, bodyB.Dimensions.Radius,
+                                      out normal, out depth);
+            }
+
+            // Polygon - Polygon Collision
+            else
+            {
+                collision = PolygonCollisions(bodyA.Transform.Position, bodyA.GetTransformedVertices(),
+                    bodyB.Transform.Position, bodyB.GetTransformedVertices(), out normal, out depth);
+            }
+
+        }
+
+        return collision;
     }
 
     private static void ResolveCollision(PhysicsBody2D bodyA, PhysicsBody2D bodyB, Vector2 normal, float depth)
@@ -325,17 +325,13 @@ public static class Collisions
         // Calculate velocity after collision
         bodyA.LinVelocity -= impulse / bodyA.Substance.Mass * normal;
         bodyB.LinVelocity += impulse / bodyB.Substance.Mass * normal;
-    }
-
-    private static void CollisionPush(PhysicsBody2D bodyA, PhysicsBody2D bodyB, Vector2 normal, float depth)
-    {
 
         // Calculate the direction each body needs to be pushed in
         Vector2 direction = normal * depth * 0.5f;
-        
+
         // Adjust direction for circle and circle collisions
-        direction *= 
-            (bodyA.Shape is ShapeType.Circle && bodyB.Shape is ShapeType.Circle || 
+        direction *=
+            (bodyA.Shape is ShapeType.Circle && bodyB.Shape is ShapeType.Circle ||
             bodyA.Shape is ShapeType.Box && bodyB.Shape is ShapeType.Circle) ? -1f : 1f;
 
         bodyA.Translate(-direction);
