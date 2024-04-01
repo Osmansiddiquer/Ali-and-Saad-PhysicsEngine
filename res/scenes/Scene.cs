@@ -52,7 +52,7 @@ public class Scene : PhysicsWorld2D
     {
         // Ensure bodies are created (call once or in Ready)
         if (bodies.Count == 0) { 
-            CreateStaticBody(new Vector2(480, 600), 0f, Vector2.One, 0.5f, 64f, 960f, out StaticBody2D staticBody);
+            CreateStaticBody(new Vector2(640, 900), 0f, Vector2.One, 0.5f, 120f, 1280f, out StaticBody2D staticBody);
             bodies.Add(staticBody);  
         }
 
