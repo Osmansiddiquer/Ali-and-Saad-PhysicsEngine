@@ -1,4 +1,5 @@
 ﻿using PhysicsEngine.src.physics._2D;
+using PhysicsEngine.src.physics._2D.body;
 using System.Numerics;
 
 namespace PhysicsEngine.src.body;
@@ -25,9 +26,12 @@ public class PhysicsBody2D
 
     // Vertices (For collision handling)
     protected Vector2[]? vertices;
+    protected int[]? triangles;
     protected Vector2[]? transformedVertices;
-    public bool verticesUpdateRequired;
-    protected int[]? Triangles;
+    protected AxisAlignedBoundingBox aabb;
+
+    public bool VerticesUpdateRequired;
+    public bool AABBUpdateRequired;
 
     // Constructor
     public PhysicsBody2D(Vector2 position, float rotation, Vector2 scale)
@@ -38,7 +42,7 @@ public class PhysicsBody2D
     // Calculate new position of vertices after transformation
     public Vector2[] GetTransformedVertices()
     {
-        if (verticesUpdateRequired)
+        if (VerticesUpdateRequired)
         {
             Vector2 position = Transform.Position;
             float rotation = Transform.Rotation * (float)MathF.PI / 180f;
@@ -54,13 +58,56 @@ public class PhysicsBody2D
 
             // Update transformed vertices using the combined matrix n bn
             for (int i = 0; i < vertices.Length; i++)
-            {
                 transformedVertices[i] = Vector2.Transform(vertices[i], transformationMatrix);
-            }
+            
         }
 
-        verticesUpdateRequired = false;
+        VerticesUpdateRequired = false;
         return transformedVertices;
+    }
+
+    public AxisAlignedBoundingBox GetAABB()
+    {
+        if (AABBUpdateRequired) {
+            float minX = float.PositiveInfinity;
+            float minY = float.PositiveInfinity;
+
+            float maxX = float.NegativeInfinity;
+            float maxY = float.NegativeInfinity;
+
+            switch (Shape)
+            {
+                case ShapeType.Box:
+                    Vector2[] vertices = GetTransformedVertices();
+
+                    foreach (Vector2 vertex in vertices)
+                    {
+                        if (vertex.X < minX) minX = vertex.X;
+                        if (vertex.Y < minY) minY = vertex.Y;
+
+                        if (vertex.X > maxX) maxX = vertex.X;
+                        if (vertex.Y > maxY) maxY = vertex.Y;
+                    }
+
+                    break;
+
+                case ShapeType.Circle:
+                    minX = Transform.Position.X - Dimensions.Radius;
+                    minY = Transform.Position.Y - Dimensions.Radius;
+
+                    maxX = Transform.Position.X + Dimensions.Radius;
+                    maxY = Transform.Position.Y + Dimensions.Radius;
+
+                    break;
+
+                default: throw new Exception("[ERROR]: Invalid ShapeType");
+            }
+
+            aabb = new AxisAlignedBoundingBox(minX, minY, maxX, maxY);
+        }
+        
+        AABBUpdateRequired = false;
+        return aabb;
     }
 
     // Map the vertices to a box shape
@@ -69,7 +116,7 @@ public class PhysicsBody2D
         vertices = CreateVerticesBox(Dimensions.Width, Dimensions.Height);
         transformedVertices = new Vector2[vertices.Length];
 
-        Triangles = CreateTrianglesBox();
+        triangles = CreateTrianglesBox();
     }
 
     // Set vertices to null for circle shape
@@ -78,7 +125,7 @@ public class PhysicsBody2D
         vertices = null;
         transformedVertices = null;
 
-        Triangles = null;
+        triangles = null;
     }
 
     // Create triangles for the box shape

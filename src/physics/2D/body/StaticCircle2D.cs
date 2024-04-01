@@ -1,5 +1,4 @@
 ﻿using PhysicsEngine.src.body;
-using PhysicsEngine.src.components;
 using System.Numerics;
 
 namespace PhysicsEngine.src.physics._2D.body;

@@ -1,6 +1,7 @@
 ﻿using PhysicsEngine.src.body;
 using PhysicsEngine.src.main;
 using PhysicsEngine.src.physics;
+using PhysicsEngine.src.physics._2D.body;
 using PhysicsEngine.src.world;
 using Raylib_cs;
 using System.Numerics;
@@ -40,8 +41,7 @@ public class Scene : PhysicsWorld2D
         Draw();
         Collisions.HandleCollision(bodies);
 
-        foreach (PhysicsBody2D body in bodies)
-        {
+        foreach (PhysicsBody2D body in bodies) {
             body.RunComponents();
         }
     }
@@ -51,16 +51,22 @@ public class Scene : PhysicsWorld2D
     {
         // Ensure bodies are created (call once or in Ready)
         if (bodies.Count == 0) { 
-            CreateStaticBody(new Vector2(480, 600), 0f, Vector2.One, 
-                0.5f, 64f, 960f, out StaticBody2D staticBody, out string errorMessage);
-            
+            CreateStaticBody(new Vector2(480, 600), 0f, Vector2.One, 0.5f, 64f, 960f, out StaticBody2D staticBody);
             bodies.Add(staticBody);  
         }
 
-        if (Raylib.IsMouseButtonDown(MouseButton.Left)) {
-            CreateRigidBody(Raylib.GetMousePosition(), 0f, Vector2.One,
-                1f, 1f, 32f, out RigidBody2D rigidBody, out string errorMessage);
+        if (Raylib.IsMouseButtonPressed(MouseButton.Left)) {
+            
+            // Create circle rigid body
+            CreateRigidBody(Raylib.GetMousePosition(), 0f, Vector2.One, 1f, 0.5f, 32f, out RigidBody2D rigidBody);
 
+            bodies.Add(rigidBody);
+        }
+
+        else if(Raylib.IsMouseButtonPressed(MouseButton.Right)){
+
+            // Create box rigid body
+            CreateRigidBody(Raylib.GetMousePosition(), 0f, Vector2.One, 1f, 0.5f, 64f, 64f, out RigidBody2D rigidBody);    
             bodies.Add(rigidBody);
         }
 

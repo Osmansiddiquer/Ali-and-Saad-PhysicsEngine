@@ -28,20 +28,23 @@ public class RigidBody2D : PhysicsBody2D
 
         this.components = components;
 
-        verticesUpdateRequired = true;
+        VerticesUpdateRequired = true;
+        AABBUpdateRequired = true;
     }
 
     // Self explanatory 
     public override void Translate(Vector2 amount)
     {
         Transform.Translate(amount);
-        verticesUpdateRequired = true;
+        VerticesUpdateRequired = true;
+        AABBUpdateRequired = true;
     }
 
     public void Rotate(float angle)
     {
         Transform.Rotate(angle);
-        verticesUpdateRequired = true;
+        VerticesUpdateRequired = true;
+        AABBUpdateRequired = true;
     }
 
     public void ApplyForce(Vector2 amount)

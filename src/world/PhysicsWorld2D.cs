@@ -29,24 +29,26 @@ public class PhysicsWorld2D
 
         // Use the raylib draw methods to render the shape for an object
 
-        if (body.Shape is ShapeType.Box)
+        switch(body.Shape)
         {
-            Raylib.DrawRectanglePro(new Rectangle(position, size), new Vector2(width / 2, height / 2), rotation, color);
-        }
+            case ShapeType.Box:
+                Raylib.DrawRectanglePro(new Rectangle(position, size), new Vector2(width / 2, height / 2), rotation, color);
+                break;
 
-        else
-        {
-            Raylib.DrawCircleV(position, radius, color);
-        }
+            case ShapeType.Circle:
+                Raylib.DrawCircleV(position, radius, color);
+                break;
 
+            default: throw new Exception("[ERROR]: Invalid ShapeType");
+        }
     }
 
     // Creates a Circle RigidBody
-    public static bool CreateRigidBody(Vector2 position, float rotation, Vector2 scale, float density, float restitution,
-        float radius, out RigidBody2D body2D, out string errorMessage)
+    public static void CreateRigidBody(Vector2 position, float rotation, Vector2 scale, float density, float restitution,
+        float radius, out RigidBody2D body2D)
     {
         body2D = null;
-        errorMessage = string.Empty;
+        string errorMessage;
 
         // Calculate the area for the rigid body
         float area = CalculateArea(radius, 0f, 0f, out errorMessage);
@@ -61,7 +63,7 @@ public class PhysicsWorld2D
         }
 
         // Exit function if there is an error
-        if (errorMessage != string.Empty) return false;
+        if (errorMessage != string.Empty) throw new Exception(errorMessage);
 
         // Keep restitution in valid range
         restitution = Math.Clamp(restitution, 0.0f, 1.0f);
@@ -81,16 +83,14 @@ public class PhysicsWorld2D
 
         // Create a rigid body 
         body2D = new RigidCircle2D(position, rotation, scale, mass, density, area, restitution, radius, components);
-
-        return true;
     }
 
     // Creates a Box RigidBody
-    public static bool CreateRigidBody(Vector2 position, float rotation, Vector2 scale, float density, float restitution,
-    float width, float height, out RigidBody2D body2D, out string errorMessage)
+    public static void CreateRigidBody(Vector2 position, float rotation, Vector2 scale, float density, float restitution,
+    float width, float height, out RigidBody2D body2D)
     {
         body2D = null;
-        errorMessage = string.Empty;
+        string errorMessage;
 
         // Calculate the area for the rigid body
         float area = CalculateArea(0, width, height, out errorMessage);
@@ -105,7 +105,7 @@ public class PhysicsWorld2D
         }
 
         // Exit function if there is an error
-        if (errorMessage != string.Empty) return false;
+        if (errorMessage != string.Empty) throw new Exception(errorMessage);
 
         // Keep restitution in valid range
         restitution = Math.Clamp(restitution, 0.0f, 1.0f);
@@ -126,15 +126,15 @@ public class PhysicsWorld2D
         // Create a rigid body 
         body2D = new RigidBox2D(position, rotation, scale, mass, density, area, restitution, width, height, components);
 
-        return true;
+
     }
 
     // Creates a Circle StaticBody
-    public static bool CreateStaticBody(Vector2 position, float rotation, Vector2 scale, float restitution,
-    float radius, out StaticBody2D body2D, out string errorMessage)
+    public static void CreateStaticBody(Vector2 position, float rotation, Vector2 scale, float restitution,
+    float radius, out StaticBody2D body2D)
     {
         body2D = null;
-        errorMessage = string.Empty;
+        string errorMessage;
 
         // Calculate the area for the static body
         float area = CalculateArea(radius, 0f, 0f, out errorMessage);
@@ -147,8 +147,7 @@ public class PhysicsWorld2D
         }
 
         // Exit function if there is an error
-        if (errorMessage != string.Empty) return false;
-
+        if (errorMessage != string.Empty) throw new Exception(errorMessage);
 
         // Keep restitution in valid range
         restitution = Math.Clamp(restitution, 0.0f, 1.0f);
@@ -159,15 +158,14 @@ public class PhysicsWorld2D
         // Create a static body
         body2D = new StaticCircle2D(position, rotation, scale, mass, restitution, area, radius);
 
-        return true;
     }
 
     // Creates a Box StaticBody
-    public static bool CreateStaticBody(Vector2 position, float rotation, Vector2 scale, float restitution,
-    float width, float height, out StaticBody2D body2D, out string errorMessage)
+    public static void CreateStaticBody(Vector2 position, float rotation, Vector2 scale, float restitution,
+    float width, float height, out StaticBody2D body2D)
     {
         body2D = null;
-        errorMessage = string.Empty;
+        string errorMessage;
 
         // Calculate the area for the static body
         float area = CalculateArea(0f, width, height, out errorMessage);
@@ -175,13 +173,12 @@ public class PhysicsWorld2D
         // Check if dimensions within range
         if (area < MIN_BODY_SIZE || area > MAX_BODY_SIZE)
         {
-            errorMessage = area < MIN_BODY_SIZE ? $"Body area is too small, Minimum Area: {MIN_BODY_SIZE}" :
-                           $"Body area is too large, Maximum Area: {MAX_BODY_SIZE}";
+            errorMessage = area < MIN_BODY_SIZE ? $"[ERROR]: Body area is too small, Minimum Area: {MIN_BODY_SIZE}" :
+                           $"[ERROR]: Body area is too large, Maximum Area: {MAX_BODY_SIZE}";
         }
 
         // Exit function if there is an error
-        if (errorMessage != string.Empty) return false;
-
+        if (errorMessage != string.Empty) throw new Exception(errorMessage);
 
         // Keep restitution in valid range
         restitution = Math.Clamp(restitution, 0.0f, 1.0f);
@@ -191,8 +188,6 @@ public class PhysicsWorld2D
 
         // Create a static body
         body2D = new StaticBox2D(position, rotation, scale, mass, area, restitution, width, height);
-
-        return true;
     }
 
     private static float CalculateArea(float radius, float width, float height, out string errorMessage)
@@ -202,12 +197,12 @@ public class PhysicsWorld2D
 
         // Calculate area for circle
         if (radius != 0f) {
-            if (radius < 0f) errorMessage = "ERROR: Invalid Radius For Circle";
+            if (radius < 0f) errorMessage = "[ERROR]: Invalid Radius For Circle";
             else area = MathF.PI * radius * radius;           
         }
 
         else {
-            if (height < 0f || width < 0f) errorMessage = "ERROR: Invalid Dimensions For Box";
+            if (height < 0f || width < 0f) errorMessage = "[ERROR]: Invalid Dimensions For Box";
             else area = width * height;
         }
 

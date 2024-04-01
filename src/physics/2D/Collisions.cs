@@ -7,7 +7,7 @@ public static class Collisions
 {
 
     /* Collisions using seperating axis theorem */
-    private static bool CircPolyCollision(Vector2 centerC, float radius, Vector2[] vertices, 
+    private static bool CircPolyCollision(Vector2 centerC, float radius, Vector2 centerP, Vector2[] vertices, 
         out Vector2 normal, out float depth)
     {
         // Initializing variables for calculation
@@ -70,9 +70,6 @@ public static class Collisions
             normal = axis;
         }
 
-        // Center of polygon
-        Vector2 centerP = GetPolygonCenter(vertices);
-
         // Direction from polygon to circle center
         Vector2 direction = centerP - centerC;
 
@@ -131,7 +128,7 @@ public static class Collisions
 
     }
 
-    private static bool PolygonCollisions(Vector2[] verticesA, Vector2[] verticesB, 
+    private static bool PolygonCollisions(Vector2 centerA, Vector2[] verticesA, Vector2 centerB, Vector2[] verticesB, 
         out Vector2 normal, out float depth)
     {
         // Collision normal and depth
@@ -196,10 +193,6 @@ public static class Collisions
             }
         }
 
-        // Center of polygons
-        Vector2 centerA = GetPolygonCenter(verticesA);
-        Vector2 centerB = GetPolygonCenter(verticesB);
-
         // Direction from centerB to centerA
         Vector2 direction = centerB - centerA;
 
@@ -210,31 +203,6 @@ public static class Collisions
         return true;
     }
 
-    // Get the center of polygon shape using arithmetic mean
-    private static Vector2 GetPolygonCenter(Vector2[] vertices) 
-    {
-        float sumX = 0f;
-        float sumY = 0f;
-
-        float centerX;
-        float centerY;
-
-        // Get sum of x and y coordinates for vertices
-        for (int i = 0; i < vertices.Length; i++) {
-
-            Vector2 vertex = vertices[i];
-            sumX += vertex.X;
-            sumY += vertex.Y;
-        }
-
-        // Calculate centers
-        centerX = sumX / vertices.Length;
-        centerY = sumY / vertices.Length; 
-        
-        // Return the coordinates of center as a 2D vector
-        return new Vector2(centerX, centerY);
-    }
-
     // Project vertices on normal axis based on Seperating Axis Theorem
     private static void ProjectVertices(Vector2[] vertices, Vector2 axis, out float min, out float max)
     {
@@ -243,9 +211,8 @@ public static class Collisions
         max = float.MinValue;
 
         // Get perpendicular projection of every vertex onto axis using dot product
-        for (int i = 0; i < vertices.Length; i++)
+        foreach (Vector2 vertex in vertices)
         {
-            Vector2 vertex = vertices[i];
             float projection = Vector2.Dot(vertex, axis);
 
             // Find the minimum and maximum projection for a polygon
@@ -291,7 +258,8 @@ public static class Collisions
                 if (bodyA.Shape is ShapeType.Box && bodyB.Shape is ShapeType.Circle)
                 {
                     if (CircPolyCollision(bodyB.Transform.Position, bodyB.Dimensions.Radius,
-                                      bodyA.GetTransformedVertices(), out normal, out depth))
+                                      bodyA.Transform.Position, bodyA.GetTransformedVertices(), 
+                                      out normal, out depth))
                     {
                         CollisionPush(bodyA, bodyB, normal, depth);
                         ResolveCollision(bodyA, bodyB, normal, depth);
@@ -301,7 +269,8 @@ public static class Collisions
                 else if (bodyA.Shape is ShapeType.Circle && bodyB.Shape is ShapeType.Box)
                 {
                     if (CircPolyCollision(bodyA.Transform.Position, bodyA.Dimensions.Radius,
-                                          bodyB.GetTransformedVertices(), out normal, out depth))
+                                          bodyB.Transform.Position, bodyB.GetTransformedVertices(), 
+                                          out normal, out depth))
                     {
                         CollisionPush(bodyA, bodyB, normal, depth);
                         ResolveCollision(bodyA, bodyB, normal, depth);
@@ -328,8 +297,8 @@ public static class Collisions
                     {
                         // Handle polygon collision
                         if (PolygonCollisions(
-                            bodyA.GetTransformedVertices(),
-                            bodyB.GetTransformedVertices(),
+                            bodyA.Transform.Position, bodyA.GetTransformedVertices(),
+                            bodyB.Transform.Position, bodyB.GetTransformedVertices(),
                             out normal, out depth))
                         {
                             CollisionPush(bodyA, bodyB, normal, depth);

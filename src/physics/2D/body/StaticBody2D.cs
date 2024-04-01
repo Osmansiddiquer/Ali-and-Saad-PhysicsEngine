@@ -17,7 +17,7 @@ public class StaticBody2D : PhysicsBody2D
 
         Shape = shape;
 
-        verticesUpdateRequired = true;
+        VerticesUpdateRequired = true;
     }
 }
 

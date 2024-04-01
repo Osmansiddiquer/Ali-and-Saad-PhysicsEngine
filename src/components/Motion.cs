@@ -1,12 +1,5 @@
 ﻿using PhysicsEngine.src.body;
-using PhysicsEngine.src.physics._2D;
-using Raylib_cs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PhysicsEngine.src.components;
 public class Motion : Component
@@ -23,7 +16,8 @@ public class Motion : Component
         body.Transform.Translate(body.LinVelocity);
         body.Transform.Rotate(body.RotVelocity);
 
-        body.verticesUpdateRequired = true;
+        body.VerticesUpdateRequired = true;
+        body.AABBUpdateRequired = true;
 
         body.Force = Vector2.Zero;
     }

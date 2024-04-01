@@ -5,7 +5,7 @@ public class Component
 {
     public virtual void RunComponent(RigidBody2D body)
     {
-        // Run the component
+
     }
 }
 
