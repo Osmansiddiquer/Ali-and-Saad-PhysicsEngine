@@ -9,7 +9,7 @@ public class StaticBox2D : StaticBody2D
     public StaticBox2D(Vector2 position, float rotation, Vector2 scale,
         float mass, float area, float restitution, float width, float height) : base(position, rotation, scale, mass, restitution, area, ShapeType.Box)
     {
-        Dimensions = new Dimensions2D(0, width, height);
+        Dimensions = new Dimensions2D(width, height);
         MapVerticesBox();
     }
 }

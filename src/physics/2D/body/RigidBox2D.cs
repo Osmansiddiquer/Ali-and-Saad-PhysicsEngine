@@ -12,7 +12,7 @@ public class RigidBox2D : RigidBody2D
         float width, float height, List<Component> components) : base (position, rotation, scale, mass, density, 
             area, restitution, ShapeType.Box, components)
     {
-        Dimensions = new Dimensions2D(0f, width, height);
+        Dimensions = new Dimensions2D(width, height);
         MapVerticesBox();
     }
 }

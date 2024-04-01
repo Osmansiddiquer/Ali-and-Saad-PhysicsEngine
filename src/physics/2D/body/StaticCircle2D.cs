@@ -9,7 +9,7 @@ public class StaticCircle2D : StaticBody2D
     public StaticCircle2D(Vector2 position, float rotation, Vector2 scale, 
         float mass, float area, float restitution, float radius) : base(position, rotation, scale, mass, restitution, area, ShapeType.Circle)
     {
-        Dimensions = new Dimensions2D(radius, 0, 0);
+        Dimensions = new Dimensions2D(radius);
         MapVerticesCircle();
     }
 }
