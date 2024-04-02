@@ -92,16 +92,16 @@ public class CollisionResolution
 
     private static void SetCollisionState(PhysicsBody2D bodyA, PhysicsBody2D bodyB, Vector2 normal)
     {
-        bodyA.IsOnCeiling = normal.Y >= 0;
-        bodyB.IsOnFloor = normal.Y >= 0;
+        bodyA.IsOnCeiling = normal.Y < 0;
+        bodyB.IsOnFloor = normal.Y < 0;
 
-        bodyA.IsOnFloor = normal.Y <= 0;
-        bodyB.IsOnCeiling = normal.Y <= 0;
+        bodyA.IsOnFloor = normal.Y > 0;
+        bodyB.IsOnCeiling = normal.Y > 0;
 
-        bodyA.IsOnWallL = normal.X >= 0;
-        bodyB.IsOnWallR = normal.X >= 0;
+        bodyA.IsOnWallL = normal.X > 0;
+        bodyB.IsOnWallR = normal.X > 0;
 
-        bodyA.IsOnWallR = normal.X <= 0;
-        bodyB.IsOnWallL = normal.X <= 0;
+        bodyA.IsOnWallR = normal.X < 0;
+        bodyB.IsOnWallL = normal.X < 0;
     }
 }
