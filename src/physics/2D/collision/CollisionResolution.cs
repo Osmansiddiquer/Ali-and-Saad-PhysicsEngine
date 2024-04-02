@@ -1,4 +1,5 @@
 ﻿using PhysicsEngine.src.physics._2D.body;
+using Raylib_cs;
 using System.Numerics;
 
 namespace PhysicsEngine.src.physics._2D.collision;
@@ -7,12 +8,15 @@ public class CollisionResolution
 {
 
     private static List<CollisionManifold> contacts = new List<CollisionManifold>();
+    private static List<Vector2> contactPoints = new List<Vector2>();
 
     // Move objects when they collide
     public static void HandleCollision(List<PhysicsBody2D> bodies)
     {
         float accumulator = 0f;
         float timestep = 1f / 60f;
+
+        contactPoints.Clear();
 
         while (accumulator < timestep)
         {
@@ -30,7 +34,8 @@ public class CollisionResolution
 
                     if (CollisionDetection.CheckCollision(bodyA, bodyB, out normal, out depth))
                     {
-                        CollisionManifold contact = new CollisionManifold(bodyA, bodyB, normal, depth, Vector2.Zero, Vector2.Zero, 0);
+                        CollisionHelper.FindContactPoints(bodyA, bodyB, out Vector2 contactP1, out Vector2 contactP2, out int contactCount);
+                        CollisionManifold contact = new CollisionManifold(bodyA, bodyB, normal, depth, contactP1, contactP2, contactCount);
                         contacts.Add(contact);
                     }
                 }
@@ -39,6 +44,19 @@ public class CollisionResolution
             foreach (CollisionManifold contact in contacts)
             {
                 ResolveCollision(in contact);
+
+                if (contact.CONTACT_COUNT > 0)
+                { 
+                    contactPoints.Add(contact.CONTACT_P1);
+
+                    if (contact.CONTACT_COUNT > 1)
+                    {
+                        contactPoints.Add(contact.CONTACT_P2);
+                    }
+
+                    // Drawing contact points for debugging
+                    Raylib.DrawRectangle((int)contact.CONTACT_P1.X, (int)contact.CONTACT_P1.Y, 12, 12, Color.Orange);
+                }
             }
 
             // Update collision states after collision resolution
@@ -103,14 +121,14 @@ public class CollisionResolution
                 float depth;
                 if (CollisionDetection.CheckCollision(body, otherBody, out normal, out depth))
                 {
-                    if (normal.Y < 0)
+                    if (normal.Y < -0.75f)
                         body.IsOnCeiling = true;
-                    else if (normal.Y > 0)
+                    else if (normal.Y > 0.75f)
                         body.IsOnFloor = true;
 
-                    if (normal.X > 0)
+                    if (normal.X > 0.75f)
                         body.IsOnWallL = true;
-                    else if (normal.X < 0)
+                    else if (normal.X < -0.75f)
                         body.IsOnWallR = true;
                 }
             }

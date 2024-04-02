@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using PhysicsEngine.src.physics._2D.body;
+using System.Numerics;
 
 namespace PhysicsEngine.src.physics._2D.collision;
 
@@ -70,5 +71,50 @@ public static class CollisionHelper
             if (projection < min) { min = projection; }
             if (projection > max) { max = projection; }
         }
+    }
+
+    // Find contact points on polygon
+    public static void FindContactPoints(PhysicsBody2D bodyA, PhysicsBody2D bodyB, out Vector2 cpoint1, out Vector2 cpoint2, out int ccount)
+    {
+        cpoint1 = Vector2.Zero;
+        cpoint2 = Vector2.Zero;
+        ccount = 0;
+
+        if (bodyA.Shape == bodyB.Shape)
+        {
+            // Circle Circle
+            if (bodyA.Shape is ShapeType.Circle)
+            {
+                FindContactPoint(bodyA.Transform.Position, bodyA.Dimensions.Radius, bodyB.Transform.Position, out cpoint1);
+                ccount = 1;
+            }
+
+            // Box - Box
+            else
+            {
+
+            }
+        }
+        else
+        {
+            // Circle - Box
+            if (bodyA.Shape is ShapeType.Circle)
+            {
+
+            }
+
+            // Box - Circle
+            else
+            {
+                
+            }
+        }
+    }
+
+    // Find contact point on circle
+    public static void FindContactPoint(Vector2 centerA, float radiusA, Vector2 centerB, out Vector2 cpoint)
+    {
+        Vector2 direction = Vector2.Normalize(centerB - centerA);
+        cpoint = centerA + direction * radiusA;
     }
 }
