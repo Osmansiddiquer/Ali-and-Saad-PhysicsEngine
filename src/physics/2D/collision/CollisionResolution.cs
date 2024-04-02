@@ -15,7 +15,7 @@ public class CollisionResolution
         float accumulator = 0f;
         float timestep = Raylib.GetFrameTime();
 
-        
+        // Check collisions only once per frame
         while (accumulator < timestep)
         {
             contacts.Clear();

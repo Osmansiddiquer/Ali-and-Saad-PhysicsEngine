@@ -66,10 +66,10 @@ public class PhysicsWorld2D
         // Check if dimensions and density are within range
         if (area < MIN_BODY_SIZE || area > MAX_BODY_SIZE || density < MIN_DENSITY || density > MAX_DENSITY)
         {
-            errorMessage = area < MIN_BODY_SIZE ? $"Body area is too small, Minimum Area: {MIN_BODY_SIZE}" :
-                           area > MAX_BODY_SIZE ? $"Body area is too large, Maximum Area: {MAX_BODY_SIZE}" :
-                           density < MIN_DENSITY ? $"Body density is too low, Minimum Density: {MIN_DENSITY}" :
-                                                   $"Body density is too high, Maximum Density: {MAX_DENSITY}";
+            errorMessage = area < MIN_BODY_SIZE ? $"[ERROR]: Body area is too small, Minimum Area: {MIN_BODY_SIZE}" :
+                           area > MAX_BODY_SIZE ? $"[ERROR]: Body area is too large, Maximum Area: {MAX_BODY_SIZE}" :
+                           density < MIN_DENSITY ? $"[ERROR]: Body density is too low, Minimum Density: {MIN_DENSITY}" :
+                                                   $"[ERROR]: Body density is too high, Maximum Density: {MAX_DENSITY}";
         }
 
         // Exit function if there is an error
@@ -128,12 +128,11 @@ public class PhysicsWorld2D
         // Convert mass into kg
         float mass = (area * density) / 1000;
 
-        List<Component> components = new List<Component>();
-        Gravity gravityComponent = new Gravity();
-        Motion motionComponent = new Motion();
-
-        components.Add(gravityComponent);
-        components.Add(motionComponent);
+        List<Component> components = new List<Component>
+        {
+            new Gravity(),
+            new Motion()
+        };
 
         // Create a rigid body 
         body2D = new RigidBox2D(position, rotation, scale, mass, density, area, restitution, width, height, components);
