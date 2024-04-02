@@ -24,6 +24,7 @@ public class CollisionResolution
             {
                 // Take a body and check it's collision with every other body
                 PhysicsBody2D bodyA = bodies[i];
+
                 for (int j = i + 1; j < bodies.Count; j++)
                 {
                     PhysicsBody2D bodyB = bodies[j];
@@ -67,8 +68,47 @@ public class CollisionResolution
             / ((1f / bodyA.Substance.Mass) + (1f / bodyB.Substance.Mass));
 
         // Update velocities after collision
-        bodyA.LinVelocity -= impulse / bodyA.Substance.Mass * normal;
-        bodyB.LinVelocity += impulse / bodyB.Substance.Mass * normal;
+        Vector2 velBodyA = impulse / bodyA.Substance.Mass * normal;
+        Vector2 velBodyB = impulse / bodyB.Substance.Mass * normal;
+
+        if (bodyA.IsOnGround && velBodyA.Y < 0)
+        {
+            velBodyA.Y = 0;
+        }
+        else if (bodyA.IsOnCeiling && velBodyA.Y > 0)
+        {
+            velBodyA.Y = 0;
+        }
+
+        if (bodyA.IsOnLeftWall && velBodyA.X < 0)
+        {
+            velBodyA.X = 0;
+        }
+        else if (bodyA.IsOnRightWall && velBodyA.X > 0)
+        {
+            velBodyA.X = 0;
+        }
+
+        if (bodyB.IsOnGround && velBodyB.Y < 0)
+        {
+            velBodyB.Y = 0;
+        }
+        else if (bodyB.IsOnCeiling && velBodyB.Y > 0)
+        {
+            velBodyB.Y = 0;
+        }
+
+        if (bodyB.IsOnLeftWall && velBodyB.X < 0)
+        {
+            velBodyB.X = 0;
+        }
+        else if (bodyB.IsOnRightWall && velBodyB.X > 0)
+        {
+            velBodyB.X = 0;
+        }
+
+        bodyA.LinVelocity -= velBodyA;
+        bodyB.LinVelocity += velBodyB;
 
         // Calculate the direction each body needs to be pushed in
         Vector2 direction = normal * depth * 0.5f;
@@ -82,5 +122,28 @@ public class CollisionResolution
         // Translate bodies to resolve collision
         bodyA.Translate(-direction);
         bodyB.Translate(direction);
+
+        if (normal.Y > 0)
+        {
+            bodyA.IsOnCeiling = true;
+            bodyB.IsOnGround = true;
+            //System.Console.WriteLine(bodyB.Name + "is On Ground");
+        }
+        else if (normal.Y < 0)
+        {
+            bodyA.IsOnGround = true;
+            bodyB.IsOnCeiling = true;
+        }
+
+        if (normal.X > 0)
+        {
+            bodyA.IsOnLeftWall = true;
+            bodyB.IsOnRightWall = true;
+        }
+        else if (normal.X < 0)
+        {
+            bodyA.IsOnRightWall = true;
+            bodyB.IsOnLeftWall = true;
+        }
     }
 }

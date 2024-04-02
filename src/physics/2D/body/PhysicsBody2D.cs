@@ -13,7 +13,9 @@ public enum ShapeType
 
 public class PhysicsBody2D 
 {
-   // Identifier for shape type
+    public string Name;
+
+    // Identifier for shape type
     public ShapeType Shape;
 
     // Transformation, Dimensions and 
@@ -34,6 +36,12 @@ public class PhysicsBody2D
 
     public bool VerticesUpdateRequired;
     public bool AABBUpdateRequired;
+
+    // Position booleans
+    public bool IsOnGround;
+    public bool IsOnLeftWall;
+    public bool IsOnRightWall;
+    public bool IsOnCeiling;
 
     // Constructor
     public PhysicsBody2D(Vector2 position, float rotation, Vector2 scale)

@@ -220,18 +220,4 @@ public class PhysicsWorld2D
 
         return area;
     }
-
-    public static bool CreatePlayerBody(RigidBody2D body, Camera2D camera, out PlayerBody playerBody)
-    {
-        playerBody = new PlayerBody(body, camera);
-
-        return true;
-    }
-
-    public static bool CreatePlayerBody(RigidBody2D body, out PlayerBody playerBody)
-    {
-        playerBody = new PlayerBody(body);
-
-        return true;
-    }
 }

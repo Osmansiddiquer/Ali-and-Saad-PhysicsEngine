@@ -58,8 +58,6 @@ public class Process
 
             Vector2 cameraOffset = new Vector2(Raylib.GetScreenWidth() / 2, Raylib.GetScreenHeight() / 2);
             Vector2 cameraTarget = new Vector2(10.0f, 10.0f);
-            Camera2D camera = new Camera2D(cameraOffset, cameraTarget, 0, 1f);
-            Raylib.BeginMode2D(camera);
 
             // Update the simulation program
             Scene.Update((double)Raylib.GetFrameTime());

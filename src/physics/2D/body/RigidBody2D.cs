@@ -10,7 +10,6 @@ public class RigidBody2D : PhysicsBody2D
 
     private List<Component> components = new List<Component>();
 
-
     // Constructor
     public RigidBody2D(Vector2 position, float rotation, Vector2 scale, float mass, float density, float area,
         float restitution, ShapeType shape, List<Component> components) : base(position, rotation, scale)
@@ -67,7 +66,6 @@ public class RigidBody2D : PhysicsBody2D
 
 public class RigidBox2D : RigidBody2D
 {
-
     // Constructor
     public RigidBox2D(Vector2 position, float rotation, Vector2 scale, float mass, float density, float area, float restitution,
         float width, float height, List<Component> components) : base(position, rotation, scale, mass, density,
