@@ -220,17 +220,17 @@ public class PhysicsWorld2D
         return area;
     }
 
-    public static bool CreatePlayerBody(Vector2 position, float rotation, Vector2 scale, float width, float height, Camera2D camera, out PlayerBody playerBody)
-    {
-        List<Component> components = new List<Component>
-        {
-            new Gravity(),
-            new Motion()
-        };
+    //public static bool CreatePlayerBody(Vector2 position, float rotation, Vector2 scale, float width, float height, Camera2D camera, out PlayerBody2D playerBody)
+    //{
+    //    List<Component> components = new List<Component>
+    //    {
+    //        new Gravity(),
+    //        new Motion()
+    //    };
 
-        playerBody = new PlayerBody(position, rotation, scale, width, height, components, camera);
+    //    playerBody = new PlayerBody2D(position, rotation, scale, width, height, components, camera);
 
-        return true;
-    }
+    //    return true;
+    //}
 
 }
