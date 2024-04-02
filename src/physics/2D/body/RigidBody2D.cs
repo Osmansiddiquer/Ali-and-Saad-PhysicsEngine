@@ -1,25 +1,20 @@
-﻿using PhysicsEngine.src.physics._2D;
-using System.Numerics;
+﻿using System.Numerics;
 using PhysicsEngine.src.components;
 
-namespace PhysicsEngine.src.body;
+namespace PhysicsEngine.src.physics._2D.body;
 
 public class RigidBody2D : PhysicsBody2D
 {
     // Force applied to the body
     public Vector2 Force;
 
-    public readonly int[]? Triangles;
-
-    public List<Component> components = new List<Component>();
+    private List<Component> components = new List<Component>();
 
 
     // Constructor
     public RigidBody2D(Vector2 position, float rotation, Vector2 scale, float mass, float density, float area,
-        float restitution, float radius, float width, float height, ShapeType shape, List<Component> components)
+        float restitution, ShapeType shape, List<Component> components) : base(position, rotation, scale)
     {
-        Transform = new Transform2D(position, rotation, scale);
-        Dimensions = new Dimensions2D(radius, width, height);
         Substance = new Substance2D(mass, density, area, restitution, false);
 
         Shape = shape;
@@ -31,70 +26,65 @@ public class RigidBody2D : PhysicsBody2D
 
         this.components = components;
 
-        // Create vertices for box shape
-        if (shape is ShapeType.Box) {
-            vertices = CreateVerticesBox(Dimensions.Width, Dimensions.Height);
-            transformedVertices = new Vector2[vertices.Length];
-
-            Triangles = CreateTrianglesBox();
-        }
-
-        // No vertices for circle
-        else {
-            vertices = null;
-            transformedVertices = null;
-
-            Triangles = null;
-        }
-
-        verticesUpdateRequired = true;
+        VerticesUpdateRequired = true;
+        AABBUpdateRequired = true;
     }
 
-    public RigidBody2D(RigidBody2D body)
-    {
-        this.verticesUpdateRequired = body.verticesUpdateRequired;
-        this.Transform = body.Transform;
-        this.Dimensions = body.Dimensions;
-        this.Substance = body.Substance;
-        this.LinVelocity = body.LinVelocity;
-        this.RotVelocity = body.RotVelocity;
-        this.vertices = body.vertices;
-        this.transformedVertices = body.transformedVertices;
-        this.Triangles = body.Triangles;
-        this.Shape = body.Shape;
-        this.Force = body.Force;
-        this.components = body.components;
-    }
-
-    // Move the rigid body (self explanatory)
-    public void Translate(Vector2 amount)
+    // Self explanatory 
+    public override void Translate(Vector2 amount)
     {
         Transform.Translate(amount);
-        verticesUpdateRequired = true;
+        VerticesUpdateRequired = true;
+        AABBUpdateRequired = true;
     }
 
-    public void Rotate(float angle)
+    public override void Rotate(float angle)
     {
         Transform.Rotate(angle);
-        verticesUpdateRequired = true;
+        VerticesUpdateRequired = true;
+        AABBUpdateRequired = true;
     }
 
-    public void ApplyForce(Vector2 amount)
+    public override void Scale(Vector2 amount)
+    {
+        Transform.Scaling(amount);
+    }
+
+    public override void ApplyForce(Vector2 amount)
     {
         Force = amount;
     }
 
-    public void RunComponents()
+    // Run the list of components
+    public override void RunComponents()
     {
-        foreach(Component component in components)
+        foreach (Component component in components)
         {
             component.RunComponent(this);
         }
     }
+}
 
-    public void addComponent(Component component)
+public class RigidBox2D : RigidBody2D
+{
+
+    // Constructor
+    public RigidBox2D(Vector2 position, float rotation, Vector2 scale, float mass, float density, float area, float restitution,
+        float width, float height, List<Component> components) : base(position, rotation, scale, mass, density,
+            area, restitution, ShapeType.Box, components)
     {
-        components.Add(component);
+        Dimensions = new Dimensions2D(new Vector2(width, height) * scale);
+        MapVerticesBox();
     }
 }
 
+public class RigidCircle2D : RigidBody2D
+{
+    // Constructor
+    public RigidCircle2D(Vector2 position, float rotation, Vector2 scale, float mass, float density, float area, float restitution,
+        float radius, List<Component> components) : base(position, rotation, scale, mass, density, area, restitution, ShapeType.Circle, components)
+    {
+        Dimensions = new Dimensions2D(radius * Vector2.Distance(Vector2.Zero, scale));
+        MapVerticesCircle();
+    }
+}

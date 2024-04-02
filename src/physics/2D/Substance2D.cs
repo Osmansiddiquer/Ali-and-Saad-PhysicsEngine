@@ -6,10 +6,10 @@ public class Substance2D
     public float Density { get; private set; }
     public float Area { get; private set; }
     public float Restitution { get; private set; }
-
     public bool IsStatic { get; private set; }
 
     // Constructor
+    public Substance2D() { }
     public Substance2D(float mass, float density, float area, float restitution, bool isStatic)
     {
         Mass = mass;
@@ -18,5 +18,4 @@ public class Substance2D
         Restitution = restitution;
         IsStatic = isStatic;
     }
-
 }

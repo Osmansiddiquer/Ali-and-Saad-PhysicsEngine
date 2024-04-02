@@ -1,6 +1,6 @@
-﻿using PhysicsEngine.src.body;
+﻿using PhysicsEngine.src.physics._2D.body;
+using PhysicsEngine.src.physics._2D.collision;
 using PhysicsEngine.src.main;
-using PhysicsEngine.src.physics;
 using PhysicsEngine.src.world;
 using Raylib_cs;
 using System.Numerics;
@@ -38,15 +38,10 @@ public class Scene : PhysicsWorld2D
     public static void Update(double delta)
     {
         Draw();
-        Collisions.HandleCollision(bodies);
+        CollisionResolution.HandleCollision(bodies);
 
-        foreach (PhysicsBody2D body in bodies)
-        {
-            if (body is RigidBody2D)
-            {
-                RigidBody2D rigidBody = (RigidBody2D)body;
-                rigidBody.RunComponents();
-            }
+        foreach (PhysicsBody2D body in bodies) {
+            body.RunComponents();
         }
     }
 
@@ -55,16 +50,22 @@ public class Scene : PhysicsWorld2D
     {
         // Ensure bodies are created (call once or in Ready)
         if (bodies.Count == 0) { 
-            CreateStaticBody(new Vector2(480, 600), 0f, Vector2.One, 
-                0.5f, 64f, 960f, out StaticBody2D staticBody, out string errorMessage);
-            
+            CreateStaticBody(new Vector2(640, 900), 0f, new Vector2(0.9f, 0.9f), 0.5f, 1280f, 120f, out StaticBody2D staticBody);
             bodies.Add(staticBody);  
         }
 
         if (Raylib.IsMouseButtonPressed(MouseButton.Left)) {
-            CreateRigidBody(Raylib.GetMousePosition(), 0f, Vector2.One,
-                1f, 0.5f, 32f, out RigidBody2D rigidBody, out string errorMessage);
+            
+            // Create circle rigid body
+            CreateRigidBody(Raylib.GetMousePosition(), 0f, Vector2.One, 1f, 0.5f, 32f, out RigidBody2D rigidBody);
 
+            bodies.Add(rigidBody);
+        }
+
+        else if(Raylib.IsMouseButtonPressed(MouseButton.Right)){
+
+            // Create box rigid body
+            CreateRigidBody(Raylib.GetMousePosition(), 0f, Vector2.One, 1f, 0.5f, 64f, 64f, out RigidBody2D rigidBody);    
             bodies.Add(rigidBody);
         }
 

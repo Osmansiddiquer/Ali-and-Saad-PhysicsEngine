@@ -1,4 +1,6 @@
-﻿namespace PhysicsEngine.src.physics._2D;
+﻿using System.Numerics;
+
+namespace PhysicsEngine.src.physics._2D;
 public class Dimensions2D
 {
 
@@ -7,10 +9,15 @@ public class Dimensions2D
     public float Height { get; private set; }
     public float Width  { get; private set; }
 
-    public Dimensions2D(float radius, float height, float width)
+    public Dimensions2D() { }
+    public Dimensions2D(float radius)
     {
         Radius = radius;
-        Height = height;
-        Width = width;
+    }
+
+    public Dimensions2D(Vector2 size)
+    {
+        Width = size.X;
+        Height = size.Y;
     }
 }

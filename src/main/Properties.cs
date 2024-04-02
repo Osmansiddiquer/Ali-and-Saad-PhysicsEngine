@@ -1,8 +1,8 @@
 ﻿namespace PhysicsEngine.src.main;
 public static class Properties
 {
-    public static int ScreenWidth = 960;
-    public static int ScreenHeight = 640;
+    public static int ScreenWidth = 1280;
+    public static int ScreenHeight = 960;
     public static string Title = "Physics Engine";
 
     public static bool DisplayFPS = true;
