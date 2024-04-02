@@ -77,13 +77,6 @@ public class Scene : PhysicsWorld2D
         // Update and draw each body
         for (int i = 0; i < bodies.Count; i++) {
             RenderPhysicsObject(bodies[i], colors[i % 4]);
-            if (bodies[i] is RigidBody2D)
-            {
-                bodies[i].IsOnGround = false;
-                bodies[i].IsOnLeftWall = false;
-                bodies[i].IsOnRightWall = false;
-                bodies[i].IsOnCeiling = false;
-            }
         }
     }
 }

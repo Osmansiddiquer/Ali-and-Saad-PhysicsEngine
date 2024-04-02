@@ -1,5 +1,6 @@
 ﻿using PhysicsEngine.src.physics._2D.body;
 using System.Numerics;
+using System.Runtime.ConstrainedExecution;
 
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
@@ -101,11 +102,16 @@ public static class CollisionDetection
             normal = axis;
         }
 
+        Vector2 direction;
+
         // Direction from polygon to circle center
-        Vector2 direction = centerP - centerC;
+        if (bodyA.Shape == ShapeType.Box) 
+            direction = centerC - centerP;
+        else direction = centerP - centerC;
 
         // Correct normal based on direction
         normal = Vector2.Dot(direction, normal) < 0f ? -normal : normal;
+        Console.WriteLine(normal);
 
         // Collision detected
         return true;
@@ -189,6 +195,7 @@ public static class CollisionDetection
 
         // Correct normal based on direction
         normal = Vector2.Dot(direction, normal) < 0f ? -normal : normal;
+        Console.WriteLine(normal);
 
         // Collision
         return true;
@@ -213,9 +220,15 @@ public static class CollisionDetection
         float distance = Vector2.Distance(centerA, centerB);
         float totalRadii = radiusA + radiusB;
 
+        Vector2 direction = centerB - centerA;
+
         // Get normal and depth of collision
-        normal = Vector2.Normalize(centerA - centerB);
+        normal = Vector2.Normalize(centerB - centerA);
         depth = totalRadii - distance;
+
+        normal = Vector2.Dot(direction, normal) < 0f ? -normal : normal;
+
+        Console.WriteLine(normal);
 
         // Return true if collision occured
         return distance < totalRadii ? true : false;

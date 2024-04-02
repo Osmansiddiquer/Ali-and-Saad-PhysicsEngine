@@ -1,5 +1,4 @@
 ﻿using PhysicsEngine.src.physics._2D.body;
-using Raylib_cs;
 using System.Numerics;
 
 namespace PhysicsEngine.src.physics._2D.collision;
@@ -13,7 +12,7 @@ public class CollisionResolution
     public static void HandleCollision(List<PhysicsBody2D> bodies)
     {
         float accumulator = 0f;
-        float timestep = Raylib.GetFrameTime();
+        float timestep = 1f/60f;
 
         // Check collisions only once per frame
         while (accumulator < timestep)
@@ -34,8 +33,17 @@ public class CollisionResolution
                     {
                         CollisionManifold contact = new CollisionManifold(bodyA, bodyB, normal, depth, Vector2.Zero, Vector2.Zero, 0);
                         contacts.Add(contact);
+
+                        SetCollisionState(bodyA, bodyB, normal);
                     }
-                    else continue;
+
+                    else
+                    {
+
+                        bodyA.IsOnFloor = bodyB.IsOnFloor = bodyA.IsOnCeiling = bodyB.IsOnCeiling = 
+                            bodyA.IsOnWallR = bodyB.IsOnWallR = bodyA.IsOnWallL = bodyB.IsOnWallL = false;
+                        continue;
+                    }
                 }
             }
 
@@ -71,79 +79,29 @@ public class CollisionResolution
         Vector2 velBodyA = impulse / bodyA.Substance.Mass * normal;
         Vector2 velBodyB = impulse / bodyB.Substance.Mass * normal;
 
-        if (bodyA.IsOnGround && velBodyA.Y < 0)
-        {
-            velBodyA.Y = 0;
-        }
-        else if (bodyA.IsOnCeiling && velBodyA.Y > 0)
-        {
-            velBodyA.Y = 0;
-        }
-
-        if (bodyA.IsOnLeftWall && velBodyA.X < 0)
-        {
-            velBodyA.X = 0;
-        }
-        else if (bodyA.IsOnRightWall && velBodyA.X > 0)
-        {
-            velBodyA.X = 0;
-        }
-
-        if (bodyB.IsOnGround && velBodyB.Y < 0)
-        {
-            velBodyB.Y = 0;
-        }
-        else if (bodyB.IsOnCeiling && velBodyB.Y > 0)
-        {
-            velBodyB.Y = 0;
-        }
-
-        if (bodyB.IsOnLeftWall && velBodyB.X < 0)
-        {
-            velBodyB.X = 0;
-        }
-        else if (bodyB.IsOnRightWall && velBodyB.X > 0)
-        {
-            velBodyB.X = 0;
-        }
-
         bodyA.LinVelocity -= velBodyA;
         bodyB.LinVelocity += velBodyB;
 
         // Calculate the direction each body needs to be pushed in
         Vector2 direction = normal * depth * 0.5f;
 
-        // Adjust direction for specific collision types
-        if ((bodyA.Shape == ShapeType.Circle && bodyB.Shape == ShapeType.Circle) ||
-            (bodyA.Shape == ShapeType.Box && bodyB.Shape == ShapeType.Circle))   
-            direction *= -1f;
-        
-
         // Translate bodies to resolve collision
         bodyA.Translate(-direction);
         bodyB.Translate(direction);
+    }
 
-        if (normal.Y > 0)
-        {
-            bodyA.IsOnCeiling = true;
-            bodyB.IsOnGround = true;
-            //System.Console.WriteLine(bodyB.Name + "is On Ground");
-        }
-        else if (normal.Y < 0)
-        {
-            bodyA.IsOnGround = true;
-            bodyB.IsOnCeiling = true;
-        }
+    private static void SetCollisionState(PhysicsBody2D bodyA, PhysicsBody2D bodyB, Vector2 normal)
+    {
+        bodyA.IsOnCeiling = normal.Y >= 0;
+        bodyB.IsOnFloor = normal.Y >= 0;
 
-        if (normal.X > 0)
-        {
-            bodyA.IsOnLeftWall = true;
-            bodyB.IsOnRightWall = true;
-        }
-        else if (normal.X < 0)
-        {
-            bodyA.IsOnRightWall = true;
-            bodyB.IsOnLeftWall = true;
-        }
+        bodyA.IsOnFloor = normal.Y <= 0;
+        bodyB.IsOnCeiling = normal.Y <= 0;
+
+        bodyA.IsOnWallL = normal.X >= 0;
+        bodyB.IsOnWallR = normal.X >= 0;
+
+        bodyA.IsOnWallR = normal.X <= 0;
+        bodyB.IsOnWallL = normal.X <= 0;
     }
 }
