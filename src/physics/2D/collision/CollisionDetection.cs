@@ -23,6 +23,9 @@ public static class CollisionDetection
         Vector2 centerP = Vector2.Zero;
         Vector2[] vertices = null;
 
+        Vector2 centerA = Vector2.Zero;
+        Vector2 centerB = Vector2.Zero;
+
         // Get vertices, radius and centers for shapes
         if (bodyA.Shape == bodyB.Shape) return false;
         else
@@ -34,6 +37,9 @@ public static class CollisionDetection
 
                 centerP = bodyB.Transform.Position;
                 vertices = bodyB.GetTransformedVertices();
+
+                centerA = centerC;
+                centerB = centerP;
             }
 
             else
@@ -43,6 +49,9 @@ public static class CollisionDetection
 
                 centerP = bodyA.Transform.Position;
                 vertices = bodyA.GetTransformedVertices();
+
+                centerA = centerP;
+                centerB = centerC;
             }
         }
 
@@ -105,9 +114,7 @@ public static class CollisionDetection
         Vector2 direction;
 
         // Direction from polygon to circle center
-        if (bodyA.Shape == ShapeType.Box) 
-            direction = centerC - centerP;
-        else direction = centerP - centerC;
+        direction = centerB - centerA;
 
         // Correct normal based on direction
         normal = Vector2.Dot(direction, normal) < 0f ? -normal : normal;
@@ -220,13 +227,9 @@ public static class CollisionDetection
         float distance = Vector2.Distance(centerA, centerB);
         float totalRadii = radiusA + radiusB;
 
-        Vector2 direction = centerB - centerA;
-
         // Get normal and depth of collision
         normal = Vector2.Normalize(centerB - centerA);
         depth = totalRadii - distance;
-
-        normal = Vector2.Dot(direction, normal) < 0f ? -normal : normal;
 
         Console.WriteLine(normal);
 
