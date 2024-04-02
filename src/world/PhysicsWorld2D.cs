@@ -128,12 +128,11 @@ public class PhysicsWorld2D
         // Convert mass into kg
         float mass = (area * density) / 1000;
 
-        List<Component> components = new List<Component>();
-        Gravity gravityComponent = new Gravity();
-        Motion motionComponent = new Motion();
-
-        components.Add(gravityComponent);
-        components.Add(motionComponent);
+        List<Component> components = new List<Component>
+        {
+            new Gravity(),
+            new Motion()
+        };
 
         // Create a rigid body 
         body2D = new RigidBox2D(position, rotation, scale, mass, density, area, restitution, width, height, components);
@@ -223,15 +222,15 @@ public class PhysicsWorld2D
 
     public static bool CreatePlayerBody(Vector2 position, float rotation, Vector2 scale, float width, float height, Camera2D camera, out PlayerBody playerBody)
     {
-        playerBody = new PlayerBody(position, rotation, scale, width, height, camera);
+        List<Component> components = new List<Component>
+        {
+            new Gravity(),
+            new Motion()
+        };
+
+        playerBody = new PlayerBody(position, rotation, scale, width, height, components, camera);
 
         return true;
     }
 
-    public static bool CreatePlayerBody(RigidBody2D body, out PlayerBody playerBody)
-    {
-        playerBody = new PlayerBody(body);
-
-        return true;
-    }
 }
