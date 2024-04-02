@@ -66,10 +66,10 @@ public class PhysicsWorld2D
         // Check if dimensions and density are within range
         if (area < MIN_BODY_SIZE || area > MAX_BODY_SIZE || density < MIN_DENSITY || density > MAX_DENSITY)
         {
-            errorMessage = area < MIN_BODY_SIZE ? $"Body area is too small, Minimum Area: {MIN_BODY_SIZE}" :
-                           area > MAX_BODY_SIZE ? $"Body area is too large, Maximum Area: {MAX_BODY_SIZE}" :
-                           density < MIN_DENSITY ? $"Body density is too low, Minimum Density: {MIN_DENSITY}" :
-                                                   $"Body density is too high, Maximum Density: {MAX_DENSITY}";
+            errorMessage = area < MIN_BODY_SIZE ? $"[ERROR]: Body area is too small, Minimum Area: {MIN_BODY_SIZE}" :
+                           area > MAX_BODY_SIZE ? $"[ERROR]: Body area is too large, Maximum Area: {MAX_BODY_SIZE}" :
+                           density < MIN_DENSITY ? $"[ERROR]: Body density is too low, Minimum Density: {MIN_DENSITY}" :
+                                                   $"[ERROR]: Body density is too high, Maximum Density: {MAX_DENSITY}";
         }
 
         // Exit function if there is an error
