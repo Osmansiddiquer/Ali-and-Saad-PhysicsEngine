@@ -33,17 +33,19 @@ public class PhysicsWorld2D
         {
             case ShapeType.Box:
                 // Calculate scaled size
-                Vector2 scaled = size * scale;
+                Vector2 scaledSize = size * scale;
 
                 // Calculate position adjustment
-                Vector2 adjustment = new Vector2((scaled.X - size.X) / 2, (scaled.Y - size.Y) / 2);
+                Vector2 adjustmentBox = new Vector2((scaledSize.X - size.X) / 2, (scaledSize.Y - size.Y) / 2);
 
                 // Draw the rectangle
-                Raylib.DrawRectanglePro(new Rectangle(position - adjustment, scaled), new Vector2(width / 2, height / 2), rotation, color);
+                Raylib.DrawRectanglePro(new Rectangle(position - adjustmentBox, scaledSize), new Vector2(width / 2, height / 2), rotation, color);
                 break;
 
             case ShapeType.Circle:
-                Raylib.DrawCircleV(position, radius, color);
+
+                // Draw the circle
+                Raylib.DrawCircleV(position, radius, color); ;
                 break;
 
             default: throw new Exception("[ERROR]: Invalid ShapeType");
