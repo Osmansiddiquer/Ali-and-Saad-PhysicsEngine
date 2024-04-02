@@ -2,6 +2,7 @@
 using Raylib_cs;
 using System.Numerics;
 using PhysicsEngine.src.components;
+using PhysicsEngine.src.physics._2D.body;
 
 namespace PhysicsEngine.src.world;
 public class PhysicsWorld2D
@@ -213,5 +214,17 @@ public class PhysicsWorld2D
         return area;
     }
 
-}
+    public static bool CreatePlayerBody(RigidBody2D body, Camera2D camera, out PlayerBody playerBody)
+    {
+        playerBody = new PlayerBody(body, camera);
 
+        return true;
+    }
+
+    public static bool CreatePlayerBody(RigidBody2D body, out PlayerBody playerBody)
+    {
+        playerBody = new PlayerBody(body);
+
+        return true;
+    }
+}

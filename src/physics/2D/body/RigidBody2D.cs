@@ -11,7 +11,7 @@ public class RigidBody2D : PhysicsBody2D
 
     public readonly int[]? Triangles;
 
-    private List<Component> components = new List<Component>();
+    public List<Component> components = new List<Component>();
 
 
     // Constructor
@@ -50,6 +50,22 @@ public class RigidBody2D : PhysicsBody2D
         verticesUpdateRequired = true;
     }
 
+    public RigidBody2D(RigidBody2D body)
+    {
+        this.verticesUpdateRequired = body.verticesUpdateRequired;
+        this.Transform = body.Transform;
+        this.Dimensions = body.Dimensions;
+        this.Substance = body.Substance;
+        this.LinVelocity = body.LinVelocity;
+        this.RotVelocity = body.RotVelocity;
+        this.vertices = body.vertices;
+        this.transformedVertices = body.transformedVertices;
+        this.Triangles = body.Triangles;
+        this.Shape = body.Shape;
+        this.Force = body.Force;
+        this.components = body.components;
+    }
+
     // Move the rigid body (self explanatory)
     public void Translate(Vector2 amount)
     {
@@ -74,6 +90,11 @@ public class RigidBody2D : PhysicsBody2D
         {
             component.RunComponent(this);
         }
+    }
+
+    public void addComponent(Component component)
+    {
+        components.Add(component);
     }
 }
 

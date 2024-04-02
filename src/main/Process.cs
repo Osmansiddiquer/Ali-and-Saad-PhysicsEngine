@@ -1,6 +1,7 @@
 ﻿using PhysicsEngine.res.scenes;
 using PhysicsEngine.src.main;
 using Raylib_cs;
+using System.Numerics;
 
 public class Process
 {
@@ -29,6 +30,7 @@ public class Process
 
         Raylib.SetTargetFPS(Properties.MaxFPS); // Set max 
 
+
         // Begin simulation
         Scene.Ready();
     }
@@ -46,12 +48,18 @@ public class Process
             fpsPositionX = Raylib.GetScreenWidth() * FPS_POSITION_X_PERCENTAGE;
             fpsPositionY = Raylib.GetScreenHeight() * FPS_POSITION_Y_PERCENTAGE;
 
+
             // Show FPS to screen
             if (Properties.DisplayFPS)
             {
                 // Draw FPS using calculated position
                 Raylib.DrawFPS((int)fpsPositionX, (int)fpsPositionY);
             }
+
+            Vector2 cameraOffset = new Vector2(Raylib.GetScreenWidth() / 2, Raylib.GetScreenHeight() / 2);
+            Vector2 cameraTarget = new Vector2(10.0f, 10.0f);
+            Camera2D camera = new Camera2D(cameraOffset, cameraTarget, 0, 1f);
+            Raylib.BeginMode2D(camera);
 
             // Update the simulation program
             Scene.Update((double)Raylib.GetFrameTime());
