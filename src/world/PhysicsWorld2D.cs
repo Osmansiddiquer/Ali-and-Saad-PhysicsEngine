@@ -3,6 +3,8 @@ using System.Numerics;
 using PhysicsEngine.src.components;
 using PhysicsEngine.src.physics._2D.body;
 
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+
 namespace PhysicsEngine.src.world;
 public class PhysicsWorld2D
 {
@@ -97,7 +99,9 @@ public class PhysicsWorld2D
     public static void CreateRigidBody(Vector2 position, float rotation, Vector2 scale, float density, float restitution,
     float width, float height, out RigidBody2D body2D)
     {
+
         body2D = null;
+
         string errorMessage;
 
         // Calculate the area for the rigid body
