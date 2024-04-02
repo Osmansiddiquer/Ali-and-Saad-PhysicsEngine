@@ -182,7 +182,6 @@ public class PhysicsBody2D
         vertices[3] = new Vector2(left, bottom);
 
         return vertices;
-
     }
 
     // Methods to be overriden

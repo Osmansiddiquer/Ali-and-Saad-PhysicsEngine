@@ -118,7 +118,6 @@ public static class CollisionDetection
 
         // Correct normal based on direction
         normal = Vector2.Dot(direction, normal) < 0f ? -normal : normal;
-        Console.WriteLine(normal);
 
         // Collision detected
         return true;
@@ -202,7 +201,6 @@ public static class CollisionDetection
 
         // Correct normal based on direction
         normal = Vector2.Dot(direction, normal) < 0f ? -normal : normal;
-        Console.WriteLine(normal);
 
         // Collision
         return true;
@@ -230,8 +228,6 @@ public static class CollisionDetection
         // Get normal and depth of collision
         normal = Vector2.Normalize(centerB - centerA);
         depth = totalRadii - distance;
-
-        Console.WriteLine(normal);
 
         // Return true if collision occured
         return distance < totalRadii ? true : false;

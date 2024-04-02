@@ -12,45 +12,39 @@ public class CollisionResolution
     public static void HandleCollision(List<PhysicsBody2D> bodies)
     {
         float accumulator = 0f;
-        float timestep = 1f/60f;
+        float timestep = 1f / 60f;
 
-        // Check collisions only once per frame
         while (accumulator < timestep)
         {
             contacts.Clear();
-            // Iterate through list of bodies to check for collision
+
             for (int i = 0; i < bodies.Count; i++)
             {
-                // Take a body and check it's collision with every other body
                 PhysicsBody2D bodyA = bodies[i];
 
                 for (int j = i + 1; j < bodies.Count; j++)
                 {
                     PhysicsBody2D bodyB = bodies[j];
+                    Vector2 normal = Vector2.Zero;
+                    float depth = 0f;
 
-                    // Get contact points on collision (yet to be implemented)
-                    if (CollisionDetection.CheckCollision(bodyA, bodyB, out Vector2 normal, out float depth))
+                    if (CollisionDetection.CheckCollision(bodyA, bodyB, out normal, out depth))
                     {
                         CollisionManifold contact = new CollisionManifold(bodyA, bodyB, normal, depth, Vector2.Zero, Vector2.Zero, 0);
                         contacts.Add(contact);
-
-                        SetCollisionState(bodyA, bodyB, normal);
-                    }
-
-                    else
-                    {
-
-                        bodyA.IsOnFloor = bodyB.IsOnFloor = bodyA.IsOnCeiling = bodyB.IsOnCeiling = 
-                            bodyA.IsOnWallR = bodyB.IsOnWallR = bodyA.IsOnWallL = bodyB.IsOnWallL = false;
-                        continue;
                     }
                 }
             }
 
-            // Resolve collision on each contact point
             foreach (CollisionManifold contact in contacts)
             {
                 ResolveCollision(in contact);
+            }
+
+            // Update collision states after collision resolution
+            foreach (PhysicsBody2D body in bodies)
+            {
+                UpdateCollisionState(body, bodies);
             }
 
             accumulator += timestep;
@@ -90,18 +84,36 @@ public class CollisionResolution
         bodyB.Translate(direction);
     }
 
-    private static void SetCollisionState(PhysicsBody2D bodyA, PhysicsBody2D bodyB, Vector2 normal)
+    private static void UpdateCollisionState(PhysicsBody2D body, List<PhysicsBody2D> allBodies)
     {
-        bodyA.IsOnCeiling = normal.Y < 0;
-        bodyB.IsOnFloor = normal.Y < 0;
+        // Reset all collision-related properties to false initially
+        body.IsOnCeiling = false;
+        body.IsOnFloor = false;
+        body.IsOnWallL = false;
+        body.IsOnWallR = false;
 
-        bodyA.IsOnFloor = normal.Y > 0;
-        bodyB.IsOnCeiling = normal.Y > 0;
+        // Set collision states based on the current position and velocity of the body
+        // You may need to adjust the conditions based on your specific requirements
+        foreach (PhysicsBody2D otherBody in allBodies)
+        {
+            if (otherBody != body)
+            {
+                // Check if there is contact with the other body
+                Vector2 normal;
+                float depth;
+                if (CollisionDetection.CheckCollision(body, otherBody, out normal, out depth))
+                {
+                    if (normal.Y < 0)
+                        body.IsOnCeiling = true;
+                    else if (normal.Y > 0)
+                        body.IsOnFloor = true;
 
-        bodyA.IsOnWallL = normal.X > 0;
-        bodyB.IsOnWallR = normal.X > 0;
-
-        bodyA.IsOnWallR = normal.X < 0;
-        bodyB.IsOnWallL = normal.X < 0;
+                    if (normal.X > 0)
+                        body.IsOnWallL = true;
+                    else if (normal.X < 0)
+                        body.IsOnWallR = true;
+                }
+            }
+        }
     }
 }
