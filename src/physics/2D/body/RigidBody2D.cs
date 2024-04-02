@@ -8,7 +8,7 @@ public class RigidBody2D : PhysicsBody2D
     // Force applied to the body
     public Vector2 Force;
 
-    private List<Component> components = new List<Component>();
+    protected List<Component> components = new List<Component>();
 
 
     // Constructor

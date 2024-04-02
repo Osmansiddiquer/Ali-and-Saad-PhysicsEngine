@@ -221,5 +221,17 @@ public class PhysicsWorld2D
         return area;
     }
 
-}
+    public static bool CreatePlayerBody(Vector2 position, float rotation, Vector2 scale, float width, float height, Camera2D camera, out PlayerBody playerBody)
+    {
+        playerBody = new PlayerBody(position, rotation, scale, width, height, camera);
 
+        return true;
+    }
+
+    public static bool CreatePlayerBody(RigidBody2D body, out PlayerBody playerBody)
+    {
+        playerBody = new PlayerBody(body);
+
+        return true;
+    }
+}
