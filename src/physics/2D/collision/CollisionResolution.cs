@@ -1,9 +1,8 @@
-﻿using PhysicsEngine.src.body;
-using PhysicsEngine.src.physics._2D.collision;
+﻿using PhysicsEngine.src.physics._2D.body;
 using Raylib_cs;
 using System.Numerics;
 
-namespace PhysicsEngine.src.physics._2D;
+namespace PhysicsEngine.src.physics._2D.collision;
 
 public class CollisionResolution
 {
@@ -16,18 +15,20 @@ public class CollisionResolution
         float accumulator = 0f;
         float timestep = Raylib.GetFrameTime();
 
+        
         while (accumulator < timestep)
         {
-
             contacts.Clear();
+            // Iterate through list of bodies to check for collision
             for (int i = 0; i < bodies.Count; i++)
             {
+                // Take a body and check it's collision with every other body
                 PhysicsBody2D bodyA = bodies[i];
                 for (int j = i + 1; j < bodies.Count; j++)
                 {
                     PhysicsBody2D bodyB = bodies[j];
 
-                    // Resolve collision 
+                    // Get contact points on collision (yet to be implemented)
                     if (CollisionDetection.CheckCollision(bodyA, bodyB, out Vector2 normal, out float depth))
                     {
                         CollisionManifold contact = new CollisionManifold(bodyA, bodyB, normal, depth, Vector2.Zero, Vector2.Zero, 0);
@@ -37,41 +38,49 @@ public class CollisionResolution
                 }
             }
 
+            // Resolve collision on each contact point
             foreach (CollisionManifold contact in contacts)
             {
                 ResolveCollision(in contact);
             }
+
             accumulator += timestep;
         }
-
-
     }
 
     private static void ResolveCollision(in CollisionManifold contact)
     {
-        // Relative velocity of the 2 bodies
-        Vector2 velocity = contact.BodyB.LinVelocity - contact.BodyA.LinVelocity;
+        PhysicsBody2D bodyA = contact.BODY_A;
+        PhysicsBody2D bodyB = contact.BODY_B;
 
-        // Restitution of bodies
-        float restitution = MathF.Min(contact.BodyA.Substance.Restitution, contact.BodyB.Substance.Restitution);
+        Vector2 normal = contact.NORMAL;
+        float depth = contact.DEPTH;
 
-        // Impulse of collisions
-        float impulse = -((1 + restitution) * Vector2.Dot(velocity, contact.Normal)) 
-            / ((1f / contact.BodyA.Substance.Mass) + (1f / contact.BodyB.Substance.Mass));
+        // Calculate relative velocity of the two bodies
+        Vector2 relativeVelocity = bodyB.LinVelocity - bodyA.LinVelocity;
 
-        // Calculate velocity after collision
-        contact.BodyA.LinVelocity -= impulse / contact.BodyA.Substance.Mass * contact.Normal;
-        contact.BodyB.LinVelocity += impulse / contact.BodyB.Substance.Mass * contact.Normal;
+        // Calculate restitution of the bodies
+        float restitution = MathF.Min(bodyA.Substance.Restitution, bodyB.Substance.Restitution);
+
+        // Calculate collision impulse
+        float impulse = -((1 + restitution) * Vector2.Dot(relativeVelocity, normal))
+            / ((1f / bodyA.Substance.Mass) + (1f / bodyB.Substance.Mass));
+
+        // Update velocities after collision
+        bodyA.LinVelocity -= impulse / bodyA.Substance.Mass * normal;
+        bodyB.LinVelocity += impulse / bodyB.Substance.Mass * normal;
 
         // Calculate the direction each body needs to be pushed in
-        Vector2 direction = contact.Normal * contact.Depth * 0.5f;
+        Vector2 direction = normal * depth * 0.5f;
 
-        // Adjust direction for circle and circle collisions
-        direction *=
-            (contact.BodyA.Shape is ShapeType.Circle && contact.BodyB.Shape is ShapeType.Circle ||
-            contact.BodyA.Shape is ShapeType.Box && contact.BodyB.Shape is ShapeType.Circle) ? -1f : 1f;
+        // Adjust direction for specific collision types
+        if ((bodyA.Shape == ShapeType.Circle && bodyB.Shape == ShapeType.Circle) ||
+            (bodyA.Shape == ShapeType.Box && bodyB.Shape == ShapeType.Circle))   
+            direction *= -1f;
+        
 
-        contact.BodyA.Translate(-direction);
-        contact.BodyB.Translate(direction);
+        // Translate bodies to resolve collision
+        bodyA.Translate(-direction);
+        bodyB.Translate(direction);
     }
 }

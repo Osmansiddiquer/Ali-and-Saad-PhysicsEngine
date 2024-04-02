@@ -9,6 +9,7 @@ public class Dimensions2D
     public float Height { get; private set; }
     public float Width  { get; private set; }
 
+    public Dimensions2D() { }
     public Dimensions2D(float radius)
     {
         Radius = radius;

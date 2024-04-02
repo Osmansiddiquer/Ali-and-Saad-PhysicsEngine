@@ -1,19 +1,49 @@
-﻿using PhysicsEngine.src.body;
-using Raylib_cs;
+﻿using PhysicsEngine.src.physics._2D.body;
 using System.Numerics;
 
-namespace PhysicsEngine.src.physics;
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+
+namespace PhysicsEngine.src.physics._2D.collision;
 
 public static class CollisionDetection
 {
 
     /* Collisions using seperating axis theorem */
-    private static bool CircPolyCollision(Vector2 centerC, float radius, Vector2 centerP, Vector2[] vertices, 
-        out Vector2 normal, out float depth)
+    private static bool CircPolyCollision(PhysicsBody2D bodyA, PhysicsBody2D bodyB, out Vector2 normal, out float depth)
     {
         // Initializing variables for calculation
         normal = Vector2.Zero;
         depth = float.MaxValue;
+
+        Vector2 centerC = Vector2.Zero;
+        float radius = 0;
+
+        Vector2 centerP = Vector2.Zero;
+        Vector2[] vertices = null;
+
+        // Get vertices, radius and centers for shapes
+        if (bodyA.Shape == bodyB.Shape) return false;
+        else
+        {
+            if (bodyA.Shape == ShapeType.Circle)
+            {
+                centerC = bodyA.Transform.Position;
+                radius = bodyA.Dimensions.Radius;
+
+                centerP = bodyB.Transform.Position;
+                vertices = bodyB.GetTransformedVertices();
+            }
+
+            else
+            {
+                centerC = bodyB.Transform.Position; 
+                radius = bodyB.Dimensions.Radius;
+
+                centerP = bodyA.Transform.Position;
+                vertices = bodyA.GetTransformedVertices();
+            }
+        }
 
         Vector2 axis = Vector2.Zero;
         float axisDepth = 0f;
@@ -33,8 +63,8 @@ public static class CollisionDetection
             axis = Vector2.Normalize(axis);
 
             // Project vertices to the normal axis
-            ProjectVertices(vertices, axis, out minA, out maxA);
-            ProjectCircle(centerC, radius, axis, out minB, out maxB);
+            CollisionHelper.ProjectVertices(vertices, axis, out minA, out maxA);
+            CollisionHelper.ProjectCircle(centerC, radius, axis, out minB, out maxB);
 
             // No collision
             if (minA >= maxB || minB >= maxA)
@@ -51,13 +81,13 @@ public static class CollisionDetection
         }
 
         // Get closest vertex to circle center
-        Vector2 closestVertex = vertices[FindClosestPolygonVertex(centerC, vertices)];
+        Vector2 closestVertex = vertices[CollisionHelper.FindClosestPolygonVertex(centerC, vertices)];
         axis = closestVertex - centerC;
         axis = Vector2.Normalize(axis);
 
         // Project vertices to the normal axis
-        ProjectVertices(vertices, axis, out minA, out maxA);
-        ProjectCircle(centerC, radius, axis, out minB, out maxB);
+        CollisionHelper.ProjectVertices(vertices, axis, out minA, out maxA);
+        CollisionHelper.ProjectCircle(centerC, radius, axis, out minB, out maxB);
 
         // No collision
         if (minA >= maxB || minB >= maxA)
@@ -81,60 +111,20 @@ public static class CollisionDetection
         return true;
     }
 
-    // Find vertex with minimum distance from circle center
-    private static int FindClosestPolygonVertex(Vector2 centerC, Vector2[] vertices)
-    {
-        int index = -1;
-        float min = float.MaxValue; // minimum distance
-
-        // Find minimum distance
-        for (int i = 0; i < vertices.Length; i++)
-        {
-            Vector2 vertex = vertices[i];
-            float distance = Vector2.Distance(vertex, centerC);
-
-            if (distance < min) {
-                min = distance;
-                index = i;
-            }
-        }
-
-        // Return index of vertex with minimum distance
-        return index;
-    }
-
-    private static void ProjectCircle(Vector2 centerC, float radius, Vector2 axis, out float min, out float max)
-    {
-        /*
-        Draw a diameter line perpendicular
-        to the axis and then get the points
-        on the circumference that the line
-        intersects
-         */
-        Vector2 direction = Vector2.Normalize(axis) * radius;
-
-        Vector2 pointA = centerC + direction;
-        Vector2 pointB = centerC - direction;
-
-        // Get perpendicular projection of both points onto axis using dot product
-        min = Vector2.Dot(pointA, axis);
-        max = Vector2.Dot(pointB, axis);
-
-        if (min > max) {
-            // Swap
-            min = min + max;
-            max = min - max;
-            min = min - max;
-        }
-
-    }
-
-    private static bool PolygonCollisions(Vector2 centerA, Vector2[] verticesA, Vector2 centerB, Vector2[] verticesB, 
-        out Vector2 normal, out float depth)
+    private static bool PolygonCollisions(PhysicsBody2D bodyA, PhysicsBody2D bodyB, out Vector2 normal, out float depth)
     {
         // Collision normal and depth
         normal = Vector2.Zero;
         depth = float.MaxValue;
+
+        if (bodyA.Shape == ShapeType.Circle || bodyB.Shape == ShapeType.Circle) return false;
+
+        // Get vertices and centers for shapes
+        Vector2 centerA = bodyA.Transform.Position;
+        Vector2[] verticesA = bodyA.GetTransformedVertices();
+
+        Vector2 centerB = bodyB.Transform.Position;
+        Vector2[] verticesB = bodyB.GetTransformedVertices();
 
         // Polygon 1 
         for (int i = 0; i < verticesA.Length; i++)
@@ -149,8 +139,8 @@ public static class CollisionDetection
             axis = Vector2.Normalize(axis);
 
             // Project vertices to the normal axis
-            ProjectVertices(verticesA, axis, out float minA, out float maxA);
-            ProjectVertices(verticesB, axis, out float minB, out float maxB);
+            CollisionHelper.ProjectVertices(verticesA, axis, out float minA, out float maxA);
+            CollisionHelper.ProjectVertices(verticesB, axis, out float minB, out float maxB);
 
             // No collision
             if (minA >= maxB || minB >= maxA) 
@@ -177,8 +167,8 @@ public static class CollisionDetection
             Vector2 axis = new Vector2(-edge.Y, edge.X);
 
             // Project vertices to the normal axis
-            ProjectVertices(verticesA, axis, out float minA, out float maxA);
-            ProjectVertices(verticesB, axis, out float minB, out float maxB);
+            CollisionHelper.ProjectVertices(verticesA, axis, out float minA, out float maxA);
+            CollisionHelper.ProjectVertices(verticesB, axis, out float minB, out float maxB);
             axis = Vector2.Normalize(axis);
 
             // No collision
@@ -204,30 +194,21 @@ public static class CollisionDetection
         return true;
     }
 
-    // Project vertices on normal axis based on Seperating Axis Theorem
-    private static void ProjectVertices(Vector2[] vertices, Vector2 axis, out float min, out float max)
+    private static bool CicrcleCollisions(PhysicsBody2D bodyA, PhysicsBody2D bodyB, out Vector2 normal, out float depth)
     {
-        // Minimum and maximum projection
-        min = float.MaxValue;
-        max = float.MinValue;
+        normal = Vector2.Zero;
+        depth = 0f;
 
-        // Get perpendicular projection of every vertex onto axis using dot product
-        foreach (Vector2 vertex in vertices)
-        {
-            float projection = Vector2.Dot(vertex, axis);
+        if (bodyA.Shape != ShapeType.Circle || bodyB.Shape != ShapeType.Circle) return false;
 
-            // Find the minimum and maximum projection for a polygon
-            if (projection < min) { min = projection; }
-            if (projection > max) { max = projection; }
-        }
-    }
+        // Get radii and center for shapes
+        Vector2 centerA = bodyA.Transform.Position;
+        float radiusA = bodyA.Dimensions.Radius;
+        
+        Vector2 centerB = bodyB.Transform.Position;
+        float radiusB = bodyB.Dimensions.Radius;
 
 
-    private static bool CicrcleCollisions(Vector2 centerA, float radiusA, 
-        Vector2 centerB, float radiusB,
-        out Vector2 normal, out float depth
-        )
-    {
         // Get distance between the circles and sum of radii
         float distance = Vector2.Distance(centerA, centerB);
         float totalRadii = radiusA + radiusB;
@@ -240,50 +221,12 @@ public static class CollisionDetection
         return distance < totalRadii ? true : false;
     }
 
-
+    // Check if any collision occurred
     public static bool CheckCollision(PhysicsBody2D bodyA, PhysicsBody2D bodyB, out Vector2 normal, out float depth)
     {
-        bool collision = false;
+        return CircPolyCollision(bodyA, bodyB, out normal, out depth) 
+            || PolygonCollisions(bodyA, bodyB, out normal, out depth) || CicrcleCollisions(bodyA, bodyB, out normal, out depth);
 
-        // Check collision between bodies of different shapes
-        if (bodyA.Shape != bodyB.Shape)
-        {
-            if (bodyA.Shape == ShapeType.Circle)
-            {
-                collision = CircPolyCollision(bodyA.Transform.Position, bodyA.Dimensions.Radius,
-                    bodyB.Transform.Position, bodyB.GetTransformedVertices(), out normal, out depth);
-            }
-
-            else
-            {
-                collision = CircPolyCollision(bodyB.Transform.Position, bodyB.Dimensions.Radius,
-                    bodyA.Transform.Position, bodyA.GetTransformedVertices(), out normal, out depth);
-            }
-        }
-
-        // Check collision between bodies of the same shapes
-        else
-        {
-            // Circle - Circle Collision
-            if (bodyA.Shape == ShapeType.Circle)
-            {
-                collision = CicrcleCollisions(bodyA.Transform.Position, bodyA.Dimensions.Radius,
-                                      bodyB.Transform.Position, bodyB.Dimensions.Radius,
-                                      out normal, out depth);
-            }
-
-            // Polygon - Polygon Collision
-            else
-            {
-                collision = PolygonCollisions(bodyA.Transform.Position, bodyA.GetTransformedVertices(),
-                    bodyB.Transform.Position, bodyB.GetTransformedVertices(), out normal, out depth);
-            }
-
-        }
-
-        return collision;
     }
-
-
 }
 

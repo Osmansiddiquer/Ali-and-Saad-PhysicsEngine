@@ -1,8 +1,6 @@
-﻿using PhysicsEngine.src.body;
+﻿using PhysicsEngine.src.physics._2D.body;
+using PhysicsEngine.src.physics._2D.collision;
 using PhysicsEngine.src.main;
-using PhysicsEngine.src.physics;
-using PhysicsEngine.src.physics._2D;
-using PhysicsEngine.src.physics._2D.body;
 using PhysicsEngine.src.world;
 using Raylib_cs;
 using System.Numerics;

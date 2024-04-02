@@ -1,4 +1,4 @@
-﻿using PhysicsEngine.src.body;
+﻿using PhysicsEngine.src.physics._2D.body;
 
 namespace PhysicsEngine.src.components;
 public class Component

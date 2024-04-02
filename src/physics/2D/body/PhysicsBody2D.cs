@@ -1,8 +1,10 @@
-﻿using PhysicsEngine.src.physics._2D;
-using PhysicsEngine.src.physics._2D.body;
+﻿using PhysicsEngine.src.physics._2D.collision;
 using System.Numerics;
 
-namespace PhysicsEngine.src.body;
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+#pragma warning disable CS8618 // Non nullable field must have non null value when exiting constructor.
+
+namespace PhysicsEngine.src.physics._2D.body;
 
 public enum ShapeType
 {
@@ -18,16 +20,16 @@ public class PhysicsBody2D
     // Physical Properties for the body
     public Transform2D Transform;
     public Dimensions2D Dimensions;
-    public Substance2D? Substance;
+    public Substance2D Substance;
 
     // Velocity of the body
     public Vector2 LinVelocity;
     public float RotVelocity;
 
     // Vertices (For collision handling)
-    protected Vector2[]? vertices;
-    protected int[]? triangles;
-    protected Vector2[]? transformedVertices;
+    protected Vector2[] vertices;
+    protected int[] triangles;
+    protected Vector2[] transformedVertices;
     protected AxisAlignedBoundingBox aabb;
 
     public bool VerticesUpdateRequired;
@@ -37,6 +39,9 @@ public class PhysicsBody2D
     public PhysicsBody2D(Vector2 position, float rotation, Vector2 scale)
     {
         Transform = new Transform2D(position, rotation, scale);
+
+        VerticesUpdateRequired = true;
+        AABBUpdateRequired = true;
     }
 
     // Calculate new position of vertices after transformation
@@ -122,6 +127,7 @@ public class PhysicsBody2D
     // Set vertices to null for circle shape
     protected void MapVerticesCircle()
     {
+
         vertices = null;
         transformedVertices = null;
 
