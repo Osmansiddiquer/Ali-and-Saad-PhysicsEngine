@@ -20,7 +20,7 @@ public class PhysicsWorld2D
         // Get world transform and shape
         Vector2 position = body.Transform.Position;
         float rotation = body.Transform.Rotation;
-
+        Vector2 scale = body.Transform.Scale;
 
         float width = body.Dimensions.Width;
         float height = body.Dimensions.Height;
@@ -32,7 +32,14 @@ public class PhysicsWorld2D
         switch(body.Shape)
         {
             case ShapeType.Box:
-                Raylib.DrawRectanglePro(new Rectangle(position, size), new Vector2(width / 2, height / 2), rotation, color);
+                // Calculate scaled size
+                Vector2 scaled = size * scale;
+
+                // Calculate position adjustment
+                Vector2 adjustment = new Vector2((scaled.X - size.X) / 2, (scaled.Y - size.Y) / 2);
+
+                // Draw the rectangle
+                Raylib.DrawRectanglePro(new Rectangle(position - adjustment, scaled), new Vector2(width / 2, height / 2), rotation, color);
                 break;
 
             case ShapeType.Circle:

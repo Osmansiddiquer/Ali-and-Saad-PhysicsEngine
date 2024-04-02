@@ -1,7 +1,6 @@
 ﻿using PhysicsEngine.src.physics._2D;
 using System.Numerics;
 using PhysicsEngine.src.components;
-using System.Transactions;
 
 namespace PhysicsEngine.src.body;
 
@@ -40,11 +39,16 @@ public class RigidBody2D : PhysicsBody2D
         AABBUpdateRequired = true;
     }
 
-    public void Rotate(float angle)
+    public override void Rotate(float angle)
     {
         Transform.Rotate(angle);
         VerticesUpdateRequired = true;
         AABBUpdateRequired = true;
+    }
+
+    public override void Scale(Vector2 amount)
+    {
+        Transform.Scaling(amount);
     }
 
     public override void ApplyForce(Vector2 amount)

@@ -51,10 +51,10 @@ public class PhysicsBody2D
             // Create separate matrices for individual transformations
             Matrix3x2 translationMatrix = Matrix3x2.CreateTranslation(position);
             Matrix3x2 rotationMatrix = Matrix3x2.CreateRotation(rotation);
-            //Matrix3x2 scalingMatrix = Matrix3x2.CreateScale(scale);
+            Matrix3x2 scalingMatrix = Matrix3x2.CreateScale(scale);
 
             // Combine transformations in desired order
-            Matrix3x2 transformationMatrix = rotationMatrix * translationMatrix;
+            Matrix3x2 transformationMatrix = scalingMatrix * rotationMatrix * translationMatrix;
 
             // Update transformed vertices using the combined matrix n bn
             for (int i = 0; i < vertices.Length; i++)
@@ -177,5 +177,9 @@ public class PhysicsBody2D
     public virtual void ApplyForce(Vector2 amount) { }
 
     public virtual void Translate(Vector2 amount) { }
+
+    public virtual void Rotate(float angle) { }
+
+    public virtual void Scale(Vector2 amount) {  }
 }
 
