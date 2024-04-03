@@ -53,11 +53,11 @@ public class CollisionResolution
             {
                 ResolveCollision(in contact);
 
-                if (contact.CONTACT_COUNT > 0)
+                if (contact.CONTACT_COUNT > 0 && !contactPoints.Contains(contact.CONTACT_P1))
                 { 
                     contactPoints.Add(contact.CONTACT_P1);
 
-                    if (contact.CONTACT_COUNT > 1)
+                    if (contact.CONTACT_COUNT > 1 && !contactPoints.Contains(contact.CONTACT_P2))
                     {
                         contactPoints.Add(contact.CONTACT_P2);
                     }
