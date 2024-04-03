@@ -2,6 +2,7 @@
 using System.Numerics;
 using PhysicsEngine.src.components;
 using PhysicsEngine.src.physics._2D.body;
+using PhysicsEngine.src.physics._2D.collision;
 
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
 
@@ -191,5 +192,78 @@ public class PhysicsWorld2D
                                                      $"[ERROR]: Body density is too high, Maximum Density: {MAX_DENSITY}");
 
         return errorMessage;
+    }
+
+    // Implement all physics stuff
+    public static void HandlePhysics(List<PhysicsBody2D> bodies)
+    {
+        List<CollisionManifold> contacts = new List<CollisionManifold>();
+        List<Vector2> contactPoints = new List<Vector2>();
+
+        float accumulator = 0f;
+        float timestep = 1f / 60f;
+
+        contactPoints.Clear();
+
+        // Make sure loop runs only once per frame
+        while (accumulator < timestep)
+        {
+            contacts.Clear();
+
+            for (int i = 0; i < bodies.Count; i++)
+            {
+                PhysicsBody2D bodyA = bodies[i];
+
+                for (int j = i + 1; j < bodies.Count; j++)
+                {
+                    PhysicsBody2D bodyB = bodies[j];
+                    Vector2 normal;
+                    float depth;
+
+                    // Check if objects may be colliding
+                    if (!CollisionDetection.AABBIntersection(bodyA.GetAABB(), bodyB.GetAABB()))
+                        continue;
+
+                    // Detect collision and add contact points
+                    if (CollisionDetection.CheckCollision(bodyA, bodyB, out normal, out depth))
+                    {
+                        CollisionHelper.FindContactPoints(bodyA, bodyB, out Vector2 contactP1, out Vector2 contactP2, out int contactCount);
+                        CollisionManifold contact = new CollisionManifold(bodyA, bodyB, normal, depth, contactP1, contactP2, contactCount);
+
+                        contacts.Add(contact);
+                    }
+                }
+            }
+
+            // Resolve collision at contact points
+            foreach (CollisionManifold contact in contacts)
+            {
+                CollisionResolution.ResolveCollision(in contact);
+
+                if (contact.CONTACT_COUNT > 0 && !contactPoints.Contains(contact.CONTACT_P1))
+                {
+                    contactPoints.Add(contact.CONTACT_P1);
+
+                    if (contact.CONTACT_COUNT > 1 && !contactPoints.Contains(contact.CONTACT_P2))
+                    {
+                        contactPoints.Add(contact.CONTACT_P2);
+                    }
+
+                    // Drawing contact points for debugging
+                    Raylib.DrawRectangle((int)contact.CONTACT_P1.X, (int)contact.CONTACT_P1.Y, 12, 12, Color.Orange);
+                }
+            }
+
+            // Update body
+            foreach (PhysicsBody2D body in bodies)
+            {
+                if (body is RigidBody2D)
+                    body.RunComponents();
+
+                CollisionHelper.UpdateCollisionState(body, bodies);
+            }
+
+            accumulator += timestep;
+        }
     }
 }

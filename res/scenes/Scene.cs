@@ -38,11 +38,7 @@ public class Scene : PhysicsWorld2D
     public static void Update(double delta)
     {
         Draw();
-        CollisionResolution.HandleCollision(bodies);
-
-        foreach (PhysicsBody2D body in bodies) {
-            body.RunComponents();
-        }
+        HandlePhysics(bodies);
     }
 
     // Draw
