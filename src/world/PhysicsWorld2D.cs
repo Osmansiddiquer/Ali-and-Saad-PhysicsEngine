@@ -54,70 +54,20 @@ public class PhysicsWorld2D
     }
 
     // Creates a Circle RigidBody
-    public static void CreateRigidBody(Vector2 position, float rotation, Vector2 scale, float density, float restitution,
+    public static void CreateRigidBody(Vector2 position, Vector2 scale, float density, float restitution,
         float radius, out RigidBody2D body2D)
     {
         body2D = null;
         string errorMessage;
 
         // Calculate the area for the rigid body
-        float area = CalculateArea(radius, 0f, 0f, out errorMessage);
+        float area = MathF.PI * radius * radius;
 
-        // Check if dimensions and density are within range
-        if (area < MIN_BODY_SIZE || area > MAX_BODY_SIZE || density < MIN_DENSITY || density > MAX_DENSITY)
-        {
-            errorMessage = area < MIN_BODY_SIZE ? $"[ERROR]: Body area is too small, Minimum Area: {MIN_BODY_SIZE}" :
-                           area > MAX_BODY_SIZE ? $"[ERROR]: Body area is too large, Maximum Area: {MAX_BODY_SIZE}" :
-                           density < MIN_DENSITY ? $"[ERROR]: Body density is too low, Minimum Density: {MIN_DENSITY}" :
-                                                   $"[ERROR]: Body density is too high, Maximum Density: {MAX_DENSITY}";
-        }
+        errorMessage = ValidateParameters(area, density);
 
         // Exit function if there is an error
-        if (errorMessage != string.Empty) throw new Exception(errorMessage);
-
-        // Keep restitution in valid range
-        restitution = Math.Clamp(restitution, 0.0f, 1.0f);
-
-        // For Any Object, Mass = Volume * Denisty
-        // Where Volume = Area * Depth in 3D space
-        // For 2D plane, we can assume depth to be 1
-        // Convert mass into kg
-        float mass = (area * density) / 1000;
-
-        List<Component> components = new List<Component>();
-        Gravity gravityComponent = new Gravity();
-        Motion motionComponent = new Motion();
-
-        components.Add(gravityComponent);
-        components.Add(motionComponent);
-
-        // Create a rigid body 
-        body2D = new RigidCircle2D(position, rotation, scale, mass, density, area, restitution, radius, components);
-    }
-
-    // Creates a Box RigidBody
-    public static void CreateRigidBody(Vector2 position, float rotation, Vector2 scale, float density, float restitution,
-    float width, float height, out RigidBody2D body2D)
-    {
-
-        body2D = null;
-
-        string errorMessage;
-
-        // Calculate the area for the rigid body
-        float area = CalculateArea(0, width, height, out errorMessage);
-
-        // Check if dimensions and density are within range
-        if (area < MIN_BODY_SIZE || area > MAX_BODY_SIZE || density < MIN_DENSITY || density > MAX_DENSITY)
-        {
-            errorMessage = area < MIN_BODY_SIZE ? $"Body area is too small, Minimum Area: {MIN_BODY_SIZE}" :
-                           area > MAX_BODY_SIZE ? $"Body area is too large, Maximum Area: {MAX_BODY_SIZE}" :
-                           density < MIN_DENSITY ? $"Body density is too low, Minimum Density: {MIN_DENSITY}" :
-                                                   $"Body density is too high, Maximum Density: {MAX_DENSITY}";
-        }
-
-        // Exit function if there is an error
-        if (errorMessage != string.Empty) throw new Exception(errorMessage);
+        if (!string.IsNullOrEmpty(errorMessage))
+            throw new Exception(errorMessage);
 
         // Keep restitution in valid range
         restitution = Math.Clamp(restitution, 0.0f, 1.0f);
@@ -131,34 +81,64 @@ public class PhysicsWorld2D
         List<Component> components = new List<Component>
         {
             new Gravity(),
-            new Motion()
+            new LinMotion()
+        };
+
+        // Create a rigid body 
+        body2D = new RigidCircle2D(position, scale, mass, density, area, restitution, radius, components);
+    }
+
+    // Creates a Box RigidBody
+    public static void CreateRigidBody(Vector2 position, float rotation, Vector2 scale, float density, float restitution,
+    float width, float height, out RigidBody2D body2D)
+    {
+
+        body2D = null;
+        string errorMessage;
+
+        // Calculate the area for the rigid body
+        float area = width * height;
+
+        errorMessage = ValidateParameters(area, density);
+
+        // Exit function if there is an error
+        if (!string.IsNullOrEmpty(errorMessage))
+            throw new Exception(errorMessage);
+
+        // Keep restitution in valid range
+        restitution = Math.Clamp(restitution, 0.0f, 1.0f);
+
+        // For Any Object, Mass = Volume * Denisty
+        // Where Volume = Area * Depth in 3D space
+        // For 2D plane, we can assume depth to be 1
+        // Convert mass into kg
+        float mass = (area * density) / 1000;
+
+        List<Component> components = new List<Component>
+        {
+            new Gravity(),
+            new LinMotion()
         };
 
         // Create a rigid body 
         body2D = new RigidBox2D(position, rotation, scale, mass, density, area, restitution, width, height, components);
-
-
     }
 
     // Creates a Circle StaticBody
-    public static void CreateStaticBody(Vector2 position, float rotation, Vector2 scale, float restitution,
+    public static void CreateStaticBody(Vector2 position, Vector2 scale, float restitution,
     float radius, out StaticBody2D body2D)
     {
         body2D = null;
         string errorMessage;
 
         // Calculate the area for the static body
-        float area = CalculateArea(radius, 0f, 0f, out errorMessage);
+        float area = MathF.PI * radius * radius;
 
-        // Check if dimensions within range
-        if (area < MIN_BODY_SIZE || area > MAX_BODY_SIZE)
-        {
-            errorMessage = area < MIN_BODY_SIZE ? $"Body area is too small, Minimum Area: {MIN_BODY_SIZE}" :
-                           $"Body area is too large, Maximum Area: {MAX_BODY_SIZE}";
-        }
+        errorMessage = ValidateParameters(area);
 
         // Exit function if there is an error
-        if (errorMessage != string.Empty) throw new Exception(errorMessage);
+        if (!string.IsNullOrEmpty(errorMessage))
+            throw new Exception(errorMessage);
 
         // Keep restitution in valid range
         restitution = Math.Clamp(restitution, 0.0f, 1.0f);
@@ -167,7 +147,7 @@ public class PhysicsWorld2D
         float mass = float.MaxValue;
 
         // Create a static body
-        body2D = new StaticCircle2D(position, rotation, scale, mass, restitution, area, radius);
+        body2D = new StaticCircle2D(position, scale, mass, restitution, area, radius);
 
     }
 
@@ -179,17 +159,13 @@ public class PhysicsWorld2D
         string errorMessage;
 
         // Calculate the area for the static body
-        float area = CalculateArea(0f, width, height, out errorMessage);
+        float area = width * height;
 
-        // Check if dimensions within range
-        if (area < MIN_BODY_SIZE || area > MAX_BODY_SIZE)
-        {
-            errorMessage = area < MIN_BODY_SIZE ? $"[ERROR]: Body area is too small, Minimum Area: {MIN_BODY_SIZE}" :
-                           $"[ERROR]: Body area is too large, Maximum Area: {MAX_BODY_SIZE}";
-        }
-
+        errorMessage = ValidateParameters(area);
+            
         // Exit function if there is an error
-        if (errorMessage != string.Empty) throw new Exception(errorMessage);
+        if (!string.IsNullOrEmpty(errorMessage)) 
+            throw new Exception(errorMessage);
 
         // Keep restitution in valid range
         restitution = Math.Clamp(restitution, 0.0f, 1.0f);
@@ -201,22 +177,19 @@ public class PhysicsWorld2D
         body2D = new StaticBox2D(position, rotation, scale, mass, area, restitution, width, height);
     }
 
-    private static float CalculateArea(float radius, float width, float height, out string errorMessage)
+    private static string ValidateParameters(float area, float density = 0)
     {
-        errorMessage = string.Empty;
-        float area = 0f;
+        string errorMessage = string.Empty;
 
-        // Calculate area for circle
-        if (radius != 0f) {
-            if (radius < 0f) errorMessage = "[ERROR]: Invalid Radius For Circle";
-            else area = MathF.PI * radius * radius;           
-        }
+        if (area < MIN_BODY_SIZE || area > MAX_BODY_SIZE)
+            errorMessage = area < MIN_BODY_SIZE ? $"[ERROR]: Body area is too small, Minimum Area: {MIN_BODY_SIZE}" :
+                           $"[ERROR]: Body area is too large, Maximum Area: {MAX_BODY_SIZE}";
 
-        else {
-            if (height < 0f || width < 0f) errorMessage = "[ERROR]: Invalid Dimensions For Box";
-            else area = width * height;
-        }
+        if (density != 0 && (density < MIN_DENSITY || density > MAX_DENSITY))
+            errorMessage += errorMessage != string.Empty ? Environment.NewLine : string.Empty +
+                            (density < MIN_DENSITY ? $"[ERROR]: Body density is too low, Minimum Density: {MIN_DENSITY}" :
+                                                     $"[ERROR]: Body density is too high, Maximum Density: {MAX_DENSITY}");
 
-        return area;
+        return errorMessage;
     }
 }

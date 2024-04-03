@@ -1,5 +1,6 @@
 ﻿using PhysicsEngine.src.physics._2D.body;
 using System.Numerics;
+using System.Runtime.ConstrainedExecution;
 
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
@@ -8,6 +9,12 @@ namespace PhysicsEngine.src.physics._2D.collision;
 
 public static class CollisionDetection
 {
+    /* Collision check for AABBs */
+    public static bool AABBIntersection(AxisAlignedBoundingBox boxA, AxisAlignedBoundingBox boxB)
+    {
+        return !(boxA.Max.X <= boxB.Min.X || boxA.Min.X >= boxB.Max.X || boxA.Max.Y <= boxB.Min.Y || boxA.Min.Y >= boxB.Max.Y);
+
+    }
 
     /* Collisions using seperating axis theorem */
     private static bool CircPolyCollision(PhysicsBody2D bodyA, PhysicsBody2D bodyB, out Vector2 normal, out float depth)
@@ -22,6 +29,9 @@ public static class CollisionDetection
         Vector2 centerP = Vector2.Zero;
         Vector2[] vertices = null;
 
+        Vector2 centerA = Vector2.Zero;
+        Vector2 centerB = Vector2.Zero;
+
         // Get vertices, radius and centers for shapes
         if (bodyA.Shape == bodyB.Shape) return false;
         else
@@ -33,6 +43,9 @@ public static class CollisionDetection
 
                 centerP = bodyB.Transform.Position;
                 vertices = bodyB.GetTransformedVertices();
+
+                centerA = centerC;
+                centerB = centerP;
             }
 
             else
@@ -42,6 +55,9 @@ public static class CollisionDetection
 
                 centerP = bodyA.Transform.Position;
                 vertices = bodyA.GetTransformedVertices();
+
+                centerA = centerP;
+                centerB = centerC;
             }
         }
 
@@ -101,8 +117,10 @@ public static class CollisionDetection
             normal = axis;
         }
 
+        Vector2 direction;
+
         // Direction from polygon to circle center
-        Vector2 direction = centerP - centerC;
+        direction = centerB - centerA;
 
         // Correct normal based on direction
         normal = Vector2.Dot(direction, normal) < 0f ? -normal : normal;
@@ -215,7 +233,7 @@ public static class CollisionDetection
         float totalRadii = radiusA + radiusB;
 
         // Get normal and depth of collision
-        normal = Vector2.Normalize(centerA - centerB);
+        normal = Vector2.Normalize(centerB - centerA);
         depth = totalRadii - distance;
 
         // Return true if collision occured

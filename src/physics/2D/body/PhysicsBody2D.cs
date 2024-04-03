@@ -37,11 +37,10 @@ public class PhysicsBody2D
     public bool VerticesUpdateRequired;
     public bool AABBUpdateRequired;
 
-    // Position booleans
-    public bool IsOnGround;
-    public bool IsOnLeftWall;
-    public bool IsOnRightWall;
+    public bool IsOnFloor;
     public bool IsOnCeiling;
+    public bool IsOnWallR;
+    public bool IsOnWallL;
 
     // Constructor
     public PhysicsBody2D(Vector2 position, float rotation, Vector2 scale)
@@ -183,7 +182,6 @@ public class PhysicsBody2D
         vertices[3] = new Vector2(left, bottom);
 
         return vertices;
-
     }
 
     // Methods to be overriden

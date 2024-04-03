@@ -60,7 +60,7 @@ public class Scene : PhysicsWorld2D
         if (Raylib.IsMouseButtonPressed(MouseButton.Left)) {
             
             // Create circle rigid body
-            CreateRigidBody(Raylib.GetMousePosition(), 0f, Vector2.One, 1f, 0.5f, 32f, out RigidBody2D rigidBody);
+            CreateRigidBody(Raylib.GetMousePosition(), Vector2.One, 1f, 0.5f, 32f, out RigidBody2D rigidBody);
 
             rigidBody.Name = ("Circle " + bodies.Count);
             bodies.Add(rigidBody);
@@ -77,13 +77,6 @@ public class Scene : PhysicsWorld2D
         // Update and draw each body
         for (int i = 0; i < bodies.Count; i++) {
             RenderPhysicsObject(bodies[i], colors[i % 4]);
-            if (bodies[i] is RigidBody2D)
-            {
-                bodies[i].IsOnGround = false;
-                bodies[i].IsOnLeftWall = false;
-                bodies[i].IsOnRightWall = false;
-                bodies[i].IsOnCeiling = false;
-            }
         }
     }
 }

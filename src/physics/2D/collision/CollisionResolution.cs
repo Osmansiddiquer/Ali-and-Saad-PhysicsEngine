@@ -8,50 +8,78 @@ public class CollisionResolution
 {
 
     private static List<CollisionManifold> contacts = new List<CollisionManifold>();
+    private static List<Vector2> contactPoints = new List<Vector2>();
 
     // Move objects when they collide
     public static void HandleCollision(List<PhysicsBody2D> bodies)
     {
         float accumulator = 0f;
-        float timestep = Raylib.GetFrameTime();
+        float timestep = 1f / 60f;
 
-        // Check collisions only once per frame
+        contactPoints.Clear();
+
+        // Make sure loop runs only once per frame
         while (accumulator < timestep)
         {
             contacts.Clear();
-            // Iterate through list of bodies to check for collision
+
             for (int i = 0; i < bodies.Count; i++)
             {
-                // Take a body and check it's collision with every other body
                 PhysicsBody2D bodyA = bodies[i];
 
                 for (int j = i + 1; j < bodies.Count; j++)
                 {
                     PhysicsBody2D bodyB = bodies[j];
+                    Vector2 normal = Vector2.Zero;
+                    float depth = 0f;
 
-                    // Get contact points on collision (yet to be implemented)
-                    if (CollisionDetection.CheckCollision(bodyA, bodyB, out Vector2 normal, out float depth))
+                    // Check if objects may be colliding
+                    if (!CollisionDetection.AABBIntersection(bodyA.GetAABB(), bodyB.GetAABB())) 
+                        continue;
+
+                    // Detect collision and add contact points
+                    if (CollisionDetection.CheckCollision(bodyA, bodyB, out normal, out depth))
                     {
-                        CollisionManifold contact = new CollisionManifold(bodyA, bodyB, normal, depth, Vector2.Zero, Vector2.Zero, 0);
+                        CollisionHelper.FindContactPoints(bodyA, bodyB, out Vector2 contactP1, out Vector2 contactP2, out int contactCount);
+                        CollisionManifold contact = new CollisionManifold(bodyA, bodyB, normal, depth, contactP1, contactP2, contactCount);
+
                         contacts.Add(contact);
                     }
-                    else
-                    {
-                        continue;
-                    }
+                    else continue;
                 }
             }
 
-            // Resolve collision on each contact point
+            // Resolve collision at contact points
             foreach (CollisionManifold contact in contacts)
             {
                 ResolveCollision(in contact);
+
+                if (contact.CONTACT_COUNT > 0 && !contactPoints.Contains(contact.CONTACT_P1))
+                { 
+                    contactPoints.Add(contact.CONTACT_P1);
+
+                    if (contact.CONTACT_COUNT > 1 && !contactPoints.Contains(contact.CONTACT_P2))
+                    {
+                        contactPoints.Add(contact.CONTACT_P2);
+                    }
+
+                    // Drawing contact points for debugging
+                    Raylib.DrawRectangle((int)contact.CONTACT_P1.X, (int)contact.CONTACT_P1.Y, 12, 12, Color.Orange);
+                }
+            }
+
+            // Update collision states after collision resolution
+            foreach (PhysicsBody2D body in bodies)
+            {
+                CollisionHelper.UpdateCollisionState(body, bodies);
             }
 
             accumulator += timestep;
         }
     }
 
+
+    // Apply acceleration after collision
     private static void ResolveCollision(in CollisionManifold contact)
     {
         PhysicsBody2D bodyA = contact.BODY_A;
@@ -76,80 +104,15 @@ public class CollisionResolution
         Vector2 velBodyA = impulse / bodyA.Substance.Mass * normal;
         Vector2 velBodyB = impulse / bodyB.Substance.Mass * normal;
 
-        if (bodyA.IsOnGround && velBodyA.Y < 0)
-        {
-            velBodyA.Y = 0;
-        }
-        else if (bodyA.IsOnCeiling && velBodyA.Y > 0)
-        {
-            velBodyA.Y = 0;
-        }
-
-        if (bodyA.IsOnLeftWall && velBodyA.X < 0)
-        {
-            velBodyA.X = 0;
-        }
-        else if (bodyA.IsOnRightWall && velBodyA.X > 0)
-        {
-            velBodyA.X = 0;
-        }
-
-        if (bodyB.IsOnGround && velBodyB.Y < 0)
-        {
-            velBodyB.Y = 0;
-        }
-        else if (bodyB.IsOnCeiling && velBodyB.Y > 0)
-        {
-            velBodyB.Y = 0;
-        }
-
-        if (bodyB.IsOnLeftWall && velBodyB.X < 0)
-        {
-            velBodyB.X = 0;
-        }
-        else if (bodyB.IsOnRightWall && velBodyB.X > 0)
-        {
-            velBodyB.X = 0;
-        }
-
         bodyA.LinVelocity -= velBodyA;
         bodyB.LinVelocity += velBodyB;
 
         // Calculate the direction each body needs to be pushed in
         Vector2 direction = normal * depth * 0.5f;
 
-        // Adjust direction for specific collision types
-        if ((bodyA.Shape == ShapeType.Circle && bodyB.Shape == ShapeType.Circle) ||
-            (bodyA.Shape == ShapeType.Box && bodyB.Shape == ShapeType.Circle))   
-            direction *= -1f;
-        
-
         // Translate bodies to resolve collision
         bodyA.Translate(-direction);
         bodyB.Translate(direction);
-
-        if (normal.Y > 0)
-        {
-            bodyA.IsOnCeiling = true;
-            bodyB.IsOnGround = true;
-            //System.Console.WriteLine(bodyB.Name + "is On Ground");
-        }
-        else if (normal.Y < 0)
-        {
-            bodyA.IsOnGround = true;
-            bodyB.IsOnCeiling = true;
-        }
-
-        if (normal.X > 0)
-        {
-            bodyA.IsOnLeftWall = true;
-            bodyB.IsOnRightWall = true;
-        }
-        else if (normal.X < 0)
-        {
-            bodyA.IsOnRightWall = true;
-            bodyB.IsOnLeftWall = true;
-        }
     }
 }
 
