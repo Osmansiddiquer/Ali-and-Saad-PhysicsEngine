@@ -9,6 +9,12 @@ namespace PhysicsEngine.src.physics._2D.collision;
 
 public static class CollisionDetection
 {
+    /* Collision check for AABBs */
+    public static bool AABBIntersection(AxisAlignedBoundingBox boxA, AxisAlignedBoundingBox boxB)
+    {
+        return !(boxA.Max.X <= boxB.Min.X || boxA.Min.X >= boxB.Max.X || boxA.Max.Y <= boxB.Min.Y || boxA.Min.Y >= boxB.Max.Y);
+
+    }
 
     /* Collisions using seperating axis theorem */
     private static bool CircPolyCollision(PhysicsBody2D bodyA, PhysicsBody2D bodyB, out Vector2 normal, out float depth)

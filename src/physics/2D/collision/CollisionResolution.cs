@@ -33,6 +33,10 @@ public class CollisionResolution
                     Vector2 normal = Vector2.Zero;
                     float depth = 0f;
 
+                    // Check if objects may be colliding
+                    if (!CollisionDetection.AABBIntersection(bodyA.GetAABB(), bodyB.GetAABB())) 
+                        continue;
+
                     // Detect collision and add contact points
                     if (CollisionDetection.CheckCollision(bodyA, bodyB, out normal, out depth))
                     {
