@@ -6,12 +6,11 @@ public class Gravity : Component
 {  
     public override void RunComponent(RigidBody2D body)
     {
-        if (!body.IsOnFloor)
-        {
-            ApplyGravity(body);
-        }
+        // Move body downwards if it is midair
+        if (!body.IsOnFloor) { ApplyGravity(body); }
     }
 
+    // Calculate and apply gravitational acceleration
     private void ApplyGravity(RigidBody2D body)
     {
         body.LinVelocity.Y += 9.81f * Raylib.GetFrameTime();

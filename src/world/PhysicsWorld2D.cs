@@ -54,7 +54,7 @@ public class PhysicsWorld2D
     }
 
     // Creates a Circle RigidBody
-    public static void CreateRigidBody(Vector2 position, float rotation, Vector2 scale, float density, float restitution,
+    public static void CreateRigidBody(Vector2 position, Vector2 scale, float density, float restitution,
         float radius, out RigidBody2D body2D)
     {
         body2D = null;
@@ -85,7 +85,7 @@ public class PhysicsWorld2D
         };
 
         // Create a rigid body 
-        body2D = new RigidCircle2D(position, rotation, scale, mass, density, area, restitution, radius, components);
+        body2D = new RigidCircle2D(position, scale, mass, density, area, restitution, radius, components);
     }
 
     // Creates a Box RigidBody
@@ -125,7 +125,7 @@ public class PhysicsWorld2D
     }
 
     // Creates a Circle StaticBody
-    public static void CreateStaticBody(Vector2 position, float rotation, Vector2 scale, float restitution,
+    public static void CreateStaticBody(Vector2 position, Vector2 scale, float restitution,
     float radius, out StaticBody2D body2D)
     {
         body2D = null;
@@ -147,7 +147,7 @@ public class PhysicsWorld2D
         float mass = float.MaxValue;
 
         // Create a static body
-        body2D = new StaticCircle2D(position, rotation, scale, mass, restitution, area, radius);
+        body2D = new StaticCircle2D(position, scale, mass, restitution, area, radius);
 
     }
 

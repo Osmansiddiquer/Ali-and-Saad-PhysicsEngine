@@ -117,4 +117,53 @@ public static class CollisionHelper
         Vector2 direction = Vector2.Normalize(centerB - centerA);
         cpoint = centerA + direction * radiusA;
     }
+
+    public static void UpdateCollisionState(PhysicsBody2D body, List<PhysicsBody2D> allBodies)
+    {
+        // Reset all collision-related properties to false initially
+        body.IsOnCeiling = false;
+        body.IsOnFloor = false;
+        body.IsOnWallL = false;
+        body.IsOnWallR = false;
+
+        // Set collision states based on the current position and velocity of the body
+        // You may need to adjust the conditions based on your specific requirements
+        foreach (PhysicsBody2D otherBody in allBodies)
+        {
+            if (otherBody != body)
+            {
+                // Check if there is contact with the other body
+                Vector2 normal;
+                float depth;
+                if (CollisionDetection.CheckCollision(body, otherBody, out normal, out depth))
+                {
+                    switch (normal.Y)
+                    {
+                        case -1:
+                            body.IsOnCeiling = true;
+                            break;
+
+                        case 1:
+                            body.IsOnFloor = true;
+                            break;
+
+                        default: break;
+                    }
+
+                    switch (normal.X)
+                    {
+                        case -1:
+                            body.IsOnWallL = true;
+                            break;
+
+                        case 1:
+                            body.IsOnWallR = true;
+                            break;
+
+                        default: break;
+                    }
+                }
+            }
+        }
+    }
 }

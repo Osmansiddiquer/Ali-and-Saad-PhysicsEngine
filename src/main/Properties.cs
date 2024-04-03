@@ -1,5 +1,5 @@
 ﻿namespace PhysicsEngine.src.main;
-public static class Properties
+public struct Properties
 {
     public static int ScreenWidth = 1280;
     public static int ScreenHeight = 960;
@@ -9,6 +9,5 @@ public static class Properties
     public static bool Fullscreen = false;
     public static bool EnableVSync = true;
     public static int MaxFPS = 60;
-
 }
 

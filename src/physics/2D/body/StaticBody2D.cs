@@ -33,8 +33,8 @@ public class StaticBox2D : StaticBody2D
 public class StaticCircle2D : StaticBody2D
 {
     // Constructor 
-    public StaticCircle2D(Vector2 position, float rotation, Vector2 scale,
-        float mass, float area, float restitution, float radius) : base(position, rotation, scale, mass, restitution, area, ShapeType.Circle)
+    public StaticCircle2D(Vector2 position, Vector2 scale,
+        float mass, float area, float restitution, float radius) : base(position, 0f, scale, mass, restitution, area, ShapeType.Circle)
     {
         Dimensions = new Dimensions2D(radius * Vector2.Distance(Vector2.Zero, scale));
         MapVerticesCircle();
