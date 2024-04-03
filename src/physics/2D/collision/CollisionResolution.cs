@@ -113,6 +113,36 @@ public class CollisionResolution
         // Translate bodies to resolve collision
         bodyA.Translate(-direction);
         bodyB.Translate(direction);
+
+        applyFriction(bodyA, bodyB, normal);
+    }
+
+    // Apply friction after collision
+    private static void applyFriction(PhysicsBody2D bodyA, PhysicsBody2D bodyB, Vector2 normal)
+    {
+        // Calculate relative velocity of the two bodies
+        Vector2 relativeVelocity = bodyB.LinVelocity - bodyA.LinVelocity;
+
+        // Calculate tangent vector
+        Vector2 tangent = new Vector2(-normal.Y, normal.X);
+
+        // Calculate magnitude of friction
+        // If relative velocity parallel to tangent vector is zero we have static friction
+        float frictionCoefficient;
+        if (relativeVelocity.X == 0 && relativeVelocity.Y == 0)
+        {
+            frictionCoefficient = bodyA.Substance.StaticFriction * bodyB.Substance.StaticFriction;
+        }
+        else
+        {
+            frictionCoefficient = bodyA.Substance.DynamicFriction * bodyB.Substance.DynamicFriction;
+        }
+
+        // Apply friction force to the bodies
+        bodyA.LinVelocity *= 1 - frictionCoefficient;
+        bodyB.LinVelocity *= 1 - frictionCoefficient;
+
+        System.Console.WriteLine("Friction applied");
     }
 }
 

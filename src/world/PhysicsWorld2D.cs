@@ -122,6 +122,7 @@ public class PhysicsWorld2D
 
         // Create a rigid body 
         body2D = new RigidBox2D(position, rotation, scale, mass, density, area, restitution, width, height, components);
+
     }
 
     // Creates a Circle StaticBody
