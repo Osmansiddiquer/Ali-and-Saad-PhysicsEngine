@@ -35,7 +35,10 @@ public class CollisionResolution
                         CollisionManifold contact = new CollisionManifold(bodyA, bodyB, normal, depth, Vector2.Zero, Vector2.Zero, 0);
                         contacts.Add(contact);
                     }
-                    else continue;
+                    else
+                    {
+                        continue;
+                    }
                 }
             }
 
@@ -56,6 +59,8 @@ public class CollisionResolution
 
         Vector2 normal = contact.NORMAL;
         float depth = contact.DEPTH;
+
+        //System.Console.WriteLine(normal);
 
         // Calculate relative velocity of the two bodies
         Vector2 relativeVelocity = bodyB.LinVelocity - bodyA.LinVelocity;
@@ -147,3 +152,4 @@ public class CollisionResolution
         }
     }
 }
+

@@ -19,6 +19,6 @@ public class Gravity : Component
     public void ApplyGravity(RigidBody2D body)
     {
         body.LinVelocity.Y += 9.81f * Raylib.GetFrameTime();
-        System.Console.WriteLine("Gravit is being applied to" + body.Name);
+        //System.Console.WriteLine("Gravity is being applied to" + body.Name);
     }
 }
