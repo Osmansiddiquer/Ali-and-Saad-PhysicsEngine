@@ -74,24 +74,23 @@ public static class CollisionHelper
         }
     }
 
-    private static void PointSegmentDistance(Vector2 centerC, Vector2 vertexA, Vector2 vertexB, out float distanceSquared, out Vector2 contact)
+    private static void PointSegmentDistance(Vector2 p, Vector2 a, Vector2 b, out float distanceSquared, out Vector2 contact)
     {
-        Vector2 ab = vertexB - vertexA;
-        Vector2 ap = centerC - vertexA;
+        Vector2 ab = b - a;
+        Vector2 ap = p - a;
 
         float projection = Vector2.Dot(ab, ap);
         float d = projection / Vector2.DistanceSquared(ab, Vector2.Zero);
 
         if (d <= 0f)
-            contact = vertexA;
+            contact = a;
         else if (d >= 1f)
-            contact = vertexB;
+            contact = b;
         else 
-            contact = vertexA + ab * d;
+            contact = a + ab * d;
 
-        distanceSquared = Vector2.DistanceSquared(centerC, contact);
+        distanceSquared = Vector2.DistanceSquared(p, contact);
     }
-
 
     // Find contact points on polygon / circle
     public static void FindContactPoints(PhysicsBody2D bodyA, PhysicsBody2D bodyB, out Vector2 cpoint1, out Vector2 cpoint2, out int ccount)
@@ -119,7 +118,64 @@ public static class CollisionHelper
             // Box - Box
             else
             {
-                
+                Vector2[] verticesA = bodyA.GetTransformedVertices();
+                Vector2[] verticesB = bodyB.GetTransformedVertices();
+
+                float minDistanceSquared = float.MaxValue;
+
+                for (int i = 0; i < verticesA.Length; i++)
+                {
+                    Vector2 point = verticesA[i];
+
+                    for (int j = 0; j < verticesB.Length; j++)
+                    {
+                        Vector2 vertexA = verticesB[j];
+                        Vector2 vertexB = verticesB[(j + 1) % verticesB.Length];
+
+                        PointSegmentDistance(point, vertexA, vertexB, out float distanceSquared, out Vector2 cp);
+
+                        if (distanceSquared < minDistanceSquared)
+                        {
+                            minDistanceSquared = distanceSquared;
+                            cpoint1 = cp;
+                            ccount = 1;
+                        }
+
+                        else if (MathF.Abs(distanceSquared - minDistanceSquared) < 0.0005f &&
+                            !(MathF.Abs(cp.X - cpoint1.X) < 0.0005f && MathF.Abs(cp.Y - cpoint1.Y) < 0.0005f))
+                        {
+                            cpoint2 = cp;
+                            ccount = 2;
+                        }
+                    }
+                }
+
+                for (int i = 0; i < verticesB.Length; i++)
+                {
+                    Vector2 point = verticesB[i];
+
+                    for (int j = 0; j < verticesA.Length; j++)
+                    {
+                        Vector2 vertexA = verticesA[j];
+                        Vector2 vertexB = verticesA[(j + 1) % verticesA.Length];
+
+                        PointSegmentDistance(point, vertexA, vertexB, out float distanceSquared, out Vector2 cp);
+
+                        if (distanceSquared < minDistanceSquared)
+                        {
+                            minDistanceSquared = distanceSquared;
+                            cpoint1 = cp;
+                            ccount = 1;
+                        }
+
+                        else if (MathF.Abs(distanceSquared - minDistanceSquared) < 0.0005f &&
+                            !(MathF.Abs(cp.X - cpoint1.X) < 0.0005f && MathF.Abs(cp.Y - cpoint1.Y) < 0.0005f))
+                        {
+                            cpoint2 = cp;
+                            ccount = 2;
+                        }
+                    }
+                }
             }
 
         }
@@ -127,8 +183,8 @@ public static class CollisionHelper
         // Box - Circle / Circle - Box
         else
         {
-            Vector2 centerC = Vector2.Zero;
-            Vector2[] vertices = null;
+            Vector2 centerC;
+            Vector2[] vertices;
 
             if (bodyA.Shape == ShapeType.Circle)
             {
@@ -157,16 +213,15 @@ public static class CollisionHelper
                 {
                     minDistanceSquared = distanceSquared;
                     cpoint1 = cp;
+                    ccount = 1;
                 }
             }
-
-            ccount = 1;
         }
 
     }
 
 
-    public static void UpdateCollisionState(PhysicsBody2D body, List<PhysicsBody2D> allBodies)
+    public static void UpdateCollisionState(PhysicsBody2D body, List<PhysicsBody2D> bodies)
     {
         // Reset all collision-related properties to false initially
         body.IsOnCeiling = false;
@@ -174,42 +229,27 @@ public static class CollisionHelper
         body.IsOnWallL = false;
         body.IsOnWallR = false;
 
+        body.Normal = Vector2.Zero;
+
         // Set collision states based on the current position and velocity of the body
         // You may need to adjust the conditions based on your specific requirements
-        foreach (PhysicsBody2D otherBody in allBodies)
+        foreach (PhysicsBody2D otherBody in bodies)
         {
             if (otherBody != body)
             {
                 // Check if there is contact with the other body
                 Vector2 normal;
                 float depth;
+
                 if (CollisionDetection.CheckCollision(body, otherBody, out normal, out depth))
                 {
-                    switch (normal.Y)
-                    {
-                        case -1:
-                            body.IsOnCeiling = true;
-                            break;
+                    body.IsOnCeiling = normal.Y < -0.5f;
+                    body.IsOnFloor = normal.Y > 0.5f;
 
-                        case 1:
-                            body.IsOnFloor = true;
-                            break;
+                    body.IsOnWallL = normal.X < -0.5f;
+                    body.IsOnWallR = normal.X > 0.5f;
 
-                        default: break;
-                    }
-
-                    switch (normal.X)
-                    {
-                        case -1:
-                            body.IsOnWallL = true;
-                            break;
-
-                        case 1:
-                            body.IsOnWallR = true;
-                            break;
-
-                        default: break;
-                    }
+                    body.Normal = normal;
                 }
             }
         }

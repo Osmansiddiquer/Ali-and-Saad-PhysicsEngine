@@ -1,5 +1,4 @@
 ﻿using PhysicsEngine.src.physics._2D.body;
-using Raylib_cs;
 using System.Numerics;
 
 namespace PhysicsEngine.src.physics._2D.collision;
@@ -29,8 +28,17 @@ public class CollisionResolution
         Vector2 velBodyA = impulse / bodyA.Substance.Mass * normal;
         Vector2 velBodyB = impulse / bodyB.Substance.Mass * normal;
 
+        // Apply impulses to update velocities
         bodyA.LinVelocity -= velBodyA;
         bodyB.LinVelocity += velBodyB;
+
+        // Set linear velocity of bodyA to zero if its magnitude is less than epsilon
+        if (bodyA.LinVelocity.Length() < .5f)
+            bodyA.LinVelocity = Vector2.Zero;
+
+        // Set linear velocity of bodyB to zero if its magnitude is less than epsilon
+        if (bodyB.LinVelocity.Length() < .5f)
+            bodyB.LinVelocity = Vector2.Zero;
 
         // Calculate the direction each body needs to be pushed in
         Vector2 direction = normal * depth * 0.5f;
@@ -39,4 +47,5 @@ public class CollisionResolution
         bodyA.Translate(-direction);
         bodyB.Translate(direction);
     }
+
 }

@@ -42,6 +42,8 @@ public class PhysicsBody2D
     public bool IsOnWallR;
     public bool IsOnWallL;
 
+    public Vector2 Normal;
+
     // Constructor
     public PhysicsBody2D(Vector2 position, float rotation, Vector2 scale)
     {

@@ -39,6 +39,8 @@ public class Scene : PhysicsWorld2D
     {
         Draw();
         HandlePhysics(bodies);
+
+        if (bodies.Count > 2 ) { Console.WriteLine(bodies[2].LinVelocity); }
     }
 
     // Draw

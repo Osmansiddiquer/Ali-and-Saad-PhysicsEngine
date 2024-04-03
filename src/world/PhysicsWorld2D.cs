@@ -251,6 +251,7 @@ public class PhysicsWorld2D
 
                     // Drawing contact points for debugging
                     Raylib.DrawRectangle((int)contact.CONTACT_P1.X, (int)contact.CONTACT_P1.Y, 12, 12, Color.Orange);
+                    Raylib.DrawRectangle((int)contact.CONTACT_P2.X, (int)contact.CONTACT_P2.Y, 12, 12, Color.Orange);
                 }
             }
 
