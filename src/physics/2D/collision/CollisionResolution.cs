@@ -14,6 +14,8 @@ public class CollisionResolution
         Vector2 normal = contact.NORMAL;
         float depth = contact.DEPTH;
 
+        //System.Console.WriteLine(normal);
+
         // Calculate relative velocity of the two bodies
         Vector2 relativeVelocity = bodyB.LinVelocity - bodyA.LinVelocity;
 
@@ -47,5 +49,4 @@ public class CollisionResolution
         bodyA.Translate(-direction);
         bodyB.Translate(direction);
     }
-
 }

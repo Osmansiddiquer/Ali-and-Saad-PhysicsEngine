@@ -8,6 +8,10 @@ public class Substance2D
     public float Restitution { get; private set; }
     public bool IsStatic { get; private set; }
 
+    public float StaticFriction { get; set; }
+
+    public float DynamicFriction { get; set; }
+
     // Constructor
     public Substance2D() { }
     public Substance2D(float mass, float density, float area, float restitution, bool isStatic)

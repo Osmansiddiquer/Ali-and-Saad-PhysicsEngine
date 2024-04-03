@@ -51,6 +51,8 @@ public class Scene : PhysicsWorld2D
             CreateStaticBody(new Vector2(640, 900), 0f, new Vector2(0.9f, 0.9f), 0.5f, 1280f, 120f, out StaticBody2D staticBody);
 
             staticBody.Name = "Ground";
+            staticBody.Substance.StaticFriction = 0.5f;
+            staticBody.Substance.DynamicFriction = 0.2f;
 
             bodies.Add(staticBody);  
         }
@@ -61,6 +63,9 @@ public class Scene : PhysicsWorld2D
             CreateRigidBody(Raylib.GetMousePosition(), Vector2.One, 1f, 0.5f, 32f, out RigidBody2D rigidBody);
 
             rigidBody.Name = ("Circle " + bodies.Count);
+            rigidBody.Substance.StaticFriction = 0.5f;
+            rigidBody.Substance.DynamicFriction = 0.2f;
+
             bodies.Add(rigidBody);
         }
 
