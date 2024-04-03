@@ -121,15 +121,41 @@ public class CollisionResolution
                 float depth;
                 if (CollisionDetection.CheckCollision(body, otherBody, out normal, out depth))
                 {
-                    if (normal.Y < -0.75f)
-                        body.IsOnCeiling = true;
-                    else if (normal.Y > 0.75f)
-                        body.IsOnFloor = true;
+                    switch (normal.Y)
+                    {
+                        case -1:
+                            body.IsOnCeiling = true; 
+                            break;
 
-                    if (normal.X > 0.75f)
-                        body.IsOnWallL = true;
-                    else if (normal.X < -0.75f)
-                        body.IsOnWallR = true;
+                        case 1: 
+                            body.IsOnFloor = true;
+                            break;
+
+                        default: break;
+                    }
+
+                    switch (normal.X)
+                    {
+                        case -1:
+                            body.IsOnWallL = true; 
+                            break;
+
+                        case 1:
+                            body.IsOnWallR = true;
+                            break;
+
+                        default: break;
+                    }
+
+                    //if (normal.Y < -0.75f)
+                    //    body.IsOnCeiling = true;
+                    //else if (normal.Y > 0.75f)
+                    //    body.IsOnFloor = true;
+
+                    //if (normal.X > 0.75f)
+                    //    body.IsOnWallL = true;
+                    //else if (normal.X < -0.75f)
+                    //    body.IsOnWallR = true;
                 }
             }
         }

@@ -81,7 +81,7 @@ public class PhysicsWorld2D
         List<Component> components = new List<Component>
         {
             new Gravity(),
-            new Motion()
+            new LinMotion()
         };
 
         // Create a rigid body 
@@ -117,7 +117,7 @@ public class PhysicsWorld2D
         List<Component> components = new List<Component>
         {
             new Gravity(),
-            new Motion()
+            new LinMotion()
         };
 
         // Create a rigid body 

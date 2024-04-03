@@ -3,7 +3,7 @@ using Raylib_cs;
 using System.Numerics;
 
 namespace PhysicsEngine.src.components;
-public class Motion : Component
+public class LinMotion : Component
 {
     public override void RunComponent(RigidBody2D body)
     {
@@ -12,10 +12,12 @@ public class Motion : Component
 
     public void UseMotion(RigidBody2D body)
     {
-        body.LinVelocity += (body.Force / body.Substance.Mass) * Raylib.GetFrameTime();
+        Vector2 deltaVelocity = body.LinVelocity + (body.Force / body.Substance.Mass) * Raylib.GetFrameTime();
+
+        // Set linear velocity to zero if its magnitude is less than the threshold
+        body.LinVelocity = deltaVelocity.Length() < 0.1f ? Vector2.Zero : deltaVelocity;
 
         body.Transform.Translate(body.LinVelocity);
-        body.Transform.Rotate(body.RotVelocity);
 
         body.VerticesUpdateRequired = true;
         body.AABBUpdateRequired = true;
