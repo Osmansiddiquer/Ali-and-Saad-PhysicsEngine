@@ -9,9 +9,8 @@ public class AxisAlignedBoundingBox
     public Vector2 Min { get; private set; }
     public Vector2 Max { get; private set; }
 
-    public AxisAlignedBoundingBox() { }
-
     // Constructors
+    public AxisAlignedBoundingBox() { }
     public AxisAlignedBoundingBox(Vector2 min, Vector2 max)
     {
         Min = min;
@@ -23,6 +22,4 @@ public class AxisAlignedBoundingBox
         Min = new Vector2(minX, minY);
         Max = new Vector2(maxX, maxY);
     }
-
-    
 }

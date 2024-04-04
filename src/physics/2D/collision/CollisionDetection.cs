@@ -61,10 +61,10 @@ public static class CollisionDetection
             }
         }
 
-        Vector2 axis = Vector2.Zero;
-        float axisDepth = 0f;
+        Vector2 axis;
+        float axisDepth;
 
-        float minA, maxA, minB, maxB = 0f;
+        float minA, maxA, minB, maxB;
 
         // Polygon  
         for (int i = 0; i < vertices.Length; i++)
@@ -93,7 +93,6 @@ public static class CollisionDetection
                 depth = axisDepth;
                 normal = axis;
             }
-
         }
 
         // Get closest vertex to circle center

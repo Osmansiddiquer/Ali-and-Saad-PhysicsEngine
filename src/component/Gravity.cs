@@ -1,5 +1,6 @@
 ﻿using PhysicsEngine.src.physics._2D.body;
 using Raylib_cs;
+using System.Numerics;
 
 namespace PhysicsEngine.src.components;
 public class Gravity : Component
@@ -7,7 +8,7 @@ public class Gravity : Component
     public override void RunComponent(RigidBody2D body)
     {
         // Move body downwards if it is midair
-        if (!body.IsOnFloor) { ApplyGravity(body); }
+        if (!(body.Normal.Y == 1f)) { ApplyGravity(body); }
     }
 
     // Calculate and apply gravitational acceleration

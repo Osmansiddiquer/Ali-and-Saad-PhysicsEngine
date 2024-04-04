@@ -10,7 +10,6 @@
 //        base(position, rotation, scale, 70, 0.985f, width * height, 0f, width, height, components)
 //    {
 //        this.camera = camera;
-//        base.components.Add(new PlayerInput());
 //    }
 
 //}
