@@ -40,7 +40,9 @@ public class Scene : PhysicsWorld2D
         Draw();
         HandlePhysics(bodies);
 
-        if (bodies.Count > 2 ) { Console.WriteLine(bodies[2].LinVelocity); }
+        if (bodies.Count > 2 ) { 
+            //Console.WriteLine(bodies[2].LinVelocity);
+        }
     }
 
     // Draw
@@ -52,7 +54,7 @@ public class Scene : PhysicsWorld2D
 
             staticBody.Name = "Ground";
             staticBody.Substance.StaticFriction = 0.5f;
-            staticBody.Substance.DynamicFriction = 0.2f;
+            staticBody.Substance.DynamicFriction = 0.5f;
 
             bodies.Add(staticBody);  
         }
@@ -63,16 +65,38 @@ public class Scene : PhysicsWorld2D
             CreateRigidBody(Raylib.GetMousePosition(), Vector2.One, 1f, 0.5f, 32f, out RigidBody2D rigidBody);
 
             rigidBody.Name = ("Circle " + bodies.Count);
-            rigidBody.Substance.StaticFriction = 0.5f;
-            rigidBody.Substance.DynamicFriction = 0.2f;
+            rigidBody.Substance.StaticFriction = 0.2f;
+            rigidBody.Substance.DynamicFriction = 0.5f;
 
             bodies.Add(rigidBody);
         }
 
-        else if(Raylib.IsMouseButtonPressed(MouseButton.Right)){
+        else if (Raylib.IsMouseButtonPressed(MouseButton.Right)) {
 
             // Create box rigid body
-            CreateRigidBody(Raylib.GetMousePosition(), 0f, Vector2.One, 1f, 0.5f, 64f, 64f, out RigidBody2D rigidBody);    
+            CreateRigidBody(Raylib.GetMousePosition(), 0f, Vector2.One, 1f, 0.5f, 64f, 64f, out RigidBody2D rigidBody);
+
+            rigidBody.Name = ("Square " + bodies.Count);
+            rigidBody.Substance.StaticFriction = 0.3f;
+            rigidBody.Substance.DynamicFriction = 0.5f;
+
+            bodies.Add(rigidBody);
+
+        } else if (Raylib.IsKeyPressed(KeyboardKey.Space)) {
+            int magnitude = 10;
+
+            Random rand = new Random();
+
+            // get a random direction which is a unit vector
+            Vector2 direction = new Vector2(((float)rand.NextDouble() * 2 ) - 1, ((float)rand.NextDouble() * 2) - 1);
+            direction = Vector2.Normalize(direction);
+
+            Vector2 velocity = magnitude * direction;
+
+
+            // create a projectile body if you press spacebar
+            CreateProjectileBody(Raylib.GetMousePosition(), Vector2.One, 1f, 0.5f, 16f, velocity, bodies, out RigidBody2D rigidBody);
+
             bodies.Add(rigidBody);
         }
 

@@ -268,4 +268,39 @@ public class PhysicsWorld2D
             accumulator += timestep;
         }
     }
+
+    // Make a function to make a projectile which is a rigidbody with name as projectile
+    public static void CreateProjectileBody(Vector2 position, Vector2 scale, float density, float restitution,
+       float radius, Vector2 velocity, List<PhysicsBody2D> bodies, out RigidBody2D body2D)
+    {
+        body2D = null;
+        string errorMessage;
+
+        // Calculate the area for the rigid body
+        float area = MathF.PI * radius * radius;
+
+        errorMessage = ValidateParameters(area, density);
+
+        // Exit function if there is an error
+        if (!string.IsNullOrEmpty(errorMessage))
+            throw new Exception(errorMessage);
+
+        // Keep restitution in valid range
+        restitution = Math.Clamp(restitution, 0.0f, 1.0f);
+
+        // For Any Object, Mass = Volume * Denisty
+        // Where Volume = Area * Depth in 3D space
+        // For 2D plane, we can assume depth to be 1
+        // Convert mass into kg
+        float mass = (area * density) / 1000;
+
+        List<Component> components = new List<Component>
+        {
+            new Gravity(),
+            new LinMotion()
+        };
+
+        // Create a rigid body 
+        body2D = new ProjectileBody2D(position, scale, mass, density, area, restitution, radius, components, velocity, bodies);
+    }
 }

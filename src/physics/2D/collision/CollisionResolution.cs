@@ -11,10 +11,20 @@ public class CollisionResolution
         PhysicsBody2D bodyA = contact.BODY_A;
         PhysicsBody2D bodyB = contact.BODY_B;
 
+        if (bodyA.Name == "Projectile")
+        {
+            ProjectileBody2D projectile = (ProjectileBody2D)bodyA;
+            projectile.ProjectileHit(bodyB);
+            return;
+        } else if (bodyB.Name == "Projectile")
+        {
+            ProjectileBody2D projectile = (ProjectileBody2D)bodyB;
+            projectile.ProjectileHit(bodyA);
+            return;
+        }
+
         Vector2 normal = contact.NORMAL;
         float depth = contact.DEPTH;
-
-        //System.Console.WriteLine(normal);
 
         // Calculate relative velocity of the two bodies
         Vector2 relativeVelocity = bodyB.LinVelocity - bodyA.LinVelocity;
@@ -48,5 +58,30 @@ public class CollisionResolution
         // Translate bodies to resolve collision
         bodyA.Translate(-direction);
         bodyB.Translate(direction);
+
+        // Apply friction after collision
+        applyFriction(bodyA, bodyB, normal);
+    }
+
+    // Apply friction after collision
+    private static void applyFriction(PhysicsBody2D bodyA, PhysicsBody2D bodyB, Vector2 normal)
+    {
+        // Calculate relative velocity of the two bodies
+        Vector2 relativeVelocity = bodyB.LinVelocity - bodyA.LinVelocity;
+
+        // Calculate tangent vector
+        Vector2 tangent = new Vector2(-normal.Y, normal.X);
+
+        // Calculate normal force
+        float normalForce = Vector2.Dot(relativeVelocity, tangent);
+
+        float frictionCoefficient = bodyA.Substance.StaticFriction * bodyB.Substance.StaticFriction;
+        // Apply friction
+        Vector2 friction = Vector2.Normalize(tangent) * frictionCoefficient * normalForce;
+
+        bodyA.LinVelocity += friction;
+        bodyB.LinVelocity -= friction;
+
     }
 }
+

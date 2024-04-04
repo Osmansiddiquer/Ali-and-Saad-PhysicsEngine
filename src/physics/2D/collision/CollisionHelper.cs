@@ -254,16 +254,4 @@ public static class CollisionHelper
             }
         }
     }
-
-    public static bool AreParallel(Vector2 v1, Vector2 v2)
-    {
-        // Avoid division by zero
-        if (v2.X == 0 || v2.Y == 0)
-        {
-            return v1.X == v2.X && v1.Y == v2.Y;
-        }
-
-        // Check if the ratios are equal
-        return v1.X / v2.X == v1.Y / v2.Y;
-    }
 }
