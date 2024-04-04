@@ -48,6 +48,9 @@ public class CollisionResolution
         // Translate bodies to resolve collision
         bodyA.Translate(-direction);
         bodyB.Translate(direction);
+
+        // Apply friction after collision
+        applyFriction(bodyA, bodyB, normal);
     }
 
     // Apply friction after collision
