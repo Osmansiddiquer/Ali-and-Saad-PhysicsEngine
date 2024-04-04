@@ -126,23 +126,17 @@ public class CollisionResolution
         // Calculate tangent vector
         Vector2 tangent = new Vector2(-normal.Y, normal.X);
 
-        // Calculate magnitude of friction
-        // If relative velocity parallel to tangent vector is zero we have static friction
-        float frictionCoefficient;
-        if (relativeVelocity.X == 0 && relativeVelocity.Y == 0)
-        {
-            frictionCoefficient = bodyA.Substance.StaticFriction * bodyB.Substance.StaticFriction;
-        }
-        else
-        {
-            frictionCoefficient = bodyA.Substance.DynamicFriction * bodyB.Substance.DynamicFriction;
-        }
+        // Calculate normal force
+        float normalForce = Vector2.Dot(relativeVelocity, tangent);
 
-        // Apply friction force to the bodies
-        bodyA.LinVelocity *= 1 - frictionCoefficient;
-        bodyB.LinVelocity *= 1 - frictionCoefficient;
+        float frictionCoefficient = bodyA.Substance.StaticFriction * bodyB.Substance.StaticFriction;
+        // Apply friction
+        Vector2 friction = Vector2.Normalize(tangent) * frictionCoefficient * normalForce;
 
-        System.Console.WriteLine("Friction applied");
+        bodyA.LinVelocity += friction;
+        bodyB.LinVelocity -= friction;
+
+        //System.Console.WriteLine("Friction applied");
     }
 }
 
