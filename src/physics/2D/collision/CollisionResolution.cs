@@ -11,10 +11,20 @@ public class CollisionResolution
         PhysicsBody2D bodyA = contact.BODY_A;
         PhysicsBody2D bodyB = contact.BODY_B;
 
+        if (bodyA.Name == "Projectile")
+        {
+            ProjectileBody2D projectile = (ProjectileBody2D)bodyA;
+            projectile.ProjectileHit(bodyB);
+            return;
+        } else if (bodyB.Name == "Projectile")
+        {
+            ProjectileBody2D projectile = (ProjectileBody2D)bodyB;
+            projectile.ProjectileHit(bodyA);
+            return;
+        }
+
         Vector2 normal = contact.NORMAL;
         float depth = contact.DEPTH;
-
-        //System.Console.WriteLine(normal);
 
         // Calculate relative velocity of the two bodies
         Vector2 relativeVelocity = bodyB.LinVelocity - bodyA.LinVelocity;
@@ -72,7 +82,6 @@ public class CollisionResolution
         bodyA.LinVelocity += friction;
         bodyB.LinVelocity -= friction;
 
-        //System.Console.WriteLine("Friction applied");
     }
 }
 

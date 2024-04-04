@@ -40,7 +40,9 @@ public class Scene : PhysicsWorld2D
         Draw();
         HandlePhysics(bodies);
 
-        if (bodies.Count > 2 ) { Console.WriteLine(bodies[2].LinVelocity); }
+        if (bodies.Count > 2 ) { 
+            //Console.WriteLine(bodies[2].LinVelocity);
+        }
     }
 
     // Draw
@@ -51,8 +53,8 @@ public class Scene : PhysicsWorld2D
             CreateStaticBody(new Vector2(640, 900), 0f, new Vector2(0.9f, 0.9f), 0.5f, 1280f, 120f, out StaticBody2D staticBody);
 
             staticBody.Name = "Ground";
-            staticBody.Substance.StaticFriction = 0.9f;
-            staticBody.Substance.DynamicFriction = 0.9f;
+            staticBody.Substance.StaticFriction = 0.5f;
+            staticBody.Substance.DynamicFriction = 0.5f;
 
             bodies.Add(staticBody);  
         }
@@ -63,8 +65,8 @@ public class Scene : PhysicsWorld2D
             CreateRigidBody(Raylib.GetMousePosition(), Vector2.One, 1f, 0.5f, 32f, out RigidBody2D rigidBody);
 
             rigidBody.Name = ("Circle " + bodies.Count);
-            rigidBody.Substance.StaticFriction = 0.9f;
-            rigidBody.Substance.DynamicFriction = 0.9f;
+            rigidBody.Substance.StaticFriction = 0.5f;
+            rigidBody.Substance.DynamicFriction = 0.5f;
 
             bodies.Add(rigidBody);
         }
@@ -73,6 +75,22 @@ public class Scene : PhysicsWorld2D
 
             // Create box rigid body
             CreateRigidBody(Raylib.GetMousePosition(), 0f, Vector2.One, 1f, 0.5f, 64f, 64f, out RigidBody2D rigidBody);    
+            bodies.Add(rigidBody);
+        } else if(Raylib.IsKeyPressed(KeyboardKey.Space)) {
+            int magnitude = 10;
+
+            Random rand = new Random();
+
+            // get a random direction which is a unit vector
+            Vector2 direction = new Vector2((float)rand.NextDouble(), (float)rand.NextDouble());
+            direction = Vector2.Normalize(direction);
+
+            Vector2 velocity = magnitude * direction;
+
+
+            // create a projectile body if you press spacebar
+            CreateProjectileBody(Raylib.GetMousePosition(), Vector2.One, 1f, 0.5f, 32f, velocity, bodies, out RigidBody2D rigidBody);
+
             bodies.Add(rigidBody);
         }
 

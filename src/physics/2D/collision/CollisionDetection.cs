@@ -124,7 +124,6 @@ public static class CollisionDetection
         // Correct normal based on direction
         normal = Vector2.Dot(direction, normal) < 0f ? -normal : normal;
 
-        //System.Console.WriteLine("Collision detected");
         // Collision detected
         return true;
     }
