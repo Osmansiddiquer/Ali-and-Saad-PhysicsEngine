@@ -66,22 +66,22 @@ public class CollisionResolution
     // Apply friction after collision
     private static void applyFriction(PhysicsBody2D bodyA, PhysicsBody2D bodyB, Vector2 normal)
     {
-        // Calculate relative velocity of the two bodies
+        Vector2 tangent = new Vector2(-normal.Y, normal.X);
         Vector2 relativeVelocity = bodyB.LinVelocity - bodyA.LinVelocity;
 
-        // Calculate tangent vector
-        Vector2 tangent = new Vector2(-normal.Y, normal.X);
+        // Calculate the friction impulse
+        float frictionImpulse = -Vector2.Dot(relativeVelocity, tangent)
+            / ((1f / bodyA.Substance.Mass) + (1f / bodyB.Substance.Mass));
 
-        // Calculate normal force
-        float normalForce = Vector2.Dot(relativeVelocity, tangent);
+        // Calculate friction coefficient
+        float friction = bodyA.Substance.StaticFriction * bodyB.Substance.StaticFriction;
 
-        float frictionCoefficient = bodyA.Substance.StaticFriction * bodyB.Substance.StaticFriction;
-        // Apply friction
-        Vector2 friction = Vector2.Normalize(tangent) * frictionCoefficient * normalForce;
+        // Calculate the friction force
+        Vector2 frictionForce = frictionImpulse * tangent * friction;
 
-        bodyA.LinVelocity += friction;
-        bodyB.LinVelocity -= friction;
-
+        // Apply friction force to update velocities
+        bodyA.LinVelocity -= frictionForce / bodyA.Substance.Mass;
+        bodyB.LinVelocity += frictionForce / bodyB.Substance.Mass;
     }
 }
 
