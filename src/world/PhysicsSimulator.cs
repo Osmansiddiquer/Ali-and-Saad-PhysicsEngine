@@ -69,7 +69,6 @@ internal class PhysicsSimulator
 
     private static void SeparateBodies(PhysicsBody2D bodyA, PhysicsBody2D bodyB, Vector2 direction)
     {
-        if (bodyA is StaticBody2D)
         if (bodyA is ProjectileBody2D || bodyB is ProjectileBody2D)
         {
             return;
