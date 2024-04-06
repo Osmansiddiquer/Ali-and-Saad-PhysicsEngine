@@ -8,7 +8,6 @@ namespace PhysicsEngine.src.world;
 internal class PhysicsSimulator
 {
     private static HashSet<(int, int)> contactPairs = new HashSet<(int, int)>();
-    private static Vector2 collisionNormal;
 
     internal static void HandlePhysics(List<PhysicsBody2D> bodies, double delta)
     {
@@ -90,11 +89,7 @@ internal class PhysicsSimulator
     {
         foreach (PhysicsBody2D body in bodies)
         {
-            if (body is RigidBody2D rigidBody)
-                rigidBody.RunComponents(delta);
-
-            body.ResetCollisionState();
-            body.UpdateCollisionState(collisionNormal);
+            body.RunComponents(delta);
         }
     }
 }
