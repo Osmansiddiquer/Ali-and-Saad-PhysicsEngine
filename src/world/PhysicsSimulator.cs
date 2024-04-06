@@ -7,28 +7,27 @@ namespace PhysicsEngine.src.world;
 
 internal class PhysicsSimulator
 {
-    private static readonly object lockObject = new object();
+    private static HashSet<(int, int)> contactPairs = new HashSet<(int, int)>();
     private static Vector2 collisionNormal;
 
     internal static void HandlePhysics(List<PhysicsBody2D> bodies, double delta)
     {
-        Parallel.For(0, 8, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
-            _ => {
-                HandleCollisions(bodies);
-                UpdateBodies(bodies, delta);
-            });
+        for (int it = 0; it < 8; it++)
+        {
+            HandleCollisions(bodies);
+            UpdateBodies(bodies, delta);
+        }
     }
 
     private static void HandleCollisions(List<PhysicsBody2D> bodies)
     {
-        HashSet<(int, int)> contactPairs = CollisionBroadPhase(bodies);
-        CollisionNarrowPhase(bodies, contactPairs);
+        contactPairs.Clear();
+        CollisionBroadPhase(bodies);
+        CollisionNarrowPhase(bodies);
     }
 
-    private static HashSet<(int, int)> CollisionBroadPhase(List<PhysicsBody2D> bodies)
+    private static void CollisionBroadPhase(List<PhysicsBody2D> bodies)
     {
-        HashSet<(int, int)> contactPairs = new HashSet<(int, int)>();
-
         for (int i = 0; i < bodies.Count; i++)
         {
             PhysicsBody2D bodyA = bodies[i];
@@ -38,17 +37,16 @@ internal class PhysicsSimulator
                 PhysicsBody2D bodyB = bodies[j];
 
                 if (CollisionDetection.AABBIntersection(bodyA.GetAABB(), bodyB.GetAABB()))
-                    lock (lockObject)
-                        contactPairs.Add((i, j));
+                    contactPairs.Add((i, j));
             }
         }
-
-        return contactPairs;
     }
 
-    private static void CollisionNarrowPhase(List<PhysicsBody2D> bodies, HashSet<(int, int)> contactPairs)
+    private static void CollisionNarrowPhase(List<PhysicsBody2D> bodies)
     {
-        Parallel.ForEach(contactPairs, pair => {
+
+        foreach ((int, int) pair in contactPairs)
+        {
             PhysicsBody2D bodyA = bodies[pair.Item1];
             PhysicsBody2D bodyB = bodies[pair.Item2];
 
@@ -62,21 +60,21 @@ internal class PhysicsSimulator
 
                 collisionNormal = normal;
 
-                lock (lockObject)
-                {
-                    CollisionResolution.ResolveCollisionAdvanced(in contact);
-                    SeparateBodies(bodyA, bodyB, normal * depth);
-                }
+                CollisionResolution.ResolveCollisionAdvanced(in contact);
+                SeparateBodies(bodyA, bodyB, normal * depth);
             }
-        });
+
+        }
     }
 
     private static void SeparateBodies(PhysicsBody2D bodyA, PhysicsBody2D bodyB, Vector2 direction)
     {
         if (bodyA is StaticBody2D)
             bodyB.Translate(direction);
+
         else if (bodyB is StaticBody2D)
             bodyA.Translate(-direction);
+
         else
         {
             bodyA.Translate(-direction / 2f);
@@ -86,14 +84,15 @@ internal class PhysicsSimulator
 
     private static void UpdateBodies(List<PhysicsBody2D> bodies, double delta)
     {
-        Parallel.ForEach(bodies, body =>
+        foreach (PhysicsBody2D body in bodies)
         {
             if (body is RigidBody2D rigidBody)
                 rigidBody.RunComponents(delta);
 
             body.ResetCollisionState();
             body.UpdateCollisionState(collisionNormal);
-        });
+        }
     }
 }
+
 
