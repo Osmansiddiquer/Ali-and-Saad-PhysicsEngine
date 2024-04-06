@@ -123,11 +123,11 @@ internal static class CollisionResolution
         for (int i = 0; i < contactCount; i++)
         {
             Vector2 impulse = impulseList[i];
-            Vector2 rA = rAList[i];
+            Vector2 ra = rAList[i];
             Vector2 rb = rBList[i];
 
             bodyA.LinVelocity -= impulse / bodyA.Substance.Mass;
-            bodyA.RotVelocity -= (Cross(rA, impulse) / bodyA.MomentOfInertia) * (180f / MathF.PI);
+            bodyA.RotVelocity -= (Cross(ra, impulse) / bodyA.MomentOfInertia) * (180f / MathF.PI);
 
             bodyB.LinVelocity += impulse / bodyB.Substance.Mass;
             bodyB.RotVelocity += (Cross(rb, impulse) / bodyB.MomentOfInertia) * (180f / MathF.PI);
@@ -141,11 +141,11 @@ internal static class CollisionResolution
             rAList[i] = rA;
             rBList[i] = rB;
 
-            Vector2 rAPerpendicular = new Vector2(-rA.Y, rA.X);
-            Vector2 rBPerpendicular = new Vector2(-rB.Y, rB.X);
+            Vector2 raPerp = new Vector2(-rA.Y, rA.X);
+            Vector2 rbPerp = new Vector2(-rB.Y, rB.X);
 
-            Vector2 angularLinearVelocityA = rAPerpendicular * bodyA.RotVelocity * MathF.PI / 180;
-            Vector2 angularLinearVelocityB = rBPerpendicular * bodyB.RotVelocity * MathF.PI / 180;
+            Vector2 angularLinearVelocityA = raPerp * bodyA.RotVelocity * MathF.PI / 180;
+            Vector2 angularLinearVelocityB = rbPerp * bodyB.RotVelocity * MathF.PI / 180;
 
             Vector2 relativeVelocity =
                 (bodyB.LinVelocity + angularLinearVelocityB) -
@@ -162,8 +162,8 @@ internal static class CollisionResolution
                 tangent = Vector2.Normalize(tangent);
             }
 
-            float raPerpDotT = Vector2.Dot(rAPerpendicular, tangent);
-            float rbPerpDotT = Vector2.Dot(rBPerpendicular, tangent);
+            float raPerpDotT = Vector2.Dot(raPerp, tangent);
+            float rbPerpDotT = Vector2.Dot(rbPerp, tangent);
 
             float denom = 1f / bodyA.Substance.Mass + 1f / bodyB.Substance.Mass +
                 (raPerpDotT * raPerpDotT) * 1f / bodyA.MomentOfInertia +
@@ -185,21 +185,28 @@ internal static class CollisionResolution
                 frictionImpulse = -j * tangent * (bodyA.Substance.DynamicFriction + bodyB.Substance.DynamicFriction) / 2;
             }
 
-        // Calculate tangent vector
-        Vector2 tangent = new Vector2(-normal.Y, normal.X);
+            frictionImpulseList[i] = frictionImpulse;
+        }
 
-        // Calculate normal force
-        float normalForce = Vector2.Dot(relativeVelocity, tangent);
+        for (int i = 0; i < contactCount; i++)
+        {
+            Vector2 frictionImpulse = frictionImpulseList[i];
+            Vector2 ra = rAList[i];
+            Vector2 rb = rBList[i];
 
-        float frictionCoefficient = bodyA.Substance.StaticFriction * bodyB.Substance.StaticFriction;
-        // Apply friction
-        Vector2 friction = Vector2.Normalize(tangent) * frictionCoefficient * normalForce;
+            bodyA.LinVelocity -= frictionImpulse / bodyA.Substance.Mass;
+            bodyA.RotVelocity -= Cross(ra, frictionImpulse) / bodyA.MomentOfInertia * (180f / MathF.PI);
 
-        bodyA.LinVelocity += friction;
-        bodyB.LinVelocity -= friction;
-
+            bodyB.LinVelocity += frictionImpulse / bodyB.Substance.Mass;
+            bodyB.RotVelocity += (Cross(rb, frictionImpulse) / bodyB.MomentOfInertia) * (180f / MathF.PI);
+        }
     }
 
+    public static float Cross(Vector2 a, Vector2 b)
+    {
+        // cz = ax * by − ay * bx
+        return a.X * b.Y - a.Y * b.X;
+    }
 
 }
 
