@@ -48,7 +48,17 @@ public class Scene : PhysicsWorld2D
         // Ensure bodies are created (call once or in Ready)
         if (bodies.Count == 0) { 
             CreateStaticBody(new Vector2(640, 900), 0f, new Vector2(0.9f, 0.9f), 0.5f, 1280f, 120f, out StaticBody2D staticBody);
-            bodies.Add(staticBody);  
+            bodies.Add(staticBody);
+
+            int[,] tileMap = new int[,]
+            {
+                {1, 1, 1, 1},
+                {1, 0, 0, 1},
+                {1, 0, 0, 1},
+                {1, 1, 1, 1}
+            };
+            // Use tilemap
+            TileMap.GenerateTileMap(tileMap, 4, bodies);
         }
 
         if (Raylib.IsMouseButtonPressed(MouseButton.Left)) {
@@ -65,6 +75,19 @@ public class Scene : PhysicsWorld2D
             bodies.Add(rigidBody);
 
         } 
+
+        else if(Raylib.IsKeyPressed(KeyboardKey.Space))
+        {
+            Random random = new Random();
+
+            float magnitude = 3;
+
+            Vector2 velocity = new Vector2(((float)random.NextDouble() * 2 - 1) * magnitude, ((float)random.NextDouble() * 2 - 1) * magnitude);
+
+            // Create projectile
+            CreateProjectileBody(Raylib.GetMousePosition(), Vector2.One, 1f, 0.5f, 16f, velocity * 0.2f, bodies, out RigidBody2D rigidBody);
+            bodies.Add(rigidBody);
+        }
 
         // Update and draw each body
         for (int i = 0; i < bodies.Count; i++) {
