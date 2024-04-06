@@ -56,6 +56,18 @@ internal static class CollisionResolution
         PhysicsBody2D bodyA = contact.BodyA;
         PhysicsBody2D bodyB = contact.BodyB;
 
+        // If either body is a projectile, handle projectile collision
+        if (bodyA is ProjectileBody2D projectileA)
+        {
+            projectileA.ProjectileHit(bodyB);
+            return;
+        }
+        else if (bodyB is ProjectileBody2D projectileB)
+        {
+            projectileB.ProjectileHit(bodyA);
+            return;
+        }
+
         Vector2 normal = contact.Normal;
 
         Vector2 contact1 = contact.ContactP1;

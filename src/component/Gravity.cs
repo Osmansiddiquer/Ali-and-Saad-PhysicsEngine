@@ -8,7 +8,7 @@ internal class Gravity : Component
     internal override void RunComponent(RigidBody2D body, double delta)
     {
         // Move body downwards if it is midair
-        if (!(body.Normal.Y == 1f)) { ApplyGravity(body); }
+        if (!(body.Normal.Y == 1f) || body is ProjectileBody2D) { ApplyGravity(body); }
     }
 
     // Calculate and apply gravitational acceleration
