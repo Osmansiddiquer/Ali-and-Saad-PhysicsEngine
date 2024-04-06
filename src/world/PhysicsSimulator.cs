@@ -57,8 +57,6 @@ internal class PhysicsSimulator
                 CollisionHelper.FindContactPoints(bodyA, bodyB, out Vector2 contactP1, out Vector2 contactP2, out int contactCount);
                 CollisionManifold contact = new CollisionManifold(bodyA, bodyB, normal, depth, contactP1, contactP2, contactCount);
 
-                collisionNormal = normal;
-
                 CollisionResolution.ResolveCollisionAdvanced(in contact);
                 SeparateBodies(bodyA, bodyB, normal * depth);
             }

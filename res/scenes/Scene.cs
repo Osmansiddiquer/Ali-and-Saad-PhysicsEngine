@@ -52,10 +52,10 @@ public class Scene : PhysicsWorld2D
 
             int[,] tileMap = new int[,]
             {
-                {1, 1, 1, 1},
-                {1, 0, 0, 1},
-                {1, 0, 0, 1},
-                {1, 1, 1, 1}
+                {1, 1, 1, 1, 1},
+                {1, 0, 0, 0, 1},
+                {1, 0, 0, 0, 1},
+                {1, 1, 1, 1, 1}
             };
             // Use tilemap
             TileMap.GenerateTileMap(tileMap, 4, bodies);
