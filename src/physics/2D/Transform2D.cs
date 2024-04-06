@@ -17,12 +17,12 @@ public class Transform2D
     }
 
     // Move object
-    public void Translate(Vector2 direction) { Position += direction; }
+    internal void Translate(Vector2 direction) { Position += direction; }
     
     // Rotate object
-    public void Rotate(float angle) { Rotation += angle; }
+    internal void Rotate(float angle) { Rotation += angle; }
 
     // Scale object
-    public void Scaling(Vector2 newScale) { Scale = newScale; }
+    internal void Scaling(Vector2 scale) { Scale *= scale; }
 
 }

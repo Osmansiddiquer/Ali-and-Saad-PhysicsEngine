@@ -6,18 +6,18 @@ namespace PhysicsEngine.src.physics._2D.collision;
 public class AxisAlignedBoundingBox
 {
     // Edges of box
-    public Vector2 Min { get; private set; }
-    public Vector2 Max { get; private set; }
+    internal readonly Vector2 Min;
+    internal readonly Vector2 Max;
 
     // Constructors
-    public AxisAlignedBoundingBox() { }
-    public AxisAlignedBoundingBox(Vector2 min, Vector2 max)
+    internal AxisAlignedBoundingBox() { }
+    internal AxisAlignedBoundingBox(Vector2 min, Vector2 max)
     {
         Min = min;
         Max = max;
     }
     
-    public AxisAlignedBoundingBox(float minX, float minY, float maxX, float maxY) 
+    internal AxisAlignedBoundingBox(float minX, float minY, float maxX, float maxY) 
     {
         Min = new Vector2(minX, minY);
         Max = new Vector2(maxX, maxY);

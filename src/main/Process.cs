@@ -1,9 +1,8 @@
 ﻿using PhysicsEngine.res.scenes;
 using PhysicsEngine.src.main;
 using Raylib_cs;
-using System.Numerics;
 
-public class Process
+internal class Process
 {
     // Define percentages for element positions and sizes
     private const float FPS_POSITION_X_PERCENTAGE = 0.9f;
@@ -12,7 +11,7 @@ public class Process
     private float fpsPositionX;
     private float fpsPositionY;
 
-    public void Start()
+    internal void Start()
     {
         Init(); // Initialize the program
         Loop(); // Process loop
@@ -62,7 +61,7 @@ public class Process
             //Raylib.BeginMode2D(camera);
 
             // Update the simulation program
-            Scene.Update((double)Raylib.GetFrameTime());
+            Scene.Update();
 
             Raylib.EndDrawing();
         }

@@ -1,25 +1,28 @@
-﻿namespace PhysicsEngine.src.physics._2D;
+﻿using PhysicsEngine.src.physics._2D.body;
+
+namespace PhysicsEngine.src.physics._2D;
 public class Substance2D
 {
     // Physicsal attributes for a rigidbody object
-    public float Mass { get; private set; }
-    public float Density { get; private set; }
-    public float Area { get; private set; }
-    public float Restitution { get; private set; }
-    public bool IsStatic { get; private set; }
+    public readonly float Mass;
+    public readonly float Density;
+    public readonly float Area;
+    public readonly float Restitution;
 
-    public float StaticFriction { get; set; }
-
-    public float DynamicFriction { get; set; }
+    public readonly float StaticFriction;
+    public readonly float DynamicFriction;
 
     // Constructor
     public Substance2D() { }
-    public Substance2D(float mass, float density, float area, float restitution, bool isStatic)
+    public Substance2D(float mass, float density, float area, float restitution)
     {
         Mass = mass;
         Density = density;
         Area = area;
         Restitution = restitution;
-        IsStatic = isStatic;
+
+        // Default friction values (testing)
+        StaticFriction = 0.5f;
+        DynamicFriction = 0.3f;
     }
 }

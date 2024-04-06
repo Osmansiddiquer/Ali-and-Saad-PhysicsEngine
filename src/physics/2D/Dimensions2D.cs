@@ -5,9 +5,9 @@ public class Dimensions2D
 {
 
     // Shape dimensions for a body
-    public float Radius { get; private set; }
-    public float Height { get; private set; }
-    public float Width  { get; private set; }
+    public readonly float Radius;
+    public readonly float Height;
+    public readonly float Width;
 
     public Dimensions2D() { }
     public Dimensions2D(float radius)

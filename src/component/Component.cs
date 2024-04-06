@@ -3,7 +3,7 @@
 namespace PhysicsEngine.src.components;
 public abstract class Component
 {
-    public virtual void RunComponent(RigidBody2D body)
+    internal virtual void RunComponent(RigidBody2D body)
     {
 
     }

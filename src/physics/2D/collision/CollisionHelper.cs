@@ -1,12 +1,11 @@
 ﻿using PhysicsEngine.src.physics._2D.body;
 using System.Numerics;
-using System.Reflection.Metadata.Ecma335;
 
 namespace PhysicsEngine.src.physics._2D.collision;
 
-public static class CollisionHelper
+internal static class CollisionHelper
 {
-    public static void ProjectCircle(Vector2 centerC, float radius, Vector2 axis, out float min, out float max)
+    internal static void ProjectCircle(Vector2 centerC, float radius, Vector2 axis, out float min, out float max)
     {
         /*
         Draw a diameter line perpendicular
@@ -34,7 +33,7 @@ public static class CollisionHelper
     }
 
     // Find vertex with minimum distance from circle center
-    public static int FindClosestPolygonVertex(Vector2 centerC, Vector2[] vertices)
+    internal static int FindClosestPolygonVertex(Vector2 centerC, Vector2[] vertices)
     {
         int index = -1;
         float min = float.MaxValue; // minimum distance
@@ -57,7 +56,7 @@ public static class CollisionHelper
     }
 
     // Project vertices on normal axis based on Seperating Axis Theorem
-    public static void ProjectVertices(Vector2[] vertices, Vector2 axis, out float min, out float max)
+    internal static void ProjectVertices(Vector2[] vertices, Vector2 axis, out float min, out float max)
     {
         // Minimum and maximum projection
         min = float.MaxValue;
@@ -142,7 +141,7 @@ public static class CollisionHelper
                         }
 
                         else if (MathF.Abs(distanceSquared - minDistanceSquared) < 0.0005f &&
-                            !(MathF.Abs(cp.X - cpoint1.X) < 0.0005f && MathF.Abs(cp.Y - cpoint1.Y) < 0.0005f))
+                            !(Vector2.DistanceSquared(cp, cpoint1) < 0.0005f * 0.0005f))
                         {
                             cpoint2 = cp;
                             ccount = 2;
@@ -220,38 +219,4 @@ public static class CollisionHelper
 
     }
 
-
-    public static void UpdateCollisionState(PhysicsBody2D body, List<PhysicsBody2D> bodies)
-    {
-        // Reset all collision-related properties to false initially
-        body.IsOnCeiling = false;
-        body.IsOnFloor = false;
-        body.IsOnWallL = false;
-        body.IsOnWallR = false;
-
-        body.Normal = Vector2.Zero;
-
-        // Set collision states based on the current position and velocity of the body
-        // You may need to adjust the conditions based on your specific requirements
-        foreach (PhysicsBody2D otherBody in bodies)
-        {
-            if (otherBody != body)
-            {
-                // Check if there is contact with the other body
-                Vector2 normal;
-                float depth;
-
-                if (CollisionDetection.CheckCollision(body, otherBody, out normal, out depth))
-                {
-                    body.IsOnCeiling = normal.Y < -0.5f;
-                    body.IsOnFloor = normal.Y > 0.5f;
-
-                    body.IsOnWallL = normal.X < -0.5f;
-                    body.IsOnWallR = normal.X > 0.5f;
-
-                    body.Normal = normal;
-                }
-            }
-        }
-    }
 }

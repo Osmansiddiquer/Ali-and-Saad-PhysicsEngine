@@ -1,6 +1,6 @@
 ﻿namespace PhysicsEngine.src.main;
 
-class MainClass
+internal class MainClass
 {
     public static void Main()
     {

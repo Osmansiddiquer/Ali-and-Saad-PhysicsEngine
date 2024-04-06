@@ -1,16 +1,12 @@
 ﻿using PhysicsEngine.src.physics._2D.body;
 using System.Numerics;
-using System.Runtime.ConstrainedExecution;
-
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
 
 namespace PhysicsEngine.src.physics._2D.collision;
 
-public static class CollisionDetection
+internal static class CollisionDetection
 {
     /* Collision check for AABBs */
-    public static bool AABBIntersection(AxisAlignedBoundingBox boxA, AxisAlignedBoundingBox boxB)
+    internal static bool AABBIntersection(AxisAlignedBoundingBox boxA, AxisAlignedBoundingBox boxB)
     {
         return !(boxA.Max.X <= boxB.Min.X || boxA.Min.X >= boxB.Max.X || boxA.Max.Y <= boxB.Min.Y || boxA.Min.Y >= boxB.Max.Y);
 
@@ -23,14 +19,14 @@ public static class CollisionDetection
         normal = Vector2.Zero;
         depth = float.MaxValue;
 
-        Vector2 centerC = Vector2.Zero;
-        float radius = 0;
+        Vector2 centerC;
+        float radius;
 
-        Vector2 centerP = Vector2.Zero;
-        Vector2[] vertices = null;
+        Vector2 centerP;
+        Vector2[] vertices;
 
-        Vector2 centerA = Vector2.Zero;
-        Vector2 centerB = Vector2.Zero;
+        Vector2 centerA;
+        Vector2 centerB;
 
         // Get vertices, radius and centers for shapes
         if (bodyA.Shape == bodyB.Shape) return false;

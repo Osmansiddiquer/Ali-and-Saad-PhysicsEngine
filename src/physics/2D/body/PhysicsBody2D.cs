@@ -1,7 +1,6 @@
 ﻿using PhysicsEngine.src.physics._2D.collision;
 using System.Numerics;
 
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
 #pragma warning disable CS8618 // Non nullable field must have non null value when exiting constructor.
 
 namespace PhysicsEngine.src.physics._2D.body;
@@ -11,55 +10,75 @@ public enum ShapeType
     Circle, Box
 }
 
-public class PhysicsBody2D 
+public abstract class PhysicsBody2D
 {
     public string Name;
+    public ShapeType Shape { get; protected set; }
+    public Transform2D Transform { get; protected set; }
+    public Dimensions2D Dimensions { get ; protected set; }
+    public Substance2D Substance { get; protected set; }
 
-    // Identifier for shape type
-    public ShapeType Shape;
+    protected Vector2[] Vertices;
+    protected Vector2[] TransformedVertices;
+    protected AxisAlignedBoundingBox AABB;
 
-    // Transformation, Dimensions and 
-    // Physical Properties for the body
-    public Transform2D Transform;
-    public Dimensions2D Dimensions;
-    public Substance2D Substance;
+    public bool VerticesUpdateRequired { get; internal set; }
+    public bool AABBUpdateRequired { get; internal set; }
 
-    // Velocity of the body
-    public Vector2 LinVelocity;
-    public float RotVelocity;
+    // Current collision state of object
+    private bool isOnFloor;
+    public bool IsOnFloor
+    {
+        get { return isOnFloor; }
+        internal set { isOnFloor = value; }
+    }
 
-    // Vertices (For collision handling)
-    protected Vector2[] vertices;
-    protected int[] triangles;
-    protected Vector2[] transformedVertices;
-    protected AxisAlignedBoundingBox aabb;
+    private bool isOnCeiling;
+    public bool IsOnCeiling
+    {
+        get { return isOnCeiling; }
+        internal set { isOnCeiling = value; }
+    }
 
-    public bool VerticesUpdateRequired;
-    public bool AABBUpdateRequired;
+    private bool isOnWallR;
+    public bool IsOnWallR
+    {
+        get { return isOnWallR; }
+        internal set { isOnWallR = value; }
+    }
 
-    public bool IsOnFloor;
-    public bool IsOnCeiling;
-    public bool IsOnWallR;
-    public bool IsOnWallL;
+    private bool isOnWallL;
+    public bool IsOnWallL
+    {
+        get { return isOnWallL; }
+        internal set { isOnWallL = value; }
+    }
 
-    public Vector2 Normal;
+    // Linear motion attributes
+    public Vector2 LinVelocity { get; internal set; }
+    public Vector2 Normal { get; internal set; }
 
-    // Constructor
+    // Rotational motion attributes
+    public float RotVelocity { get; internal set; }
+    public float MomentOfInertia { get; protected set; }
+
     public PhysicsBody2D(Vector2 position, float rotation, Vector2 scale)
     {
         Transform = new Transform2D(position, rotation, scale);
+        Dimensions = new Dimensions2D();
+        Substance = new Substance2D();
 
         VerticesUpdateRequired = true;
         AABBUpdateRequired = true;
     }
 
     // Calculate new position of vertices after transformation
-    public Vector2[] GetTransformedVertices()
+    internal Vector2[] GetTransformedVertices()
     {
         if (VerticesUpdateRequired)
         {
             Vector2 position = Transform.Position;
-            float rotation = Transform.Rotation * (float)MathF.PI / 180f;
+            float rotation = Transform.Rotation * MathF.PI / 180f;
             Vector2 scale = Transform.Scale;
 
             // Create separate matrices for individual transformations
@@ -71,18 +90,18 @@ public class PhysicsBody2D
             Matrix3x2 transformationMatrix = scalingMatrix * rotationMatrix * translationMatrix;
 
             // Update transformed vertices using the combined matrix n bn
-            for (int i = 0; i < vertices.Length; i++)
-                transformedVertices[i] = Vector2.Transform(vertices[i], transformationMatrix);
-            
+            for (int i = 0; i < Vertices.Length; i++)
+                TransformedVertices[i] = Vector2.Transform(Vertices[i], transformationMatrix);
         }
 
         VerticesUpdateRequired = false;
-        return transformedVertices;
+        return TransformedVertices;
     }
 
-    public AxisAlignedBoundingBox GetAABB()
+    internal AxisAlignedBoundingBox GetAABB()
     {
-        if (AABBUpdateRequired) {
+        if (AABBUpdateRequired)
+        {
             float minX = float.PositiveInfinity;
             float minY = float.PositiveInfinity;
 
@@ -117,49 +136,18 @@ public class PhysicsBody2D
                 default: throw new Exception("[ERROR]: Invalid ShapeType");
             }
 
-            aabb = new AxisAlignedBoundingBox(minX, minY, maxX, maxY);
+            AABB = new AxisAlignedBoundingBox(minX, minY, maxX, maxY);
         }
-        
+
         AABBUpdateRequired = false;
-        return aabb;
+        return AABB;
     }
 
     // Map the vertices to a box shape
     protected void MapVerticesBox()
     {
-        vertices = CreateVerticesBox(Dimensions.Width, Dimensions.Height);
-        transformedVertices = new Vector2[vertices.Length];
-
-        triangles = CreateTrianglesBox();
-    }
-
-    // Set vertices to null for circle shape
-    protected void MapVerticesCircle()
-    {
-
-        vertices = null;
-        transformedVertices = null;
-
-        triangles = null;
-    }
-
-    // Create triangles for the box shape
-    protected static int[] CreateTrianglesBox()
-    {
-        // A box has 2 triangles, so 6 points
-        int[] triangles = new int[6];
-
-        // Triangle 1
-        triangles[0] = 0;
-        triangles[1] = 1;
-        triangles[2] = 2;
-
-        // Trinagle 2
-        triangles[3] = 0;
-        triangles[4] = 2;
-        triangles[5] = 3;
-
-        return triangles;
+        Vertices = CreateVerticesBox(Dimensions.Width, Dimensions.Height);
+        TransformedVertices = new Vector2[Vertices.Length];
     }
 
     // Create vertices for the box shape
@@ -186,14 +174,12 @@ public class PhysicsBody2D
         return vertices;
     }
 
-    // Methods to be overriden
-    public virtual void RunComponents() { }
-    public virtual void ApplyForce(Vector2 amount) { }
-
+    // Methods to be overridden
+    internal virtual void RunComponents() { }
+    internal virtual void ApplyForce(Vector2 amount) { }
+    internal virtual void ProjectileHit(PhysicsBody2D body) { }
     public virtual void Translate(Vector2 amount) { }
-
     public virtual void Rotate(float angle) { }
-
-    public virtual void Scale(Vector2 amount) {  }
+    public virtual void Scale(Vector2 amount) { }
 }
 
