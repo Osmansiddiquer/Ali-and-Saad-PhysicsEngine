@@ -56,7 +56,7 @@ internal class Process
             }
 
             // Update the simulation program
-            Scene.Update(Raylib.GetFrameTime() / 64);
+            Scene.Update(Raylib.GetFrameTime() / 144);
 
             Raylib.EndDrawing();
         }

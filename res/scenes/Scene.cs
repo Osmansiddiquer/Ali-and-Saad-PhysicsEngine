@@ -51,10 +51,10 @@ public class Scene : PhysicsWorld2D
             bodies.Add(staticBody);  
         }
 
-        if (Raylib.IsMouseButtonDown(MouseButton.Left)) {
+        if (Raylib.IsMouseButtonPressed(MouseButton.Left)) {
             
             // Create circle rigid body
-            CreateRigidBody(Raylib.GetMousePosition(), Vector2.One, 1f, 0.5f, 12f, out RigidBody2D rigidBody);
+            CreateRigidBody(Raylib.GetMousePosition(), Vector2.One, 1f, 0.5f, 32f, out RigidBody2D rigidBody);
             bodies.Add(rigidBody);
             Console.WriteLine(bodies.Count);
         }

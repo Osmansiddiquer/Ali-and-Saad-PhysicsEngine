@@ -12,7 +12,7 @@ internal class PhysicsSimulator
 
     internal static void HandlePhysics(List<PhysicsBody2D> bodies, double delta)
     {
-        for (int it = 0; it < 8; it++)
+        for (int it = 0; it < 12; it++)
         {
             HandleCollisions(bodies);
             UpdateBodies(bodies, delta);
