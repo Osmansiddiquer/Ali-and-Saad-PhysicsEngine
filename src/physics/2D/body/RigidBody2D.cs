@@ -56,11 +56,11 @@ public class RigidBody2D : PhysicsBody2D
     }
 
     // Run the list of components
-    internal override void RunComponents()
+    internal override void RunComponents(double delta)
     {
         foreach (Component component in components)
         {
-            component.RunComponent(this);
+            component.RunComponent(this, delta);
         }
     }
 }

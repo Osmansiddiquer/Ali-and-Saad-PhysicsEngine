@@ -34,10 +34,10 @@ public class Scene : PhysicsWorld2D
     }
 
     // Update function (Runs on every frame)
-    public static void Update()
+    public static void Update(double delta)
     {
         Draw();
-        HandlePhysics(bodies);
+        HandlePhysics(bodies, delta);
 
         if (bodies.Count > 1) { }
     }
@@ -61,11 +61,12 @@ public class Scene : PhysicsWorld2D
             TileMap.GenerateTileMap(tileMap, 4, bodies);
         }
 
-        if (Raylib.IsMouseButtonPressed(MouseButton.Left)) {
+        if (Raylib.IsMouseButtonDown(MouseButton.Left)) {
             
             // Create circle rigid body
-            CreateRigidBody(Raylib.GetMousePosition(), Vector2.One, 1f, 0.5f, 32f, out RigidBody2D rigidBody);
+            CreateRigidBody(Raylib.GetMousePosition(), Vector2.One, 1f, 0.5f, 12f, out RigidBody2D rigidBody);
             bodies.Add(rigidBody);
+            Console.WriteLine(bodies.Count);
         }
 
         else if (Raylib.IsMouseButtonPressed(MouseButton.Right)) {

@@ -174,8 +174,31 @@ public abstract class PhysicsBody2D
         return vertices;
     }
 
+    internal void ResetCollisionState()
+    {
+        // Reset all collision-related properties to false initially
+        isOnCeiling = false;
+        isOnFloor = false;
+        isOnWallL = false;
+        isOnWallR = false;
+
+        Normal = Vector2.Zero;
+
+    }
+
+    internal void UpdateCollisionState(Vector2 normal)
+    {
+        isOnCeiling = normal.Y < -0.5f;
+        isOnFloor = normal.Y > 0.5f;
+
+        isOnWallL = normal.X < -0.5f;
+        isOnWallR = normal.X > 0.5f;
+
+        Normal = normal;
+    }
+
     // Methods to be overridden
-    internal virtual void RunComponents() { }
+    internal virtual void RunComponents(double delta) { }
     internal virtual void ApplyForce(Vector2 amount) { }
     internal virtual void ProjectileHit(PhysicsBody2D body) { }
     public virtual void Translate(Vector2 amount) { }

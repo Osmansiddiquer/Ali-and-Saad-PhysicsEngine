@@ -21,6 +21,6 @@ public class PhysicsWorld2D
     protected static void CreateProjectileBody(Vector2 position, Vector2 scale, float density, float restitution,
        float radius, Vector2 velocity, List<PhysicsBody2D> bodies, out RigidBody2D body2D) => BodyCreation.CreateProjectileBody(position, scale, density, restitution, radius, velocity, bodies, out body2D);
 
-    protected static void HandlePhysics(List<PhysicsBody2D> bodies) => PhysicsSimulator.HandlePhysics(bodies);
+    protected static void HandlePhysics(List<PhysicsBody2D> bodies, double delta) => PhysicsSimulator.HandlePhysics(bodies, delta);
 
 }
