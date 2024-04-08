@@ -1,11 +1,11 @@
 ﻿using Raylib_cs;
 
 namespace PhysicsEngine.src.physics;
-public class Input 
+public class InputMap 
 {
     private Dictionary<string, KeyboardKey> keyBindings;
 
-    internal Input() 
+    internal InputMap() 
     { 
         keyBindings = new Dictionary<string, KeyboardKey>();
 
