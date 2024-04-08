@@ -1,12 +1,12 @@
 ﻿using Raylib_cs;
 
-namespace PhysicsEngine.src.physics;
-public class InputMap 
+namespace GameEngine.src.input;
+public class InputMap
 {
     private Dictionary<string, KeyboardKey> keyBindings;
 
-    internal InputMap() 
-    { 
+    internal InputMap()
+    {
         keyBindings = new Dictionary<string, KeyboardKey>();
 
         // Default actions, can be modified later
@@ -32,7 +32,7 @@ public class InputMap
     {
         if (keyBindings.ContainsKey(action))
             keyBindings[action] = newKey;
-        
+
         else AssignKey(action, newKey);
     }
 
@@ -52,8 +52,8 @@ public class InputMap
     {
         if (keyBindings.ContainsKey(action))
             return keyBindings[action];
-        
-        else return KeyboardKey.Null; 
+
+        else return KeyboardKey.Null;
     }
 
 }

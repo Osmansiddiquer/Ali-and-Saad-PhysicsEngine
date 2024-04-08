@@ -1,8 +1,7 @@
-﻿
-using PhysicsEngine.src.physics._2D.body;
+﻿using GameEngine.src.physics.body;
 using System.Numerics;
 
-namespace PhysicsEngine.src.physics._2D.collision;
+namespace GameEngine.src.physics.collision;
 
 internal readonly struct CollisionManifold
 {

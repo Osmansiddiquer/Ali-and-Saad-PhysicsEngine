@@ -1,14 +1,14 @@
-﻿using PhysicsEngine.src.components;
-using PhysicsEngine.src.physics._2D.body;
+﻿using GameEngine.src.physics.component;
+using GameEngine.src.physics.body;
 using Raylib_cs;
 
 using System.Numerics;
 
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
 
-namespace PhysicsEngine.src.world;
+namespace GameEngine.src.world;
 
-internal class BodyCreation
+internal class WorldCreation
 {
     // Constraints
     private static readonly float MIN_BODY_SIZE = 0.01f * 0.01f;

@@ -1,5 +1,5 @@
-﻿using PhysicsEngine.res.scenes;
-using PhysicsEngine.src.main;
+﻿using GameEngine.res.scenes;
+using GameEngine.src.main;
 using Raylib_cs;
 
 internal class Process

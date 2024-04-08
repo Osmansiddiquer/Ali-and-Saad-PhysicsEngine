@@ -1,7 +1,7 @@
-﻿using PhysicsEngine.src.physics._2D.body;
+﻿using GameEngine.src.physics.body;
 using System.Numerics;
 
-namespace PhysicsEngine.src.components;
+namespace GameEngine.src.physics.component;
 internal class Motion : Component
 {
     internal override void RunComponent(RigidBody2D body, double delta)
@@ -20,7 +20,7 @@ internal class Motion : Component
         // Set linear velocity to zero if its magnitude is less than the threshold
         if (body.LinVelocity.Length() <= (float)delta)
             body.LinVelocity = Vector2.Zero;
-        
+
 
         // Update position based on linear velocity
         body.Translate(body.LinVelocity);

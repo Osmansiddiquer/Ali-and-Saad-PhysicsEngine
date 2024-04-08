@@ -1,12 +1,12 @@
-﻿using PhysicsEngine.src.physics._2D.body;
-using PhysicsEngine.src.main;
-using PhysicsEngine.src.world;
+﻿using GameEngine.src.main;
+using GameEngine.src.world;
 using Raylib_cs;
 using System.Numerics;
+using GameEngine.src.physics.body;
 
-namespace PhysicsEngine.res.scenes;
+namespace GameEngine.res.scenes;
 
-public class Scene : PhysicsWorld2D
+public class Scene : World2D
 {
     // Member variables
     private static List<PhysicsBody2D> bodies;

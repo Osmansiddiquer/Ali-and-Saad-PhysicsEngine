@@ -1,10 +1,9 @@
-﻿using PhysicsEngine.src.physics._2D.body;
-using Raylib_cs;
+﻿using GameEngine.src.physics.body;
 using System.Numerics;
 
-namespace PhysicsEngine.src.components;
+namespace GameEngine.src.physics.component;
 internal class Gravity : Component
-{  
+{
     internal override void RunComponent(RigidBody2D body, double delta)
     {
         // Move body downwards if it is midair

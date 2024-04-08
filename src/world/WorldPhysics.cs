@@ -1,10 +1,10 @@
-﻿using PhysicsEngine.src.physics._2D.body;
-using PhysicsEngine.src.physics._2D.collision;
-using System.Numerics;
+﻿using System.Numerics;
+using GameEngine.src.physics.body;
+using GameEngine.src.physics.collision;
 
-namespace PhysicsEngine.src.world;
+namespace GameEngine.src.world;
 
-internal class PhysicsSimulator
+internal class WorldPhysics
 {
     private static HashSet<(int, int)> contactPairs = new HashSet<(int, int)>();
 

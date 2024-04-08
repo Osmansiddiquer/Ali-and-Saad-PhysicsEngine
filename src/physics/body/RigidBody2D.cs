@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
-using PhysicsEngine.src.components;
+using GameEngine.src.physics.component;
 
-namespace PhysicsEngine.src.physics._2D.body;
+namespace GameEngine.src.physics.body;
 
 public class RigidBody2D : PhysicsBody2D
 {

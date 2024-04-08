@@ -1,7 +1,6 @@
-﻿using PhysicsEngine.src.physics._2D;
-using System.Numerics;
+﻿using System.Numerics;
 
-namespace PhysicsEngine.src.physics._2D.body;
+namespace GameEngine.src.physics.body;
 
 public class StaticBody2D : PhysicsBody2D
 {

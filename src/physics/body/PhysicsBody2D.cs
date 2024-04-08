@@ -1,9 +1,9 @@
-﻿using PhysicsEngine.src.physics._2D.collision;
+﻿using GameEngine.src.physics.collision;
 using System.Numerics;
 
 #pragma warning disable CS8618 // Non nullable field must have non null value when exiting constructor.
 
-namespace PhysicsEngine.src.physics._2D.body;
+namespace GameEngine.src.physics.body;
 
 public enum ShapeType
 {
