@@ -36,6 +36,16 @@ public class Input
         else AssignKey(action, newKey);
     }
 
+    // Removes an already assigned key for a specific action
+    // Does nothing if action does not exist
+    public void RemoveKey(string action)
+    {
+        if (keyBindings.ContainsKey(action))
+            keyBindings.Remove(action);
+
+        else return;
+    }
+
     // Method to get the key assigned to a specific action
     // Returns null if action does not exist
     public KeyboardKey GetKey(string action)
