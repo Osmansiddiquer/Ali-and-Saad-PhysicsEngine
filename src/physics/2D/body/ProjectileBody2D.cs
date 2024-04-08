@@ -12,7 +12,7 @@ public class ProjectileBody2D : RigidCircle2D
     {
         // Initialize the projectile
         this.bodies = bodies;
-        this.LinVelocity = velocity;
+        LinVelocity = velocity;
 
         // Make the projectile disappear after a certain amount of time
         System.Timers.Timer timer = new System.Timers.Timer(time);
@@ -29,9 +29,8 @@ public class ProjectileBody2D : RigidCircle2D
     {
         // Dont do anything if the projectile hits another projectile
         if (body is ProjectileBody2D)
-        {
             return;
-        }
+        
         // Projectile Logic Here
 
 
