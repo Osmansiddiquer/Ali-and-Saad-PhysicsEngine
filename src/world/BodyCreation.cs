@@ -22,7 +22,7 @@ internal class BodyCreation
     internal static void RenderPhysicsObject(PhysicsBody2D body, Color color)
     {
         // Get world transform and shape
-        Vector2 position = body.Transform.Position;
+        Vector2 position = body.Transform.Translation;
         float rotation = body.Transform.Rotation;
         Vector2 scale = body.Transform.Scale;
 

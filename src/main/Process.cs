@@ -37,7 +37,7 @@ internal class Process
     // Game loop
     private void Loop()
     {
-        while (!Raylib.WindowShouldClose())
+        for (; !Raylib.WindowShouldClose();)
         {
             
             Raylib.BeginDrawing();

@@ -1,6 +1,5 @@
 ﻿using PhysicsEngine.src.physics._2D.body;
 using PhysicsEngine.src.physics._2D.collision;
-using Raylib_cs;
 using System.Numerics;
 
 namespace PhysicsEngine.src.world;
@@ -37,6 +36,13 @@ internal class PhysicsSimulator
 
                 if (CollisionDetection.AABBIntersection(bodyA.GetAABB(), bodyB.GetAABB()))
                     contactPairs.Add((i, j));
+
+                else
+                {
+                    bodyA.ResetCollisionState();
+                    bodyB.ResetCollisionState();
+                }
+
             }
         }
     }
@@ -59,8 +65,9 @@ internal class PhysicsSimulator
 
                 CollisionResolution.ResolveCollisionAdvanced(in contact);
                 SeparateBodies(bodyA, bodyB, normal * depth);
-            }
 
+                UpdateCollisionState(bodyA, bodyB, normal);
+            }
         }
     }
 
@@ -83,11 +90,27 @@ internal class PhysicsSimulator
         }
     }
 
+    private static void UpdateCollisionState(PhysicsBody2D bodyA, PhysicsBody2D bodyB, Vector2 normal)
+    {
+        bodyA.IsOnCeiling = normal.Y < -0.5f;
+        bodyA.IsOnFloor = normal.Y > 0.5f;
+
+        bodyB.IsOnCeiling = bodyA.IsOnFloor;
+        bodyB.IsOnFloor = bodyA.IsOnCeiling;
+
+        bodyA.IsOnWallL = normal.X < -0.5f;
+        bodyA.IsOnWallR = normal.X > 0.5f;
+
+        bodyB.IsOnWallL = bodyA.IsOnWallR;
+        bodyB.IsOnWallR = bodyA.IsOnWallL;
+    }
+
     private static void UpdateBodies(List<PhysicsBody2D> bodies, double delta)
     {
         foreach (PhysicsBody2D body in bodies)
         {
-            body.RunComponents(delta);
+            if (body is RigidBody2D)
+                body.RunComponents(delta);
         }
     }
 }

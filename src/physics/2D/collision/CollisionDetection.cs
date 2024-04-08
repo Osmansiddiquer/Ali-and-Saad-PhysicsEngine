@@ -12,7 +12,7 @@ internal static class CollisionDetection
 
     }
 
-    /* Collisions using seperating axis theorem */
+    /* Collision check for Circles and Polygons */
     private static bool CircPolyCollision(PhysicsBody2D bodyA, PhysicsBody2D bodyB, out Vector2 normal, out float depth)
     {
         // Initializing variables for calculation
@@ -34,10 +34,10 @@ internal static class CollisionDetection
         {
             if (bodyA.Shape == ShapeType.Circle)
             {
-                centerC = bodyA.Transform.Position;
+                centerC = bodyA.Transform.Translation;
                 radius = bodyA.Dimensions.Radius;
 
-                centerP = bodyB.Transform.Position;
+                centerP = bodyB.Transform.Translation;
                 vertices = bodyB.GetTransformedVertices();
 
                 centerA = centerC;
@@ -46,10 +46,10 @@ internal static class CollisionDetection
 
             else
             {
-                centerC = bodyB.Transform.Position; 
+                centerC = bodyB.Transform.Translation; 
                 radius = bodyB.Dimensions.Radius;
 
-                centerP = bodyA.Transform.Position;
+                centerP = bodyA.Transform.Translation;
                 vertices = bodyA.GetTransformedVertices();
 
                 centerA = centerP;
@@ -124,6 +124,7 @@ internal static class CollisionDetection
         return true;
     }
 
+    /* Collision check for Polygons and Polygons */
     private static bool PolygonCollisions(PhysicsBody2D bodyA, PhysicsBody2D bodyB, out Vector2 normal, out float depth)
     {
         // Collision normal and depth
@@ -133,10 +134,10 @@ internal static class CollisionDetection
         if (bodyA.Shape == ShapeType.Circle || bodyB.Shape == ShapeType.Circle) return false;
 
         // Get vertices and centers for shapes
-        Vector2 centerA = bodyA.Transform.Position;
+        Vector2 centerA = bodyA.Transform.Translation;
         Vector2[] verticesA = bodyA.GetTransformedVertices();
 
-        Vector2 centerB = bodyB.Transform.Position;
+        Vector2 centerB = bodyB.Transform.Translation;
         Vector2[] verticesB = bodyB.GetTransformedVertices();
 
         // Polygon 1 
@@ -207,6 +208,7 @@ internal static class CollisionDetection
         return true;
     }
 
+    /* Collision check for Circles and Circles */
     private static bool CicrcleCollisions(PhysicsBody2D bodyA, PhysicsBody2D bodyB, out Vector2 normal, out float depth)
     {
         normal = Vector2.Zero;
@@ -215,10 +217,10 @@ internal static class CollisionDetection
         if (bodyA.Shape != ShapeType.Circle || bodyB.Shape != ShapeType.Circle) return false;
 
         // Get radii and center for shapes
-        Vector2 centerA = bodyA.Transform.Position;
+        Vector2 centerA = bodyA.Transform.Translation;
         float radiusA = bodyA.Dimensions.Radius;
         
-        Vector2 centerB = bodyB.Transform.Position;
+        Vector2 centerB = bodyB.Transform.Translation;
         float radiusB = bodyB.Dimensions.Radius;
 
 

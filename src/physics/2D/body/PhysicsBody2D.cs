@@ -14,18 +14,21 @@ public abstract class PhysicsBody2D
 {
     public string Name;
     public ShapeType Shape { get; protected set; }
+
+    // Physical properties of the body
     public Transform2D Transform { get; protected set; }
     public Dimensions2D Dimensions { get ; protected set; }
-    public Substance2D Substance { get; protected set; }
+    public Material2D Material { get; protected set; }
 
+    // Vertices and Bounding Boxes
     protected Vector2[] Vertices;
     protected Vector2[] TransformedVertices;
     protected AxisAlignedBoundingBox AABB;
 
-    public bool VerticesUpdateRequired { get; internal set; }
-    public bool AABBUpdateRequired { get; internal set; }
+    protected bool VerticesUpdateRequired;
+    protected bool AABBUpdateRequired;
 
-    // Current collision state of object
+    // Current collision state
     private bool isOnFloor;
     public bool IsOnFloor
     {
@@ -56,17 +59,16 @@ public abstract class PhysicsBody2D
 
     // Linear motion attributes
     public Vector2 LinVelocity { get; internal set; }
-    public Vector2 Normal { get; internal set; }
-
-    // Rotational motion attributes
     public float RotVelocity { get; internal set; }
     public float MomentOfInertia { get; protected set; }
 
+    // Constructor
     public PhysicsBody2D(Vector2 position, float rotation, Vector2 scale)
     {
+        // Initialize physical properties
         Transform = new Transform2D(position, rotation, scale);
         Dimensions = new Dimensions2D();
-        Substance = new Substance2D();
+        Material = new Material2D();
 
         VerticesUpdateRequired = true;
         AABBUpdateRequired = true;
@@ -77,7 +79,7 @@ public abstract class PhysicsBody2D
     {
         if (VerticesUpdateRequired)
         {
-            Vector2 position = Transform.Position;
+            Vector2 position = Transform.Translation;
             float rotation = Transform.Rotation * MathF.PI / 180f;
             Vector2 scale = Transform.Scale;
 
@@ -94,10 +96,11 @@ public abstract class PhysicsBody2D
                 TransformedVertices[i] = Vector2.Transform(Vertices[i], transformationMatrix);
         }
 
-        VerticesUpdateRequired = false;
+        VerticesUpdateRequired = false; // No further need to update vertices
         return TransformedVertices;
     }
 
+    // Calculate new AABB after transformation
     internal AxisAlignedBoundingBox GetAABB()
     {
         if (AABBUpdateRequired)
@@ -110,9 +113,11 @@ public abstract class PhysicsBody2D
 
             switch (Shape)
             {
+                // Calculate new min and max values for AABB
                 case ShapeType.Box:
                     Vector2[] vertices = GetTransformedVertices();
 
+                    // Find min and max position of edges using vertices
                     foreach (Vector2 vertex in vertices)
                     {
                         if (vertex.X < minX) minX = vertex.X;
@@ -124,12 +129,13 @@ public abstract class PhysicsBody2D
 
                     break;
 
+                // Find min and max position fo edges using radius
                 case ShapeType.Circle:
-                    minX = Transform.Position.X - Dimensions.Radius;
-                    minY = Transform.Position.Y - Dimensions.Radius;
+                    minX = Transform.Translation.X - Dimensions.Radius;
+                    minY = Transform.Translation.Y - Dimensions.Radius;
 
-                    maxX = Transform.Position.X + Dimensions.Radius;
-                    maxY = Transform.Position.Y + Dimensions.Radius;
+                    maxX = Transform.Translation.X + Dimensions.Radius;
+                    maxY = Transform.Translation.Y + Dimensions.Radius;
 
                     break;
 
@@ -139,7 +145,7 @@ public abstract class PhysicsBody2D
             AABB = new AxisAlignedBoundingBox(minX, minY, maxX, maxY);
         }
 
-        AABBUpdateRequired = false;
+        AABBUpdateRequired = false; // No further need to update AABB
         return AABB;
     }
 
@@ -176,33 +182,20 @@ public abstract class PhysicsBody2D
 
     internal void ResetCollisionState()
     {
-        // Reset all collision-related properties to false initially
+        // Reset all collision-related properties to false 
         isOnCeiling = false;
         isOnFloor = false;
         isOnWallL = false;
         isOnWallR = false;
-
-        Normal = Vector2.Zero;
-
-    }
-
-    internal void UpdateCollisionState(Vector2 normal)
-    {
-        isOnCeiling = normal.Y < -0.5f;
-        isOnFloor = normal.Y > 0.5f;
-
-        isOnWallL = normal.X < -0.5f;
-        isOnWallR = normal.X > 0.5f;
-
-        Normal = normal;
     }
 
     // Methods to be overridden
     internal virtual void RunComponents(double delta) { }
-    internal virtual void ApplyForce(Vector2 amount) { }
     internal virtual void ProjectileHit(PhysicsBody2D body) { }
-    public virtual void Translate(Vector2 amount) { }
+    
+    public virtual void Translate(Vector2 direction) { }
     public virtual void Rotate(float angle) { }
-    public virtual void Scale(Vector2 amount) { }
+    public virtual void Scale(Vector2 factor) { }
+    public virtual void ApplyForce(Vector2 amount) { }
 }
 

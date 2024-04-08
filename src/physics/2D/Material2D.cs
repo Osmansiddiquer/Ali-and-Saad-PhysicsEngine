@@ -1,7 +1,6 @@
-﻿using PhysicsEngine.src.physics._2D.body;
-
+﻿
 namespace PhysicsEngine.src.physics._2D;
-public class Substance2D
+public class Material2D
 {
     // Physicsal attributes for a rigidbody object
     public readonly float Mass;
@@ -13,8 +12,8 @@ public class Substance2D
     public readonly float DynamicFriction;
 
     // Constructor
-    public Substance2D() { }
-    public Substance2D(float mass, float density, float area, float restitution)
+    public Material2D() { }
+    public Material2D(float mass, float density, float area, float restitution)
     {
         Mass = mass;
         Density = density;

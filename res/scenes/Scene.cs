@@ -12,7 +12,6 @@ public class Scene : PhysicsWorld2D
     private static List<PhysicsBody2D> bodies;
     private static List<Color> colors;
 
-
     // Constructor for initialization
     static Scene()
     {
@@ -24,7 +23,6 @@ public class Scene : PhysicsWorld2D
         };
 
         bodies = new List<PhysicsBody2D>();
-       
     }
 
     // Ready function (Runs on first frame)
@@ -33,13 +31,28 @@ public class Scene : PhysicsWorld2D
         Properties.DisplayFPS = true;
     }
 
-    // Update function (Runs on every frame)
     public static void Update(double delta)
     {
-        Draw();
-        HandlePhysics(bodies, delta);
+        // Create a camera centered at the middle of the screen
+        Camera2D camera = new Camera2D(Vector2.Zero, Vector2.Zero, 0, 1f);
 
-        if (bodies.Count > 1) { }
+        if (bodies.Count > 1)
+        {
+            camera.Target = bodies[1].Transform.Translation;
+            camera.Offset = new Vector2(640, 480);
+        }
+
+        // Begin 2D mode with the camera
+        Raylib.BeginMode2D(camera);
+
+        // Draw
+        Draw();
+
+        // End 2D mode
+        Raylib.EndMode2D();
+
+        // Handle physics outside the 2D mode
+        HandlePhysics(bodies, delta);
     }
 
     // Draw
@@ -47,18 +60,18 @@ public class Scene : PhysicsWorld2D
     {
         // Ensure bodies are created (call once or in Ready)
         if (bodies.Count == 0) { 
-            CreateStaticBody(new Vector2(640, 900), 0f, new Vector2(0.9f, 0.9f), 0.5f, 1280f, 120f, out StaticBody2D staticBody);
+            CreateStaticBody(new Vector2(640, 900), 2f, new Vector2(0.9f, 0.9f), 0.5f, 1280f, 120f, out StaticBody2D staticBody);
             bodies.Add(staticBody);
 
-            int[,] tileMap = new int[,]
-            {
-                {1, 1, 1, 1, 1},
-                {1, 0, 0, 0, 1},
-                {1, 0, 0, 0, 1},
-                {1, 1, 1, 1, 1}
-            };
-            // Use tilemap
-            TileMap.GenerateTileMap(tileMap, 4, bodies);
+            //int[,] tileMap = new int[,]
+            //{
+            //    {1, 1, 1, 1, 1},
+            //    {1, 0, 0, 0, 1},
+            //    {1, 0, 0, 0, 1},
+            //    {1, 1, 1, 1, 1}
+            //};
+            //// Use tilemap
+            //TileMap.GenerateTileMap(tileMap, 4, bodies);
         }
 
         if (Raylib.IsMouseButtonPressed(MouseButton.Left)) {
@@ -66,7 +79,6 @@ public class Scene : PhysicsWorld2D
             // Create circle rigid body
             CreateRigidBody(Raylib.GetMousePosition(), Vector2.One, 1f, 0.5f, 32f, out RigidBody2D rigidBody);
             bodies.Add(rigidBody);
-            Console.WriteLine(bodies.Count);
         }
 
         else if (Raylib.IsMouseButtonPressed(MouseButton.Right)) {
