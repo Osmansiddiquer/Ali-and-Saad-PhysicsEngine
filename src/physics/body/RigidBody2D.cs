@@ -53,6 +53,16 @@ public class RigidBody2D : PhysicsBody2D
         Force = amount;
     }
 
+    // Add or remove components 
+    public void AddComponent(Component component) { components.Add(component); }
+    public void DelComponent(Component component) 
+    {
+        if (components.Contains(component))
+            components.Remove(component);
+
+        else Console.WriteLine("[WARN]: Components list does not contain " + component.ToString());
+    }
+
     // Run the list of components
     internal override void RunComponents(double delta)
     {

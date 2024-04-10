@@ -2,7 +2,7 @@
 using System.Numerics;
 
 namespace GameEngine.src.physics.component;
-internal class Motion : Component
+public class Motion : Component
 {
     internal override void RunComponent(RigidBody2D body, double delta)
     {

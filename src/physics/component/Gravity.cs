@@ -2,7 +2,7 @@
 using System.Numerics;
 
 namespace GameEngine.src.physics.component;
-internal class Gravity : Component
+public class Gravity : Component
 {
     internal override void RunComponent(RigidBody2D body, double delta)
     {
