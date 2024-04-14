@@ -49,25 +49,32 @@ internal class WorldPhysics
 
     private static void CollisionNarrowPhase(List<PhysicsBody2D> bodies)
     {
-
-        foreach ((int, int) pair in contactPairs)
+        // Sometimes a projectile body might be destroyed in the middle of the loop, so we need to handle the exception
+        try
         {
-            PhysicsBody2D bodyA = bodies[pair.Item1];
-            PhysicsBody2D bodyB = bodies[pair.Item2];
-
-            Vector2 normal;
-            float depth;
-
-            if (CollisionDetection.CheckCollision(bodyA, bodyB, out normal, out depth))
+            foreach ((int, int) pair in contactPairs)
             {
-                CollisionHelper.FindContactPoints(bodyA, bodyB, out Vector2 contactP1, out Vector2 contactP2, out int contactCount);
-                CollisionManifold contact = new CollisionManifold(bodyA, bodyB, normal, depth, contactP1, contactP2, contactCount);
+                PhysicsBody2D bodyA = bodies[pair.Item1];
+                PhysicsBody2D bodyB = bodies[pair.Item2];
 
-                CollisionResolution.ResolveCollisionAdvanced(in contact);
-                SeparateBodies(bodyA, bodyB, normal * depth);
+                Vector2 normal;
+                float depth;
 
-                UpdateCollisionState(bodyA, bodyB, normal);
+                if (CollisionDetection.CheckCollision(bodyA, bodyB, out normal, out depth))
+                {
+                    CollisionHelper.FindContactPoints(bodyA, bodyB, out Vector2 contactP1, out Vector2 contactP2, out int contactCount);
+                    CollisionManifold contact = new CollisionManifold(bodyA, bodyB, normal, depth, contactP1, contactP2, contactCount);
+
+                    CollisionResolution.ResolveCollisionAdvanced(in contact);
+                    SeparateBodies(bodyA, bodyB, normal * depth);
+
+                    UpdateCollisionState(bodyA, bodyB, normal);
+                }
             }
+        }
+        catch (System.Exception e)
+        {
+            Console.WriteLine(e.Message);
         }
     }
 

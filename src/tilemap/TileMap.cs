@@ -1,5 +1,7 @@
-﻿using PhysicsEngine.src.physics._2D.body;
+﻿using GameEngine.src.physics.body;
 using System.Numerics;
+using Raylib_cs;
+using GameEngine.src.world;
 
 namespace GameEngine.src.tilemap;
 
@@ -105,8 +107,11 @@ internal static class TileMap
         {
             for (int j = 0; j < backGround.GetLength(1); j++)
             {
-                Rectangle sourceRec = new Rectangle(0, 0, 60, 60);
-                Raylib.DrawTextureRec(backGround[i, j], sourceRec, new Vector2(i * 60, j * 60), Color.White);
+                Rectangle sourceRec = new Rectangle(0, 0, 48, 48);
+                Rectangle destRec = new Rectangle(i * 60, j * 60, 60, 60);
+                // Raylib.DrawTextureRec(backGround[i, j], sourceRec, new Vector2(i * 60, j * 60), Color.White);
+
+                Raylib.DrawTexturePro(backGround[i, j], sourceRec, destRec, new Vector2(0, 0), 0, Color.White);
             }
         }
     }
