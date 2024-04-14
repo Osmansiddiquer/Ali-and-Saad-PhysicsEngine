@@ -1,4 +1,4 @@
-﻿namespace PhysicsEngine.src.main;
+﻿namespace GameEngine.src.main;
 
 internal class MainClass
 {

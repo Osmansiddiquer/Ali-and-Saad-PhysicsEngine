@@ -1,5 +1,5 @@
-﻿using PhysicsEngine.res.scenes;
-using PhysicsEngine.src.main;
+﻿using GameEngine.res.scenes;
+using GameEngine.src.main;
 using Raylib_cs;
 
 internal class Process
@@ -37,7 +37,7 @@ internal class Process
     // Game loop
     private void Loop()
     {
-        while (!Raylib.WindowShouldClose())
+        for (; !Raylib.WindowShouldClose();)
         {
             
             Raylib.BeginDrawing();
@@ -56,7 +56,7 @@ internal class Process
             }
 
             // Update the simulation program
-            Scene.Update(Raylib.GetFrameTime() / 64);
+            Scene.Update(Raylib.GetFrameTime() / 144);
 
             Raylib.EndDrawing();
         }

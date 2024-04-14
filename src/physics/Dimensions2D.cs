@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace PhysicsEngine.src.physics._2D;
+namespace GameEngine.src.physics;
 public class Dimensions2D
 {
 

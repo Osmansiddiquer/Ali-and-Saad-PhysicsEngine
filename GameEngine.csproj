@@ -9,9 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="src\physics\2D\body\Projectile\**" />
-    <EmbeddedResource Remove="src\physics\2D\body\Projectile\**" />
-    <None Remove="src\physics\2D\body\Projectile\**" />
+    <Compile Remove="src\physics\body\Projectile\**" />
+    <EmbeddedResource Remove="src\physics\body\Projectile\**" />
+    <None Remove="src\physics\body\Projectile\**" />
   </ItemGroup>
 
   <ItemGroup>

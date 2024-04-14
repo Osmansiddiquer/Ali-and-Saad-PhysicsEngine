@@ -1,7 +1,7 @@
-﻿using PhysicsEngine.src.physics._2D.body;
+﻿using GameEngine.src.physics.body;
 using System.Numerics;
 
-namespace PhysicsEngine.src.physics._2D.collision;
+namespace GameEngine.src.physics.collision;
 
 internal static class CollisionHelper
 {
@@ -73,33 +73,46 @@ internal static class CollisionHelper
         }
     }
 
+    // Calculates squared distance between a point p and a line segment defined by two points a and b
     private static void PointSegmentDistance(Vector2 p, Vector2 a, Vector2 b, out float distanceSquared, out Vector2 contact)
     {
+        // Vector from a to b
         Vector2 ab = b - a;
+        // Vector from a to p
         Vector2 ap = p - a;
 
+        // Projection of ap onto ab
         float projection = Vector2.Dot(ab, ap);
+
+        // Normalized distance from a to the projection of p onto ab
         float d = projection / Vector2.DistanceSquared(ab, Vector2.Zero);
 
+        // If the projection is before the start of the segment, the closest point is a
         if (d <= 0f)
             contact = a;
+
+        // If the projection is beyond the end of the segment, the closest point is b
         else if (d >= 1f)
             contact = b;
-        else 
+
+        // Otherwise, calculate the closest point using the projection
+        else
             contact = a + ab * d;
 
+        // Squared distance between p and the closest point
         distanceSquared = Vector2.DistanceSquared(p, contact);
     }
 
-    // Find contact points on polygon / circle
+    // This method finds contact points between two physics bodies
     public static void FindContactPoints(PhysicsBody2D bodyA, PhysicsBody2D bodyB, out Vector2 cpoint1, out Vector2 cpoint2, out int ccount)
     {
         cpoint1 = Vector2.Zero;
         cpoint2 = Vector2.Zero;
         ccount = 0;
 
-        Vector2 centerA = bodyA.Transform.Position;
-        Vector2 centerB = bodyB.Transform.Position;
+        // Centers of the two bodies
+        Vector2 centerA = bodyA.Transform.Translation;
+        Vector2 centerB = bodyB.Transform.Translation;
 
         if (bodyA.Shape == bodyB.Shape)
         {
@@ -108,38 +121,44 @@ internal static class CollisionHelper
             {
                 float radius = bodyA.Dimensions.Radius;
 
+                // Calculate the contact point on body A
                 Vector2 direction = Vector2.Normalize(centerB - centerA);
                 cpoint1 = centerA + direction * radius;
 
-                ccount = 1;
+                ccount = 1; 
             }
 
-            // Box - Box
-            else
+            // Polygon - Polygon
+            else 
             {
+                // Vertices of both polygons
                 Vector2[] verticesA = bodyA.GetTransformedVertices();
                 Vector2[] verticesB = bodyB.GetTransformedVertices();
 
                 float minDistanceSquared = float.MaxValue;
 
+                // Loop through all vertices of body A
                 for (int i = 0; i < verticesA.Length; i++)
                 {
                     Vector2 point = verticesA[i];
 
+                    // Loop through all edges of body B
                     for (int j = 0; j < verticesB.Length; j++)
                     {
                         Vector2 vertexA = verticesB[j];
                         Vector2 vertexB = verticesB[(j + 1) % verticesB.Length];
 
+                        // Calculate the closest point and squared distance between point and edge
                         PointSegmentDistance(point, vertexA, vertexB, out float distanceSquared, out Vector2 cp);
 
+                        // Update the closest contact point
                         if (distanceSquared < minDistanceSquared)
                         {
                             minDistanceSquared = distanceSquared;
                             cpoint1 = cp;
                             ccount = 1;
                         }
-
+                        // Check if the distance is approximately equal to the minimum distance and update the second contact point
                         else if (MathF.Abs(distanceSquared - minDistanceSquared) < 0.0005f &&
                             !(Vector2.DistanceSquared(cp, cpoint1) < 0.0005f * 0.0005f))
                         {
@@ -149,6 +168,7 @@ internal static class CollisionHelper
                     }
                 }
 
+                // Same process for body B vertices
                 for (int i = 0; i < verticesB.Length; i++)
                 {
                     Vector2 point = verticesB[i];
@@ -166,7 +186,6 @@ internal static class CollisionHelper
                             cpoint1 = cp;
                             ccount = 1;
                         }
-
                         else if (MathF.Abs(distanceSquared - minDistanceSquared) < 0.0005f &&
                             !(MathF.Abs(cp.X - cpoint1.X) < 0.0005f && MathF.Abs(cp.Y - cpoint1.Y) < 0.0005f))
                         {
@@ -176,11 +195,10 @@ internal static class CollisionHelper
                     }
                 }
             }
-
         }
 
-        // Box - Circle / Circle - Box
-        else
+        // Circle - Polygon
+        else 
         {
             Vector2 centerC;
             Vector2[] vertices;
@@ -190,7 +208,6 @@ internal static class CollisionHelper
                 centerC = centerA;
                 vertices = bodyB.GetTransformedVertices();
             }
-
             else
             {
                 centerC = centerB;
@@ -199,15 +216,16 @@ internal static class CollisionHelper
 
             float minDistanceSquared = float.MaxValue;
 
+            // Loop through all edges of the polygon
             for (int i = 0; i < vertices.Length; i++)
             {
                 Vector2 vertexA = vertices[i];
                 Vector2 vertexB = vertices[(i + 1) % vertices.Length];
 
-                // Passes out a candidate for the contact point
+                // Calculate the closest point on the edge to the circle's center
                 PointSegmentDistance(centerC, vertexA, vertexB, out float distanceSquared, out Vector2 cp);
 
-                // Choose cp with min distance as our contact point
+                // Update the closest contact point
                 if (distanceSquared < minDistanceSquared)
                 {
                     minDistanceSquared = distanceSquared;
@@ -216,7 +234,7 @@ internal static class CollisionHelper
                 }
             }
         }
-
     }
+
 
 }

@@ -1,11 +1,11 @@
 ﻿using System.Numerics;
 
-namespace PhysicsEngine.src.physics._2D.collision;
+namespace GameEngine.src.physics.collision;
 
 // Create a box boundary around a shape
 public class AxisAlignedBoundingBox
 {
-    // Edges of box
+    // Min and Max edges of box
     internal readonly Vector2 Min;
     internal readonly Vector2 Max;
 

@@ -1,4 +1,4 @@
-﻿namespace PhysicsEngine.src.main;
+﻿namespace GameEngine.src.main;
 public struct Properties
 {
     public static int ScreenWidth = 1280;

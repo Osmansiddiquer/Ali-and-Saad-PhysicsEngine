@@ -1,18 +1,16 @@
-﻿using PhysicsEngine.src.physics._2D.body;
-using PhysicsEngine.src.physics._2D.collision;
-using Raylib_cs;
-using System.Numerics;
+﻿using System.Numerics;
+using GameEngine.src.physics.body;
+using GameEngine.src.physics.collision;
 
-namespace PhysicsEngine.src.world;
+namespace GameEngine.src.world;
 
-internal class PhysicsSimulator
+internal class WorldPhysics
 {
     private static HashSet<(int, int)> contactPairs = new HashSet<(int, int)>();
-    private static Vector2 collisionNormal;
 
     internal static void HandlePhysics(List<PhysicsBody2D> bodies, double delta)
     {
-        for (int it = 0; it < 8; it++)
+        for (int it = 0; it < 12; it++)
         {
             HandleCollisions(bodies);
             UpdateBodies(bodies, delta);
@@ -38,6 +36,13 @@ internal class PhysicsSimulator
 
                 if (CollisionDetection.AABBIntersection(bodyA.GetAABB(), bodyB.GetAABB()))
                     contactPairs.Add((i, j));
+
+                else
+                {
+                    bodyA.ResetCollisionState();
+                    bodyB.ResetCollisionState();
+                }
+
             }
         }
     }
@@ -58,12 +63,11 @@ internal class PhysicsSimulator
                 CollisionHelper.FindContactPoints(bodyA, bodyB, out Vector2 contactP1, out Vector2 contactP2, out int contactCount);
                 CollisionManifold contact = new CollisionManifold(bodyA, bodyB, normal, depth, contactP1, contactP2, contactCount);
 
-                collisionNormal = normal;
-
                 CollisionResolution.ResolveCollisionAdvanced(in contact);
                 SeparateBodies(bodyA, bodyB, normal * depth);
-            }
 
+                UpdateCollisionState(bodyA, bodyB, normal);
+            }
         }
     }
 
@@ -86,15 +90,27 @@ internal class PhysicsSimulator
         }
     }
 
+    private static void UpdateCollisionState(PhysicsBody2D bodyA, PhysicsBody2D bodyB, Vector2 normal)
+    {
+        bodyA.IsOnCeiling = normal.Y < -0.5f;
+        bodyA.IsOnFloor = normal.Y > 0.5f;
+
+        bodyB.IsOnCeiling = bodyA.IsOnFloor;
+        bodyB.IsOnFloor = bodyA.IsOnCeiling;
+
+        bodyA.IsOnWallL = normal.X < -0.5f;
+        bodyA.IsOnWallR = normal.X > 0.5f;
+
+        bodyB.IsOnWallL = bodyA.IsOnWallR;
+        bodyB.IsOnWallR = bodyA.IsOnWallL;
+    }
+
     private static void UpdateBodies(List<PhysicsBody2D> bodies, double delta)
     {
         foreach (PhysicsBody2D body in bodies)
         {
-            if (body is RigidBody2D rigidBody)
-                rigidBody.RunComponents(delta);
-
-            body.ResetCollisionState();
-            body.UpdateCollisionState(collisionNormal);
+            if (body is RigidBody2D)
+                body.RunComponents(delta);
         }
     }
 }

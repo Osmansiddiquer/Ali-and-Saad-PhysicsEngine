@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
-using PhysicsEngine.src.components;
+using GameEngine.src.physics.component;
 
-namespace PhysicsEngine.src.physics._2D.body;
+namespace GameEngine.src.physics.body;
 
 public class RigidBody2D : PhysicsBody2D
 {
@@ -13,25 +13,23 @@ public class RigidBody2D : PhysicsBody2D
     internal RigidBody2D(Vector2 position, float rotation, Vector2 scale, float mass, float density, float area,
         float restitution, ShapeType shape, List<Component> components) : base(position, rotation, scale)
     {
-        Substance = new Substance2D(mass, density, area, restitution);
-
+        // Create the material for the body
+        Material = new Material2D(mass, density, area, restitution);
         Shape = shape;
 
+        // Initialize velocity and force
         LinVelocity = Vector2.Zero;
         RotVelocity = 0f;
-
         Force = Vector2.Zero;
 
+        // Get components list 
         this.components = components;
-
-        VerticesUpdateRequired = true;
-        AABBUpdateRequired = true;
     }
 
     // Self explanatory 
-    public override void Translate(Vector2 amount)
+    public override void Translate(Vector2 direction)
     {
-        Transform.Translate(amount);
+        Transform.Translate(direction);
         VerticesUpdateRequired = true;
         AABBUpdateRequired = true;
     }
@@ -43,16 +41,26 @@ public class RigidBody2D : PhysicsBody2D
         AABBUpdateRequired = true;
     }
 
-    public override void Scale(Vector2 amount)
+    public override void Scale(Vector2 factor)
     {
-        Transform.Scaling(amount);
+        Transform.Scaling(factor);
         VerticesUpdateRequired = true;
         AABBUpdateRequired = true;
     }
 
-    internal override void ApplyForce(Vector2 amount)
+    public override void ApplyForce(Vector2 amount)
     {
         Force = amount;
+    }
+
+    // Add or remove components 
+    public void AddComponent(Component component) { components.Add(component); }
+    public void DelComponent(Component component) 
+    {
+        if (components.Contains(component))
+            components.Remove(component);
+
+        else Console.WriteLine("[WARN]: Components list does not contain " + component.ToString());
     }
 
     // Run the list of components
@@ -72,6 +80,7 @@ public class RigidBox2D : RigidBody2D
         float width, float height, List<Component> components) : base(position, rotation, scale, mass, density,
             area, restitution, ShapeType.Box, components)
     {
+        // Initialize dimensions and vertices
         Dimensions = new Dimensions2D(new Vector2(width, height) * scale);
         MapVerticesBox();
 
@@ -87,6 +96,7 @@ public class RigidCircle2D : RigidBody2D
     internal RigidCircle2D(Vector2 position, Vector2 scale, float mass, float density, float area, float restitution,
         float radius, List<Component> components) : base(position, 0f, scale, mass, density, area, restitution, ShapeType.Circle, components)
     {
+        // Initialize dimensions
         Dimensions = new Dimensions2D(radius * Vector2.Distance(Vector2.Zero, scale));
 
         // I = m/2 * r^2

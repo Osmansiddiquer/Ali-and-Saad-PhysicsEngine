@@ -1,20 +1,19 @@
-﻿using PhysicsEngine.src.physics._2D.body;
-using Raylib_cs;
+﻿using GameEngine.src.physics.body;
 using System.Numerics;
 
-namespace PhysicsEngine.src.components;
-internal class Gravity : Component
-{  
+namespace GameEngine.src.physics.component;
+public class Gravity : Component
+{
     internal override void RunComponent(RigidBody2D body, double delta)
     {
         // Move body downwards if it is midair
-        if (!(body.Normal.Y == 1f) || body is ProjectileBody2D) { ApplyGravity(body); }
+        ApplyGravity(body);
     }
 
     // Calculate and apply gravitational acceleration
     private void ApplyGravity(RigidBody2D body)
     {
-        Vector2 gravity = new Vector2(0, 9.81f * body.Substance.Mass);
+        Vector2 gravity = new Vector2(0, 9.81f * body.Material.Mass);
         body.ApplyForce(gravity);
     }
 }
