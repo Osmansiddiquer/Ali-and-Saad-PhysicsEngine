@@ -1,4 +1,5 @@
 ﻿using PhysicsEngine.src.physics._2D.body;
+using Raylib_cs;
 using System.Numerics;
 
 namespace PhysicsEngine.src.world;
@@ -66,6 +67,48 @@ internal static class TileMap
             float width = ((box.right - box.left) + 1) * size;
             BodyCreation.CreateStaticBody(position, 0f, new Vector2(1, 1), 0.5f, width, size, out StaticBody2D staticBody);
             bodies.Add(staticBody);
+        }
+    }
+
+    public static Texture2D[,] GenerateBackground(int[,] textureMap)
+    {
+        Texture2D[,] backGround = new Texture2D[textureMap.GetLength(0), textureMap.GetLength(1)];
+        for (int i = 0; i < textureMap.GetLength(0); i++)
+        {
+            for (int j = 0; j < textureMap.GetLength(1); j++)
+            {
+                //try
+                //{
+                //    backGround[i, j] = Raylib.LoadTexture($"C:/Users/saadk/Desktop/NUST/Semester 2/Object Oriented Programming/End Semester Project/Physics Engine/res/scenes/background{textureMap[i, j]}.png");
+                //} catch (Exception e)
+                //{
+                //    Console.WriteLine("hello!");
+                //    backGround[i, j] = Raylib.LoadTexture($"C:/Users/saadk/Desktop/NUST/Semester 2/Object Oriented Programming/End Semester Project/Physics Engine/res/scenes/Terrain (16x16).png");
+                //}
+
+                if (textureMap[i, j] != 0)
+                {
+                    backGround[i, j] = Raylib.LoadTexture("C:/Users/saadk/Desktop/NUST/Semester 2/Object Oriented Programming/End Semester Project/Physics Engine/res/scenes/background1.png");
+                }
+                else
+                {
+                    backGround[i, j] = Raylib.LoadTexture("C:/Users/saadk/Desktop/NUST/Semester 2/Object Oriented Programming/End Semester Project/Physics Engine/res/scenes/Terrain (16x16).png");
+                }
+            }
+        }
+
+        return backGround;
+    }
+
+    public static void DrawBackground(Texture2D[,] backGround)
+    {
+        for (int i = 0; i < backGround.GetLength(0); i++)
+        {
+            for (int j = 0; j < backGround.GetLength(1); j++)
+            {
+                Rectangle sourceRec = new Rectangle(0, 0, 60, 60);
+                Raylib.DrawTextureRec(backGround[i, j], sourceRec, new Vector2(i * 60, j * 60), Color.White);
+            }
         }
     }
 }

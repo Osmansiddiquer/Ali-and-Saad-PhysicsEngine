@@ -11,7 +11,8 @@ public class Scene : PhysicsWorld2D
     // Member variables
     private static List<PhysicsBody2D> bodies;
     private static List<Color> colors;
-
+    public static Texture2D texture;
+    public static Texture2D[,] backGround;
 
     // Constructor for initialization
     static Scene()
@@ -24,13 +25,14 @@ public class Scene : PhysicsWorld2D
         };
 
         bodies = new List<PhysicsBody2D>();
-       
+
     }
 
     // Ready function (Runs on first frame)
     public static void Ready()
     {
         Properties.DisplayFPS = true;
+        texture = Raylib.LoadTexture("C:/Users/saadk/Desktop/NUST/Semester 2/Object Oriented Programming/End Semester Project/Physics Engine/res/scenes/background3.png");
     }
 
     // Update function (Runs on every frame)
@@ -52,13 +54,23 @@ public class Scene : PhysicsWorld2D
 
             int[,] tileMap = new int[,]
             {
-                {1, 1, 1, 1},
-                {1, 0, 0, 1},
-                {1, 0, 0, 1},
-                {1, 1, 1, 1}
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0}
             };
             // Use tilemap
             TileMap.GenerateTileMap(tileMap, 4, bodies);
+
+            int[,] backGroundArray = new int[,]
+            {
+                {1, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 1}
+            };
+
+            backGround = TileMap.GenerateBackground(backGroundArray);
         }
 
         if (Raylib.IsMouseButtonDown(MouseButton.Left)) {
@@ -94,5 +106,7 @@ public class Scene : PhysicsWorld2D
         for (int i = 0; i < bodies.Count; i++) {
             RenderPhysicsObject(bodies[i], colors[i % 4]);
         }
+
+        TileMap.DrawBackground(backGround);
     }
 }
