@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/res/scenes/background1.png
+/res/scenes/background2.png
+/res/scenes/background3.png
+/res/scenes/Terrain (16x16).png
