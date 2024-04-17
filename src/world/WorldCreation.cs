@@ -217,7 +217,7 @@ internal class WorldCreation
         body2D = new ProjectileBody2D(position, scale, mass, density, area, restitution, radius, components, velocity, bodies);
     }
 
-    private static string ValidateParameters(float area, float density = 0)
+    internal static string ValidateParameters(float area, float density = 0)
     {
         string errorMessage = string.Empty;
 

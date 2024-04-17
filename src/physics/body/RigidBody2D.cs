@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using GameEngine.src.physics.component;
+using GameEngine.src.world;
 
 namespace GameEngine.src.physics.body;
 
@@ -13,6 +14,10 @@ public class RigidBody2D : PhysicsBody2D
     internal RigidBody2D(Vector2 position, float rotation, Vector2 scale, float mass, float density, float area,
         float restitution, ShapeType shape, List<Component> components) : base(position, rotation, scale)
     {
+
+        // Keep restitution in valid range
+        restitution = Math.Clamp(restitution, 0.0f, 1.0f);
+
         // Create the material for the body
         Material = new Material2D(mass, density, area, restitution);
         Shape = shape;
@@ -54,13 +59,18 @@ public class RigidBody2D : PhysicsBody2D
     }
 
     // Add or remove components 
-    public void AddComponent(Component component) { components.Add(component); }
-    public void DelComponent(Component component) 
-    {
-        if (components.Contains(component))
-            components.Remove(component);
+    public void AddComponent(Component component) { 
+        // Check if same type of component already exists
+        if (components.Exists(components => components.GetType() == component.GetType()))
+            return;
+        components.Add(component); 
+    }
 
-        else Console.WriteLine("[WARN]: Components list does not contain " + component.ToString());
+    // Call this function: body.DelComponent(typeof(Gravity));
+    public void DelComponent(Type componentToRemove) 
+    {
+        // Delete a component from the body
+        components.RemoveAll(components => components.GetType() == componentToRemove);
     }
 
     // Run the list of components
@@ -101,5 +111,36 @@ public class RigidCircle2D : RigidBody2D
 
         // I = m/2 * r^2
         MomentOfInertia = (1f / 2) * mass * (radius * radius);
+    }
+
+    internal RigidCircle2D(Vector2 position, Vector2 scale, float density, float restitution,
+        float radius) : this (position, scale, 0f, density, 0f, restitution, radius, new List<Component>())
+    {
+        string errorMessage;
+
+        // Calculate the area for the rigid body
+        float area = MathF.PI * radius * radius;
+
+        errorMessage = WorldCreation.ValidateParameters(area, density);
+
+        // Exit function if there is an error
+        if (!string.IsNullOrEmpty(errorMessage))
+            throw new Exception(errorMessage);
+
+
+        // For Any Object, Mass = Volume * Denisty
+        // Where Volume = Area * Depth in 3D space
+        // For 2D plane, we can assume depth to be 1
+        // Convert mass into kg
+        float mass = (area * density) / 1000;
+        MomentOfInertia = (1f / 2) * mass * (radius * radius);
+
+        List<Component> components = new List<Component>
+        {
+            new Gravity(),
+            new Motion()
+        };
+
+        this.components = components;
     }
 }

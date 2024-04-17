@@ -6,14 +6,20 @@ using System.Numerics;
 using GameEngine.src.physics.body;
 
 namespace GameEngine.res.scenes;
+    public struct TileMapProps
+    {
+        public int[,] tileMap;
+        public int[,] textureMap;
+        public Texture2D[,]? backGround;
+        public int size;
+    }
 
 public class Scene : World2D
 {
     // Member variables
     private static List<PhysicsBody2D> bodies;
     private static List<Color> colors;
-    public static Texture2D texture;
-    public static Texture2D[,] backGround;
+    public static TileMapProps tileMapProps;
 
     // Constructor for initialization
     static Scene()
@@ -26,14 +32,43 @@ public class Scene : World2D
         };
 
         bodies = new List<PhysicsBody2D>();
-       
+
+        tileMapProps = new TileMapProps()
+        {
+            tileMap = new int[,]
+                {
+                    {1, 1, 1, 1, 1, 1, 1, 0, 1, 0},
+                    {0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
+                    {1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
+                    {0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
+                    {1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
+                    {0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
+                    {1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
+                    {0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
+                    {1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
+                    {0, 1, 0, 1, 0, 1, 0, 1, 0, 1}
+                },
+            textureMap = new int[,]
+                {
+                    {1, 1, 1},
+                    {1, 1, 1},
+                    {1, 0, 2}
+                },
+            size = 4,
+        };
+
+        TileMap.GenerateTileMap(ref tileMapProps, bodies);
     }
 
     // Ready function (Runs on first frame)
     public static void Ready()
     {
         Properties.DisplayFPS = true;
-        texture = Raylib.LoadTexture("C:/Users/saadk/Desktop/NUST/Semester 2/Object Oriented Programming/End Semester Project/Physics Engine/res/scenes/background3.png");
+
+        CreateStaticBody(new Vector2(640, 900), 0, new Vector2(0.9f, 0.9f), 0.5f, 1280f, 120f, out StaticBody2D staticBody);
+        bodies.Add(staticBody);
+
+        
     }
 
     public static void Update(double delta)
@@ -43,8 +78,8 @@ public class Scene : World2D
 
         if (bodies.Count > 1)
         {
-            camera.Target = bodies[1].Transform.Translation;
-            camera.Offset = new Vector2(640, 480);
+            // camera.Target = bodies[1].Transform.Translation;
+            // camera.Offset = new Vector2(640, 480);
         }
 
         // Begin 2D mode with the camera
@@ -63,37 +98,13 @@ public class Scene : World2D
     // Draw
     public static void Draw()
     {
-        // Ensure bodies are created (call once or in Ready)
-        if (bodies.Count == 0) { 
-            CreateStaticBody(new Vector2(640, 900), 2f, new Vector2(0.9f, 0.9f), 0.5f, 1280f, 120f, out StaticBody2D staticBody);
-            bodies.Add(staticBody);
-
-            int[,] tileMap = new int[,]
-            {
-                {0, 0, 0, 0},
-                {0, 0, 0, 0},
-                {0, 0, 0, 0},
-                {0, 0, 0, 0}
-            };
-            // Use tilemap
-            TileMap.GenerateTileMap(tileMap, 4, bodies);
-
-            int[,] backGroundArray = new int[,]
-            {
-                {1, 0, 0, 0},
-                {0, 0, 0, 0},
-                {0, 0, 0, 0},
-                {0, 0, 0, 1}
-            };
-
-            backGround = TileMap.GenerateBackground(backGroundArray);
-        }
-
         if (Raylib.IsMouseButtonPressed(MouseButton.Left)) {
             
             // Create circle rigid body
             CreateRigidBody(Raylib.GetMousePosition(), Vector2.One, 1f, 0.5f, 32f, out RigidBody2D rigidBody);
             bodies.Add(rigidBody);
+
+            // bodies.Add(new RigidCircle2D(Raylib.GetMousePosition(), Vector2.One, 1f, 0.5f, 32f));
         }
 
         else if (Raylib.IsMouseButtonPressed(MouseButton.Right)) {
@@ -117,11 +128,12 @@ public class Scene : World2D
             bodies.Add(rigidBody);
         }
 
+        TileMap.DrawBackground(tileMapProps);
+
         // Update and draw each body
         for (int i = 0; i < bodies.Count; i++) {
             RenderPhysicsObject(bodies[i], colors[i % 4]);
         }
 
-        TileMap.DrawBackground(backGround);
     }
 }
