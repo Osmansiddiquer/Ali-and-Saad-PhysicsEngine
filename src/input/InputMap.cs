@@ -1,24 +1,22 @@
 ﻿using Raylib_cs;
+using System.Numerics;
 
 namespace GameEngine.src.input;
-public class InputMap
+public static class InputMap
 {
-    private Dictionary<string, KeyboardKey> keyBindings;
-
-    internal InputMap()
+    // Dictionary of key bindings
+    private static Dictionary<string, KeyboardKey> keyBindings = new Dictionary<string, KeyboardKey>()
     {
-        keyBindings = new Dictionary<string, KeyboardKey>();
-
-        // Default actions, can be modified later
-        AssignKey("up", KeyboardKey.Up);
-        AssignKey("down", KeyboardKey.Down);
-        AssignKey("left", KeyboardKey.Left);
-        AssignKey("right", KeyboardKey.Right);
-    }
-
+        // Defualt values, can be modified later
+        { "left", KeyboardKey.Left },
+        { "right", KeyboardKey.Right },
+        { "up", KeyboardKey.Up },
+        { "down", KeyboardKey.Down }
+    };
+    
     // Method to assign a key to a specific action
     // Creates action if does not exist
-    public void AssignKey(string action, KeyboardKey key)
+    public static void AssignKey(string action, KeyboardKey key)
     {
         if (!keyBindings.ContainsKey(action))
             keyBindings.Add(action, key);
@@ -28,7 +26,7 @@ public class InputMap
 
     // Modify an already assigned key for a specific action
     // Creates action if does not exist
-    public void ModifyKey(string action, KeyboardKey newKey)
+    public static void ModifyKey(string action, KeyboardKey newKey)
     {
         if (keyBindings.ContainsKey(action))
             keyBindings[action] = newKey;
@@ -38,7 +36,7 @@ public class InputMap
 
     // Removes an already assigned key for a specific action
     // Does nothing if action does not exist
-    public void RemoveKey(string action)
+    public static void RemoveKey(string action)
     {
         if (keyBindings.ContainsKey(action))
             keyBindings.Remove(action);
@@ -48,13 +46,36 @@ public class InputMap
 
     // Method to get the key assigned to a specific action
     // Returns null if action does not exist
-    public KeyboardKey GetKey(string action)
+    private static KeyboardKey GetKey(string action)
     {
         if (keyBindings.ContainsKey(action))
             return keyBindings[action];
 
         else return KeyboardKey.Null;
     }
+    
+    // Check for input using raylib
+    public static bool IsKeyPressed(string action) { return Raylib.IsKeyPressed(GetKey(action)); }
+    public static bool IsKeyPressedAgain(string action) { return Raylib.IsKeyPressedRepeat(GetKey(action)); }
+    public static bool IsKeyDown(string action) { return Raylib.IsKeyDown(GetKey(action)); }
+    public static bool IsKeyReleased(string action) { return Raylib.IsKeyReleased(GetKey(action)); }
 
+    // Returns a direction based on 2 inputs
+    public static float GetDirection(string actionA, string actionB)
+    {
+        float neg = IsKeyPressed(actionA) ? -1 : 0;
+        float pos = IsKeyPressed(actionB) ? 1 : 0;
+
+        return neg + pos;    
+    }
+
+    // Returns a vector based on 4 inputs
+    public static Vector2 GetVector(string actionA, string actionB, string actionC, string actionD) 
+    { 
+        float x = GetDirection(actionA, actionB);
+        float y = GetDirection(actionC, actionD);
+
+        return new Vector2(x, y);
+    }
 }
 

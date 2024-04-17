@@ -29,6 +29,7 @@ public class Scene : World2D
             Color.Red,
             Color.Green,
             Color.Blue,
+            Color.Gold
         };
 
         bodies = new List<PhysicsBody2D>();
@@ -73,23 +74,23 @@ public class Scene : World2D
 
     public static void Update(double delta)
     {
-        // Create a camera centered at the middle of the screen
-        Camera2D camera = new Camera2D(Vector2.Zero, Vector2.Zero, 0, 1f);
+        //// Create a camera centered at the middle of the screen
+        //Camera2D camera = new Camera2D(Vector2.Zero, Vector2.Zero, 0, 1f);
 
-        if (bodies.Count > 1)
-        {
-            // camera.Target = bodies[1].Transform.Translation;
-            // camera.Offset = new Vector2(640, 480);
-        }
+        //if (bodies.Count > 1)
+        //{
+        //    camera.Target = bodies[1].Transform.Translation;
+        //    camera.Offset = new Vector2(640, 480);
+        //}
 
         // Begin 2D mode with the camera
-        Raylib.BeginMode2D(camera);
+        //Raylib.BeginMode2D(camera);
 
         // Draw
         Draw();
 
         // End 2D mode
-        Raylib.EndMode2D();
+        //Raylib.EndMode2D();
 
         // Handle physics outside the 2D mode
         HandlePhysics(bodies, delta);
@@ -98,6 +99,32 @@ public class Scene : World2D
     // Draw
     public static void Draw()
     {
+        // Ensure bodies are created (call once or in Ready)
+        if (bodies.Count == 0) { 
+            CreateStaticBody(new Vector2(640, 900), 2f, new Vector2(0.9f, 0.9f), 0.5f, 1280f, 120f, out StaticBody2D staticBody);
+            bodies.Add(staticBody);
+
+            int[,] tileMap = new int[,]
+            {
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0}
+            };
+            // Use tilemap
+            TileMap.GenerateTileMap(tileMap, 4, bodies);
+
+            int[,] backGroundArray = new int[,]
+            {
+                {1, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 1}
+            };
+
+            backGround = TileMap.GenerateBackground(backGroundArray);
+        }
+
         if (Raylib.IsMouseButtonPressed(MouseButton.Left)) {
             
             // Create circle rigid body
@@ -132,7 +159,7 @@ public class Scene : World2D
 
         // Update and draw each body
         for (int i = 0; i < bodies.Count; i++) {
-            RenderPhysicsObject(bodies[i], colors[i % 4]);
+            RenderPhysicsObject(bodies[i], colors[i % 5]);
         }
 
     }
