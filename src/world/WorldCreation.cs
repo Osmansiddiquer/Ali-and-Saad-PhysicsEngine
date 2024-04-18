@@ -61,31 +61,23 @@ internal class WorldCreation
         float radius, out RigidBody2D body2D)
     {
         body2D = null;
-        string errorMessage;
 
         // Calculate the area for the rigid body
         float area = MathF.PI * radius * radius;
 
-        errorMessage = ValidateParameters(area, density);
-
-        // Exit function if there is an error
-        if (!string.IsNullOrEmpty(errorMessage))
-            throw new Exception(errorMessage);
-
-        // Keep restitution in valid range
-        restitution = Math.Clamp(restitution, 0.0f, 1.0f);
-
-        // For Any Object, Mass = Volume * Denisty
-        // Where Volume = Area * Depth in 3D space
-        // For 2D plane, we can assume depth to be 1
-        // Convert mass into kg
-        float mass = (area * density) / 1000;
+        ValidateParameters(area, density);
 
         List<Component> components = new List<Component>
         {
             new Gravity(),
             new Motion()
         };
+
+        // For Any Object, Mass = Volume * Denisty
+        // Where Volume = Area * Depth in 3D space
+        // For 2D plane, we can assume depth to be 1
+        // Convert mass into kg
+        float mass = (area * density) / 1000;
 
         // Create a rigid body 
         body2D = new RigidCircle2D(position, scale, mass, density, area, restitution, radius, components);
@@ -97,19 +89,11 @@ internal class WorldCreation
     {
 
         body2D = null;
-        string errorMessage;
 
         // Calculate the area for the rigid body
         float area = width * height;
 
-        errorMessage = ValidateParameters(area, density);
-
-        // Exit function if there is an error
-        if (!string.IsNullOrEmpty(errorMessage))
-            throw new Exception(errorMessage);
-
-        // Keep restitution in valid range
-        restitution = Math.Clamp(restitution, 0.0f, 1.0f);
+        ValidateParameters(area, density);
 
         // For Any Object, Mass = Volume * Denisty
         // Where Volume = Area * Depth in 3D space
@@ -133,25 +117,14 @@ internal class WorldCreation
     float radius, out StaticBody2D body2D)
     {
         body2D = null;
-        string errorMessage;
 
         // Calculate the area for the static body
         float area = MathF.PI * radius * radius;
 
-        errorMessage = ValidateParameters(area);
-
-        // Exit function if there is an error
-        if (!string.IsNullOrEmpty(errorMessage))
-            throw new Exception(errorMessage);
-
-        // Keep restitution in valid range
-        restitution = Math.Clamp(restitution, 0.0f, 1.0f);
-
-        // Static body has infinite mass
-        float mass = 1f / 0;
+        ValidateParameters(area);
 
         // Create a static body
-        body2D = new StaticCircle2D(position, scale, mass, restitution, area, radius);
+        body2D = new StaticCircle2D(position, scale, restitution, area, radius);
 
     }
 
@@ -160,25 +133,14 @@ internal class WorldCreation
     float width, float height, out StaticBody2D body2D)
     {
         body2D = null;
-        string errorMessage;
 
         // Calculate the area for the static body
         float area = width * height;
 
-        errorMessage = ValidateParameters(area);
-
-        // Exit function if there is an error
-        if (!string.IsNullOrEmpty(errorMessage))
-            throw new Exception(errorMessage);
-
-        // Keep restitution in valid range
-        restitution = Math.Clamp(restitution, 0.0f, 1.0f);
-
-        // Static body has infinite mass
-        float mass = 1f / 0;
+        ValidateParameters(area);
 
         // Create a static body
-        body2D = new StaticBox2D(position, rotation, scale, mass, area, restitution, width, height);
+        body2D = new StaticBox2D(position, rotation, scale, area, restitution, width, height);
     }
 
 
@@ -187,16 +149,11 @@ internal class WorldCreation
        float radius, Vector2 velocity, List<PhysicsBody2D> bodies, out RigidBody2D body2D)
     {
         body2D = null;
-        string errorMessage;
 
         // Calculate the area for the rigid body
         float area = MathF.PI * radius * radius;
 
-        errorMessage = ValidateParameters(area, density);
-
-        // Exit function if there is an error
-        if (!string.IsNullOrEmpty(errorMessage))
-            throw new Exception(errorMessage);
+        ValidateParameters(area, density);
 
         // Keep restitution in valid range
         restitution = Math.Clamp(restitution, 0.0f, 1.0f);
@@ -217,7 +174,7 @@ internal class WorldCreation
         body2D = new ProjectileBody2D(position, scale, mass, density, area, restitution, radius, components, velocity, bodies);
     }
 
-    private static string ValidateParameters(float area, float density = 0)
+    private static void ValidateParameters(float area, float density = 0)
     {
         string errorMessage = string.Empty;
 
@@ -230,7 +187,11 @@ internal class WorldCreation
                             (density < MIN_DENSITY ? $"[ERROR]: Body density is too low, Minimum Density: {MIN_DENSITY}" :
                                                      $"[ERROR]: Body density is too high, Maximum Density: {MAX_DENSITY}");
 
-        return errorMessage;
+        // Throw exception with error message
+        if (!string.IsNullOrEmpty(errorMessage))
+            throw new Exception(errorMessage);
+
+        else return;
     }
 }
 

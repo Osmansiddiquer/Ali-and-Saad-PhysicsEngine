@@ -5,7 +5,6 @@ public class Material2D
     // Physicsal attributes for a rigidbody object
     public readonly float Mass;
     public readonly float Density;
-    public readonly float Area;
     public readonly float Restitution;
 
     public readonly float StaticFriction;
@@ -13,11 +12,10 @@ public class Material2D
 
     // Constructor
     public Material2D() { }
-    public Material2D(float mass, float density, float area, float restitution)
+    public Material2D(float mass, float density, float restitution)
     {
         Mass = mass;
         Density = density;
-        Area = area;
         Restitution = restitution;
 
         // Default friction values (testing)

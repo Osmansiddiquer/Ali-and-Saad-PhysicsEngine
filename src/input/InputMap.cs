@@ -2,7 +2,7 @@
 using System.Numerics;
 
 namespace GameEngine.src.input;
-public static class InputMap
+public struct InputMap
 {
     // Dictionary of key bindings
     private static Dictionary<string, KeyboardKey> keyBindings = new Dictionary<string, KeyboardKey>()
@@ -75,7 +75,9 @@ public static class InputMap
         float x = GetDirection(actionA, actionB);
         float y = GetDirection(actionC, actionD);
 
-        return new Vector2(x, y);
+        Vector2 direction = new Vector2(x, y);
+        Vector2.Normalize(direction);
+        return direction;
     }
 }
 

@@ -10,11 +10,14 @@ public class RigidBody2D : PhysicsBody2D
     protected List<Component> components = new List<Component>();
 
     // Constructor
-    internal RigidBody2D(Vector2 position, float rotation, Vector2 scale, float mass, float density, float area,
+    internal RigidBody2D(Vector2 position, float rotation, Vector2 scale, float mass, float density,
         float restitution, ShapeType shape, List<Component> components) : base(position, rotation, scale)
     {
+        // Keep restitution in valid range
+        restitution = Math.Clamp(restitution, 0.0f, 1.0f);
+
         // Create the material for the body
-        Material = new Material2D(mass, density, area, restitution);
+        Material = new Material2D(mass, density, restitution);
         Shape = shape;
 
         // Initialize velocity and force
@@ -77,11 +80,10 @@ public class RigidBox2D : RigidBody2D
 {
     // Constructor
     internal RigidBox2D(Vector2 position, float rotation, Vector2 scale, float mass, float density, float area, float restitution,
-        float width, float height, List<Component> components) : base(position, rotation, scale, mass, density,
-            area, restitution, ShapeType.Box, components)
+        float width, float height, List<Component> components) : base(position, rotation, scale, mass, density, restitution, ShapeType.Box, components)
     {
         // Initialize dimensions and vertices
-        Dimensions = new Dimensions2D(new Vector2(width, height) * scale);
+        Dimensions = new Dimensions2D(new Vector2(width, height) * scale, area);
         MapVerticesBox();
 
         // I = m/12 * (w^2 + h^2)
@@ -94,10 +96,10 @@ public class RigidCircle2D : RigidBody2D
 {
     // Constructor
     internal RigidCircle2D(Vector2 position, Vector2 scale, float mass, float density, float area, float restitution,
-        float radius, List<Component> components) : base(position, 0f, scale, mass, density, area, restitution, ShapeType.Circle, components)
+        float radius, List<Component> components) : base(position, 0f, scale, mass, density, restitution, ShapeType.Circle, components)
     {
         // Initialize dimensions
-        Dimensions = new Dimensions2D(radius * Vector2.Distance(Vector2.Zero, scale));
+        Dimensions = new Dimensions2D(radius * Vector2.Distance(Vector2.Zero, scale), area);
 
         // I = m/2 * r^2
         MomentOfInertia = (1f / 2) * mass * (radius * radius);

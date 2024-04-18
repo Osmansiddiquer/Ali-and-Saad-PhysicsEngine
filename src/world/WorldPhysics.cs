@@ -72,7 +72,7 @@ internal class WorldPhysics
                 }
             }
         }
-        catch (System.Exception e)
+        catch (Exception e)
         {
             Console.WriteLine(e.Message);
         }

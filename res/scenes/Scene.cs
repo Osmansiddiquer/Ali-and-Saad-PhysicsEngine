@@ -12,8 +12,8 @@ public class Scene : World2D
     // Member variables
     private static List<PhysicsBody2D> bodies;
     private static List<Color> colors;
-    public static Texture2D texture;
-    public static Texture2D[,] backGround;
+    //public static Texture2D texture;
+    //public static Texture2D[,] backGround;
 
     // Constructor for initialization
     static Scene()
@@ -26,7 +26,7 @@ public class Scene : World2D
             Color.Gold
         };
 
-        bodies = new List<PhysicsBody2D>();
+        bodies = new List<PhysicsBody2D>(100);
        
     }
 
@@ -34,7 +34,7 @@ public class Scene : World2D
     public static void Ready()
     {
         Properties.DisplayFPS = true;
-        texture = Raylib.LoadTexture("C:/Users/saadk/Desktop/NUST/Semester 2/Object Oriented Programming/End Semester Project/Physics Engine/res/scenes/background3.png");
+        //texture = Raylib.LoadTexture("C:/Users/saadk/Desktop/NUST/Semester 2/Object Oriented Programming/End Semester Project/Physics Engine/res/scenes/background3.png");
     }
 
     public static void Update(double delta)
@@ -69,25 +69,25 @@ public class Scene : World2D
             CreateStaticBody(new Vector2(640, 900), 0f, new Vector2(0.9f, 0.9f), 0.5f, 1280f, 120f, out StaticBody2D staticBody);
             bodies.Add(staticBody);
 
-            int[,] tileMap = new int[,]
-            {
-                {0, 0, 0, 0},
-                {0, 0, 0, 0},
-                {0, 0, 0, 0},
-                {0, 0, 0, 0}
-            };
-            // Use tilemap
-            TileMap.GenerateTileMap(tileMap, 4, bodies);
+            //int[,] tileMap = new int[,]
+            //{
+            //    {0, 0, 0, 0},
+            //    {0, 0, 0, 0},
+            //    {0, 0, 0, 0},
+            //    {0, 0, 0, 0}
+            //};
+            //// Use tilemap
+            //TileMap.GenerateTileMap(tileMap, 4, bodies);
 
-            int[,] backGroundArray = new int[,]
-            {
-                {1, 0, 0, 0},
-                {0, 0, 0, 0},
-                {0, 0, 0, 0},
-                {0, 0, 0, 1}
-            };
+            //int[,] backGroundArray = new int[,]
+            //{
+            //    {1, 0, 0, 0},
+            //    {0, 0, 0, 0},
+            //    {0, 0, 0, 0},
+            //    {0, 0, 0, 1}
+            //};
 
-            backGround = TileMap.GenerateBackground(backGroundArray);
+            //backGround = TileMap.GenerateBackground(backGroundArray);
         }
 
         if (Raylib.IsMouseButtonPressed(MouseButton.Left)) {
@@ -123,6 +123,6 @@ public class Scene : World2D
             RenderPhysicsObject(bodies[i], colors[i % 5]);
         }
 
-        TileMap.DrawBackground(backGround);
+       // TileMap.DrawBackground(backGround);
     }
 }
