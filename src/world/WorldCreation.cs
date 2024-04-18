@@ -155,9 +155,6 @@ internal class WorldCreation
 
         ValidateParameters(area, density);
 
-        // Keep restitution in valid range
-        restitution = Math.Clamp(restitution, 0.0f, 1.0f);
-
         // For Any Object, Mass = Volume * Denisty
         // Where Volume = Area * Depth in 3D space
         // For 2D plane, we can assume depth to be 1
