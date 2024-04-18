@@ -25,7 +25,7 @@ public class ProjectileBody2D : RigidCircle2D
         float radius, List<Component> components, Vector2 velocity, List<PhysicsBody2D> bodies) :
         this(position, scale, mass, density, area, restitution, radius, components, velocity, bodies, 2000) { }
 
-    public void ProjectileHit (PhysicsBody2D body)
+    public override void ProjectileHit (PhysicsBody2D body)
     {
         // Dont do anything if the projectile hits another projectile
         if (body is ProjectileBody2D)
