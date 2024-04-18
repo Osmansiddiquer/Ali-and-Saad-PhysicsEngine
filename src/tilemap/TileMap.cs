@@ -2,6 +2,8 @@
 using System.Numerics;
 using Raylib_cs;
 using GameEngine.src.world;
+using GameEngine.res.scenes;
+
 
 namespace GameEngine.src.tilemap;
 
@@ -20,13 +22,13 @@ public class Box
 
 internal static class TileMap
 {
-    public static void GenerateTileMap(int[,] grid, int size, List<PhysicsBody2D> bodies)
+    public static void GenerateTileMapTerrain(int[,] grid, int size, List<PhysicsBody2D> bodies)
     {
         // Find all the boxes in the grid
         List<Box> boxes = FindBoxes(grid);
 
         // Create the bodies
-        AddBodies(boxes, bodies, (int)Math.Pow(2, size + 2));
+        AddBodies(boxes, bodies, size);
     }
     public static List<Box> FindBoxes(int[,] grid)
     {
@@ -64,9 +66,11 @@ internal static class TileMap
         foreach (Box box in boxes)
         {
             Console.WriteLine(box);
-            Vector2 position = size * new Vector2((box.left + box.right + 1) / 2.0f, (box.y + 1) / 2);
+            Vector2 position = (size * new Vector2((box.left + box.right + 1) / 2.0f, box.y + 1 / 2.0f));
+
+            Console.WriteLine(position);
             float width = (box.right - box.left + 1) * size;
-            WorldCreation.CreateStaticBody(position, 0f, new Vector2(1, 1), 0.5f, width, size, out StaticBody2D staticBody);
+            WorldCreation.CreateStaticBody(position, 0f, Vector2.One, 0.5f, width, size, out StaticBody2D staticBody);
             bodies.Add(staticBody);
         }
     }
@@ -78,14 +82,6 @@ internal static class TileMap
         {
             for (int j = 0; j < textureMap.GetLength(1); j++)
             {
-                //try
-                //{
-                //    backGround[i, j] = Raylib.LoadTexture($"C:/Users/saadk/Desktop/NUST/Semester 2/Object Oriented Programming/End Semester Project/Physics Engine/res/scenes/background{textureMap[i, j]}.png");
-                //} catch (Exception e)
-                //{
-                //    Console.WriteLine("hello!");
-                //    backGround[i, j] = Raylib.LoadTexture($"C:/Users/saadk/Desktop/NUST/Semester 2/Object Oriented Programming/End Semester Project/Physics Engine/res/scenes/Terrain (16x16).png");
-                //}
 
                 if (textureMap[i, j] != 0)
                 {
@@ -101,18 +97,34 @@ internal static class TileMap
         return backGround;
     }
 
-    public static void DrawBackground(Texture2D[,] backGround)
+    public static void DrawBackground(Texture2D[,] backGround, int size)
     {
         for (int i = 0; i < backGround.GetLength(0); i++)
         {
             for (int j = 0; j < backGround.GetLength(1); j++)
             {
                 Rectangle sourceRec = new Rectangle(0, 0, 48, 48);
-                Rectangle destRec = new Rectangle(i * 60, j * 60, 60, 60);
+                Rectangle destRec = new Rectangle(j * size, i * size, size, size);
                 // Raylib.DrawTextureRec(backGround[i, j], sourceRec, new Vector2(i * 60, j * 60), Color.White);
 
                 Raylib.DrawTexturePro(backGround[i, j], sourceRec, destRec, new Vector2(0, 0), 0, Color.White);
             }
         }
+    }
+
+    public static void DrawBackground(TileMapProps tileMapProps)
+    {
+        DrawBackground(tileMapProps.backGround, tileMapProps.size);
+    }
+
+    // Make a method that takes in both tilemap and background and draws the tilemap
+    public static void GenerateTileMap(ref TileMapProps tileMapProps, List<PhysicsBody2D> bodies)
+    {
+        tileMapProps.size = (int)Math.Pow(2, tileMapProps.size + 2);
+        GenerateTileMapTerrain(tileMapProps.tileMap, tileMapProps.size, bodies);
+
+        Texture2D[,] backGround = GenerateBackground(tileMapProps.textureMap);
+
+        tileMapProps.backGround = backGround;
     }
 }

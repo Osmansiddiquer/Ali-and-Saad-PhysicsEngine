@@ -1,11 +1,8 @@
 ﻿using GameEngine.src.physics.body;
 
 namespace GameEngine.src.physics.component;
-public abstract class Component
+public interface Component
 {
-    internal virtual void RunComponent(RigidBody2D body, double delta)
-    {
-
-    }
+    void RunComponent(RigidBody2D body, double delta);
 }
 

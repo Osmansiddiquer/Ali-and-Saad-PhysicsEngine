@@ -4,7 +4,7 @@ using System.Numerics;
 namespace GameEngine.src.physics.component;
 public class Gravity : Component
 {
-    internal override void RunComponent(RigidBody2D body, double delta)
+    public void RunComponent(RigidBody2D body, double delta)
     {
         // Move body downwards if it is midair
         ApplyGravity(body);
