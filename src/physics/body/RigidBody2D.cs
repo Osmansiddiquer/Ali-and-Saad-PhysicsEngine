@@ -143,4 +143,9 @@ public class RigidCircle2D : RigidBody2D
 
         this.components = components;
     }
+
+    public override void Update()
+    {
+        System.Console.WriteLine("Updating Circle");
+    }
 }

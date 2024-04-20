@@ -74,6 +74,10 @@ public class Scene : World2D
 
     public static void Update(double delta)
     {
+        foreach(PhysicsBody2D body in bodies)
+        {
+            body.Update();
+        }
         //// Create a camera centered at the middle of the screen
         //Camera2D camera = new Camera2D(Vector2.Zero, Vector2.Zero, 0, 1f);
 
@@ -104,25 +108,6 @@ public class Scene : World2D
             CreateStaticBody(new Vector2(640, 900), 2f, new Vector2(0.9f, 0.9f), 0.5f, 1280f, 120f, out StaticBody2D staticBody);
             bodies.Add(staticBody);
 
-            int[,] tileMap = new int[,]
-            {
-                {0, 0, 0, 0},
-                {0, 0, 0, 0},
-                {0, 0, 0, 0},
-                {0, 0, 0, 0}
-            };
-            // Use tilemap
-            TileMap.GenerateTileMap(tileMap, 4, bodies);
-
-            int[,] backGroundArray = new int[,]
-            {
-                {1, 0, 0, 0},
-                {0, 0, 0, 0},
-                {0, 0, 0, 0},
-                {0, 0, 0, 1}
-            };
-
-            backGround = TileMap.GenerateBackground(backGroundArray);
         }
 
         if (Raylib.IsMouseButtonPressed(MouseButton.Left)) {

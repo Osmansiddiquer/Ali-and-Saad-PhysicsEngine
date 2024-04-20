@@ -72,6 +72,8 @@ public abstract class PhysicsBody2D
 
         VerticesUpdateRequired = true;
         AABBUpdateRequired = true;
+
+        Ready();
     }
 
     // Calculate new position of vertices after transformation
@@ -197,5 +199,9 @@ public abstract class PhysicsBody2D
     public virtual void Rotate(float angle) { }
     public virtual void Scale(Vector2 factor) { }
     public virtual void ApplyForce(Vector2 amount) { }
+
+    public virtual void Update() { }
+
+    public virtual void Ready() { }
 }
 
