@@ -2,11 +2,16 @@
 using System.Numerics;
 using Raylib_cs;
 using GameEngine.src.world;
-using GameEngine.res.scenes;
-
 
 namespace GameEngine.src.tilemap;
 
+public struct TileMapProps
+{
+    public int[,] tileMap;
+    public int[,] textureMap;
+    public Texture2D[,]? backGround;
+    public int size;
+}
 
 public class Box
 {

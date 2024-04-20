@@ -1,25 +1,17 @@
 ﻿using GameEngine.src.main;
 using GameEngine.src.world;
-using GameEngine.src.tilemap;
 using Raylib_cs;
 using System.Numerics;
 using GameEngine.src.physics.body;
 
 namespace GameEngine.res.scenes;
-    public struct TileMapProps
-    {
-        public int[,] tileMap;
-        public int[,] textureMap;
-        public Texture2D[,]? backGround;
-        public int size;
-    }
 
 public class Scene : World2D
 {
     // Member variables
     private static List<PhysicsBody2D> bodies;
     private static List<Color> colors;
-    public static TileMapProps tileMapProps;
+    //public static TileMapProps tileMapProps;
 
     // Constructor for initialization
     static Scene()
@@ -34,31 +26,31 @@ public class Scene : World2D
 
         bodies = new List<PhysicsBody2D>();
 
-        tileMapProps = new TileMapProps()
-        {
-            tileMap = new int[,]
-                {
-                    {1, 1, 1, 1, 1, 1, 1, 0, 1, 0},
-                    {0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-                    {1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
-                    {0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-                    {1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
-                    {0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-                    {1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
-                    {0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-                    {1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
-                    {0, 1, 0, 1, 0, 1, 0, 1, 0, 1}
-                },
-            textureMap = new int[,]
-                {
-                    {1, 1, 1},
-                    {1, 1, 1},
-                    {1, 0, 2}
-                },
-            size = 4,
-        };
+        //tileMapProps = new TileMapProps()
+        //{
+        //    tileMap = new int[,]
+        //        {
+        //            {1, 1, 1, 1, 1, 1, 1, 0, 1, 0},
+        //            {0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
+        //            {1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
+        //            {0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
+        //            {1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
+        //            {0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
+        //            {1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
+        //            {0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
+        //            {1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
+        //            {0, 1, 0, 1, 0, 1, 0, 1, 0, 1}
+        //        },
+        //    textureMap = new int[,]
+        //        {
+        //            {1, 1, 1},
+        //            {1, 1, 1},
+        //            {1, 0, 2}
+        //        },
+        //    size = 4,
+        //};
 
-        TileMap.GenerateTileMap(ref tileMapProps, bodies);
+        //TileMap.GenerateTileMap(ref tileMapProps, bodies);
     }
 
     // Ready function (Runs on first frame)
@@ -155,7 +147,7 @@ public class Scene : World2D
             bodies.Add(rigidBody);
         }
 
-        TileMap.DrawBackground(tileMapProps);
+        //TileMap.DrawBackground(tileMapProps);
 
         // Update and draw each body
         for (int i = 0; i < bodies.Count; i++) {
