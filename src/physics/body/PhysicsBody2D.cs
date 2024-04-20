@@ -193,8 +193,7 @@ public abstract class PhysicsBody2D
 
     // Methods to be overridden
     internal virtual void RunComponents(double delta) { }
-    internal virtual void ProjectileHit(PhysicsBody2D body) { }
-    
+    public virtual void ProjectileHit(PhysicsBody2D body) { }
     public virtual void Translate(Vector2 direction) { }
     public virtual void Rotate(float angle) { }
     public virtual void Scale(Vector2 factor) { }
