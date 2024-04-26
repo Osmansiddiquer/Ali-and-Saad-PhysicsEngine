@@ -33,20 +33,8 @@ internal class Process
     // Game loop
     private void Loop()
     {
-        int scene = 0;
-
         for (; !Raylib.WindowShouldClose();)
         {
-            if (Raylib.IsKeyPressed(KeyboardKey.One)) 
-            {
-                scene = 0;
-            }
-
-            else if (Raylib.IsKeyPressed(KeyboardKey.Two)) 
-            {
-                scene = 1;
-            }
-
             Raylib.BeginDrawing();
             Raylib.ClearBackground(Color.Black);
 
@@ -63,18 +51,7 @@ internal class Process
             }
 
             double delta = Raylib.GetFrameTime() / (256);
-
-            // Update the simulation program
-            switch (scene)
-            {
-                case 0:
-                    PhysicsTest.Update(delta);
-                    break;
-
-                case 1:
-                    ProjectileTest.Update(delta); 
-                    break;
-            }
+            SceneTree.Update(delta);
 
             Raylib.EndDrawing();
         }

@@ -31,25 +31,7 @@ public class RigidBody2D : PhysicsBody2D
 
     // Self explanatory 
     // Translate the physics body by the specified direction vector
-    public override void Translate(Vector2 direction)
-    {
-        Transform.Translate(direction);
-        SetUpdateRequiredTrue(); // Mark vertices and AABB as dirty
-    }
 
-    // Rotate the physics body by the specified angle in radians
-    public override void Rotate(float angle)
-    {
-        Transform.Rotate(angle);
-        SetUpdateRequiredTrue(); // Mark vertices and AABB as dirty
-    }
-
-    // Scale the physics body by the specified factor
-    public override void Scale(Vector2 factor)
-    {
-        Transform.Scaling(factor);
-        SetUpdateRequiredTrue(); // Mark vertices and AABB as dirty
-    }
 
     // Apply a force to the physics body
     public override void ApplyForce(Vector2 amount)
@@ -79,12 +61,7 @@ public class RigidBody2D : PhysicsBody2D
         });
     }
 
-    // Helper method to mark vertices and AABB as dirty
-    private void SetUpdateRequiredTrue()
-    {
-        VerticesUpdateRequired = true;
-        AABBUpdateRequired = true;
-    }
+
 }
 
 public class RigidBox2D : RigidBody2D

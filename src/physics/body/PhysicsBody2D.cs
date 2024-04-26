@@ -65,8 +65,8 @@ public abstract class PhysicsBody2D
 
         // Create a transformation matrix
         Matrix3x2 transformationMatrix = Matrix3x2.CreateScale(scale) *
-                                           Matrix3x2.CreateRotation(rotation) *
-                                           Matrix3x2.CreateTranslation(position);
+                                         Matrix3x2.CreateRotation(rotation) *
+                                         Matrix3x2.CreateTranslation(position);
 
         // Update transformed vertices using the transformation matrix
         for (int i = 0; i < Vertices.Length; i++)
@@ -149,12 +149,36 @@ public abstract class PhysicsBody2D
         IsOnWallR = false;
     }
 
+    public void Translate(Vector2 direction)
+    {
+        Transform.Translate(direction);
+        SetUpdateRequiredTrue(); // Mark vertices and AABB as dirty
+    }
+
+    // Rotate the physics body by the specified angle in radians
+    public void Rotate(float angle)
+    {
+        Transform.Rotate(angle);
+        SetUpdateRequiredTrue(); // Mark vertices and AABB as dirty
+    }
+
+    // Scale the physics body by the specified factor
+    public void Scale(Vector2 factor)
+    {
+        Transform.Scaling(factor);
+        SetUpdateRequiredTrue();
+    }
+
+    // Method to update vertices and AABB
+    private void SetUpdateRequiredTrue()
+    {
+        VerticesUpdateRequired = true;
+        AABBUpdateRequired = true;
+    }
+
     // Methods to be overridden
     internal virtual void RunComponents(double delta) { }
     public virtual void ProjectileHit(PhysicsBody2D body) { }
-    public virtual void Translate(Vector2 direction) { }
-    public virtual void Rotate(float angle) { }
-    public virtual void Scale(Vector2 factor) { }
     public virtual void ApplyForce(Vector2 amount) { }
 }
 
