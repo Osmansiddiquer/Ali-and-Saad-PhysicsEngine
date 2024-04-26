@@ -1,4 +1,5 @@
 ﻿using GameEngine.src.physics.collision;
+using Raylib_cs;
 using System.Numerics;
 
 #pragma warning disable CS8618 // Non nullable field must have non null value when exiting constructor.
@@ -75,6 +76,7 @@ public abstract class PhysicsBody2D
         AABBUpdateRequired = true;
 
         Ready();
+        startLoop();
     }
 
     // Calculate new position of vertices after transformation
@@ -203,5 +205,13 @@ public abstract class PhysicsBody2D
     public virtual void Update() { }
 
     public virtual void Ready() { }
+
+    private void startLoop()
+    {
+        while (!Raylib.WindowShouldClose())
+        {
+            Update();
+        }
+    }
 }
 
