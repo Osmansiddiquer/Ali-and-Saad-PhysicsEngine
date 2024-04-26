@@ -57,19 +57,11 @@ public class Scene : World2D
     public static void Ready()
     {
         Properties.DisplayFPS = true;
-
-        CreateStaticBody(new Vector2(640, 900), 0, new Vector2(0.9f, 0.9f), 0.5f, 1280f, 120f, out StaticBody2D staticBody);
-        bodies.Add(staticBody);
-
         
     }
 
     public static void Update(double delta)
     {
-        foreach(PhysicsBody2D body in bodies)
-        {
-            body.Update();
-        }
         //// Create a camera centered at the middle of the screen
         //Camera2D camera = new Camera2D(Vector2.Zero, Vector2.Zero, 0, 1f);
 
@@ -97,7 +89,7 @@ public class Scene : World2D
     {
         // Ensure bodies are created (call once or in Ready)
         if (bodies.Count == 0) { 
-            CreateStaticBody(new Vector2(640, 900), 2f, new Vector2(0.9f, 0.9f), 0.5f, 1280f, 120f, out StaticBody2D staticBody);
+            CreateStaticBody(new Vector2(640, 900), 0f, new Vector2(0.9f, 0.9f), 0.5f, 1280f, 120f, out StaticBody2D staticBody);
             bodies.Add(staticBody);
 
         }

@@ -1,6 +1,5 @@
 ﻿using System.Numerics;
 using GameEngine.src.physics.component;
-using GameEngine.src.world;
 
 namespace GameEngine.src.physics.body;
 
@@ -111,39 +110,4 @@ public class RigidCircle2D : RigidBody2D
         MomentOfInertia = (1f / 2) * mass * (radius * radius);
     }
 
-    internal RigidCircle2D(Vector2 position, Vector2 scale, float density, float restitution,
-        float radius) : this (position, scale, 0f, density, 0f, restitution, radius, new List<Component>())
-    {
-        string errorMessage;
-
-        // Calculate the area for the rigid body
-        float area = MathF.PI * radius * radius;
-
-        errorMessage = WorldCreation.ValidateParameters(area, density);
-
-        // Exit function if there is an error
-        if (!string.IsNullOrEmpty(errorMessage))
-            throw new Exception(errorMessage);
-
-
-        // For Any Object, Mass = Volume * Denisty
-        // Where Volume = Area * Depth in 3D space
-        // For 2D plane, we can assume depth to be 1
-        // Convert mass into kg
-        float mass = (area * density) / 1000;
-        MomentOfInertia = (1f / 2) * mass * (radius * radius);
-
-        List<Component> components = new List<Component>
-        {
-            new Gravity(),
-            new Motion()
-        };
-
-        this.components = components;
-    }
-
-    public override void Update()
-    {
-        System.Console.WriteLine("Updating Circle");
-    }
 }

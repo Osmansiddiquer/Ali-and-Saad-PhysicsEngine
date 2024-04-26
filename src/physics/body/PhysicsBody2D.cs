@@ -4,7 +4,6 @@ using System.Numerics;
 #pragma warning disable CS8618 // Non nullable field must have non null value when exiting constructor.
 
 namespace GameEngine.src.physics.body;
-
 public enum ShapeType
 {
     Circle, Box
@@ -57,6 +56,8 @@ public abstract class PhysicsBody2D
         internal set { isOnWallL = value; }
     }
 
+    public bool HandleCollision;
+
     // Linear motion attributes
     public Vector2 LinVelocity { get; internal set; }
     public float RotVelocity { get; internal set; }
@@ -67,8 +68,8 @@ public abstract class PhysicsBody2D
     {
         // Initialize physical properties
         Transform = new Transform2D(position, rotation, scale);
-        Dimensions = new Dimensions2D();
-        Material = new Material2D();
+
+        HandleCollision = true;
 
         VerticesUpdateRequired = true;
         AABBUpdateRequired = true;
