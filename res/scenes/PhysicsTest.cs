@@ -53,13 +53,6 @@ public class PhysicsTest : World2D
         //TileMap.GenerateTileMap(ref tileMapProps, bodies);
     }
 
-    // Ready function (Runs on first frame)
-    public static void Ready()
-    {
-        Properties.DisplayFPS = true;
-        
-    }
-
     public static void Update(double delta)
     {
         //// Create a camera centered at the middle of the screen
