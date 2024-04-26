@@ -10,10 +10,18 @@ internal class WorldPhysics
 
     internal static void HandlePhysics(List<PhysicsBody2D> bodies, double delta)
     {
-        for (int it = 0; it < 12; it++)
+        try
         {
-            HandleCollisions(bodies);
-            UpdateBodies(bodies, delta);
+            for (int it = 0; it < 16; it++)
+            {
+                HandleCollisions(bodies);
+                UpdateBodies(bodies, delta);
+            }
+        }
+
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
         }
     }
 

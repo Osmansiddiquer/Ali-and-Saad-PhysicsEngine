@@ -3,7 +3,7 @@ public struct Properties
 {
     public static int ScreenWidth = 1280;
     public static int ScreenHeight = 960;
-    public static string Title = "Physics Engine";
+    public static string Title = "Game Engine";
 
     public static bool DisplayFPS = true;
     public static bool Fullscreen = false;

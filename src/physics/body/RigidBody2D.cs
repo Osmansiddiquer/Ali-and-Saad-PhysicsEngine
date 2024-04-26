@@ -30,54 +30,60 @@ public class RigidBody2D : PhysicsBody2D
     }
 
     // Self explanatory 
+    // Translate the physics body by the specified direction vector
     public override void Translate(Vector2 direction)
     {
         Transform.Translate(direction);
-        VerticesUpdateRequired = true;
-        AABBUpdateRequired = true;
+        SetUpdateRequiredTrue(); // Mark vertices and AABB as dirty
     }
 
+    // Rotate the physics body by the specified angle in radians
     public override void Rotate(float angle)
     {
         Transform.Rotate(angle);
-        VerticesUpdateRequired = true;
-        AABBUpdateRequired = true;
+        SetUpdateRequiredTrue(); // Mark vertices and AABB as dirty
     }
 
+    // Scale the physics body by the specified factor
     public override void Scale(Vector2 factor)
     {
         Transform.Scaling(factor);
-        VerticesUpdateRequired = true;
-        AABBUpdateRequired = true;
+        SetUpdateRequiredTrue(); // Mark vertices and AABB as dirty
     }
 
+    // Apply a force to the physics body
     public override void ApplyForce(Vector2 amount)
     {
         Force = amount;
     }
 
-    // Add or remove components 
-    public void AddComponent(Component component) { 
-        // Check if same type of component already exists
-        if (components.Exists(components => components.GetType() == component.GetType()))
-            return;
-        components.Add(component); 
-    }
-
-    // Call this function: body.DelComponent(typeof(Gravity));
-    public void DelComponent(Type componentToRemove) 
+    // Add a component to the physics body
+    public void AddComponent(Component component)
     {
-        // Delete a component from the body
-        components.RemoveAll(components => components.GetType() == componentToRemove);
+        if (!components.Exists(c => c.GetType() == component.GetType()))
+            components.Add(component);
     }
 
-    // Run the list of components
+    // Remove a component from the physics body
+    public void RemoveComponent(Type componentToRemove)
+    {
+        components.RemoveAll(c => c.GetType() == componentToRemove);
+    }
+
+    // Run all components attached to the physics body in parallel
     internal override void RunComponents(double delta)
     {
-        foreach (Component component in components)
+        Parallel.ForEach(components, component =>
         {
             component.RunComponent(this, delta);
-        }
+        });
+    }
+
+    // Helper method to mark vertices and AABB as dirty
+    private void SetUpdateRequiredTrue()
+    {
+        VerticesUpdateRequired = true;
+        AABBUpdateRequired = true;
     }
 }
 

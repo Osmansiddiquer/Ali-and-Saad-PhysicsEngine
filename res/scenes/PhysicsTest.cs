@@ -6,7 +6,7 @@ using GameEngine.src.physics.body;
 
 namespace GameEngine.res.scenes;
 
-public class Scene : World2D
+public class PhysicsTest : World2D
 {
     // Member variables
     private static List<PhysicsBody2D> bodies;
@@ -14,7 +14,7 @@ public class Scene : World2D
     //public static TileMapProps tileMapProps;
 
     // Constructor for initialization
-    static Scene()
+    static PhysicsTest()
     {
         colors = new List<Color>() { 
             Color.White, 
@@ -85,7 +85,7 @@ public class Scene : World2D
     }
 
     // Draw
-    public static void Draw()
+    private static void Draw()
     {
         // Ensure bodies are created (call once or in Ready)
         if (bodies.Count == 0) { 
@@ -94,11 +94,17 @@ public class Scene : World2D
 
         }
 
+        Random random = new Random();
+        float scaling = (float)(random.NextDouble() * (1.1 - 0.9) + 0.9);
+
+        Vector2 scale = new Vector2((float)scaling, (float)scaling);
+
         if (Raylib.IsMouseButtonPressed(MouseButton.Left)) {
             
             // Create circle rigid body
-            CreateRigidBody(Raylib.GetMousePosition(), Vector2.One, 1f, 0.5f, 32f, out RigidBody2D rigidBody);
+            CreateRigidBody(Raylib.GetMousePosition(), scale, 1f, 0.5f, 32f, out RigidBody2D rigidBody);
             bodies.Add(rigidBody);
+
 
             // bodies.Add(new RigidCircle2D(Raylib.GetMousePosition(), Vector2.One, 1f, 0.5f, 32f));
         }
@@ -106,23 +112,10 @@ public class Scene : World2D
         else if (Raylib.IsMouseButtonPressed(MouseButton.Right)) {
 
             // Create box rigid body
-            CreateRigidBody(Raylib.GetMousePosition(), 0f, Vector2.One, 1f, 0.5f, 64f, 64f, out RigidBody2D rigidBody);
+            CreateRigidBody(Raylib.GetMousePosition(), 0f, scale, 1f, 0.5f, 64f, 64f, out RigidBody2D rigidBody);
             bodies.Add(rigidBody);
 
         } 
-
-        else if(Raylib.IsKeyPressed(KeyboardKey.Space))
-        {
-            Random random = new Random();
-
-            float magnitude = 3;
-
-            Vector2 velocity = new Vector2(((float)random.NextDouble() * 2 - 1) * magnitude, ((float)random.NextDouble() * 2 - 1) * magnitude);
-
-            // Create projectile
-            CreateProjectileBody(Raylib.GetMousePosition(), Vector2.One, 1f, 0.5f, 16f, velocity * 0.2f, bodies, out RigidBody2D rigidBody);
-            bodies.Add(rigidBody);
-        }
 
         //TileMap.DrawBackground(tileMapProps);
 
