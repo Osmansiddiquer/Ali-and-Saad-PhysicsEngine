@@ -28,20 +28,25 @@ public class ProjectileTest : World2D
 
     public static void Update(double delta)
     {
+        Raylib.DrawText("Projectile Test", 20, 20, 32, Color.Green);
+
         Draw();
         HandlePhysics(bodies, delta);
     }
 
     private static void Draw()
     {
+        Raylib.DrawText("<>", Raylib.GetMouseX(), Raylib.GetMouseY(), 32, Color.Green);
+        Raylib.HideCursor();
+
         if (Raylib.IsMouseButtonPressed(MouseButton.Left))
         {
             Vector2 velocity = (Raylib.GetMousePosition() - spawnPosition);
             velocity /= 128;
 
             // Create projectile
-            CreateProjectileBody(spawnPosition, Vector2.One, 1f, 0.5f, 16f, velocity * 0.2f, bodies, out RigidBody2D rigidBody);
-            bodies.Add(rigidBody);
+            CreateProjectileBody(spawnPosition, Vector2.One, 1f, 0.5f, 16f, velocity * 0.2f, bodies, out ProjectileBody2D body);
+            bodies.Add(body);
 
         }
 

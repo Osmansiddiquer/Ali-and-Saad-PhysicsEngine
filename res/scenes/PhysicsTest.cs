@@ -74,6 +74,9 @@ public class PhysicsTest : World2D
         // Begin 2D mode with the camera
         //Raylib.BeginMode2D(camera);
 
+
+        Raylib.DrawText("Physics Test", 20, 20, 32, Color.Green);
+
         // Draw
         Draw();
 

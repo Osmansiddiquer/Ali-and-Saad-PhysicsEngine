@@ -19,10 +19,8 @@ internal class WorldPhysics
             }
         }
 
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
+        catch (Exception)
+        { }
     }
 
     private static void HandleCollisions(List<PhysicsBody2D> bodies)
