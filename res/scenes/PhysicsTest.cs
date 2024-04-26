@@ -77,9 +77,14 @@ public class PhysicsTest : World2D
 
         Raylib.DrawText("Physics Test", 20, 20, 32, Color.Green);
 
-        if (Raylib.IsKeyPressed(KeyboardKey.Left)) 
+        if (Raylib.IsKeyDown(KeyboardKey.Left)) 
         {
+            bodies[0].Rotate(-.2f);
+        }
 
+        else if (Raylib.IsKeyDown(KeyboardKey.Right))
+        {
+            bodies[0].Rotate(.2f);
         }
 
 
@@ -96,6 +101,9 @@ public class PhysicsTest : World2D
     // Draw
     private static void Draw()
     {
+
+        Raylib.HideCursor();
+
         // Ensure bodies are created (call once or in Ready)
         if (bodies.Count == 0) { 
             CreateStaticBody(new Vector2(640, 900), 0f, Vector2.One, 0.5f, 1200f, 100f, out StaticBody2D staticBody);
@@ -132,6 +140,6 @@ public class PhysicsTest : World2D
         for (int i = 0; i < bodies.Count; i++) {
             RenderPhysicsObject(bodies[i], colors[i % 5]);
         }
-
+        Raylib.DrawText("<>", Raylib.GetMouseX(), Raylib.GetMouseY(), 32, Color.Green);
     }
 }
