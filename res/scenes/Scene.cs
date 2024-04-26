@@ -74,10 +74,6 @@ public class Scene : World2D
 
     public static void Update(double delta)
     {
-        foreach(PhysicsBody2D body in bodies)
-        {
-            body.Update();
-        }
         //// Create a camera centered at the middle of the screen
         //Camera2D camera = new Camera2D(Vector2.Zero, Vector2.Zero, 0, 1f);
 

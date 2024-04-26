@@ -119,11 +119,11 @@ public class RigidCircle2D : RigidBody2D
         // Calculate the area for the rigid body
         float area = MathF.PI * radius * radius;
 
-        errorMessage = WorldCreation.ValidateParameters(area, density);
+        // errorMessage = WorldCreation.ValidateParameters(area, density);
 
         // Exit function if there is an error
-        if (!string.IsNullOrEmpty(errorMessage))
-            throw new Exception(errorMessage);
+        //if (!string.IsNullOrEmpty(errorMessage))
+        //    throw new Exception(errorMessage);
 
 
         // For Any Object, Mass = Volume * Denisty
