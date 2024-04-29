@@ -75,7 +75,6 @@ public abstract class PhysicsBody2D
         AABBUpdateRequired = true;
 
         Ready();
-        startLoop();
     }
 
     // Calculate new position of vertices after transformation
@@ -204,13 +203,5 @@ public abstract class PhysicsBody2D
     public virtual void Update() { }
 
     public virtual void Ready() { }
-
-    private void startLoop()
-    {
-        while (!Raylib.WindowShouldClose())
-        {
-            Update();
-        }
-    }
 }
 

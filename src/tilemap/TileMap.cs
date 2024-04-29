@@ -13,34 +13,23 @@ public struct TileMapProps
     public int size;
 }
 
-public class Box
-{
-    public int left;
-    public int right;
-    public int y;
-
-    public override string ToString()
-    {
-        return $"Left: {left}, Right: {right}, Y: {y}";
-    }
-}
 
 internal static class TileMap
 {
     public static void GenerateTileMapTerrain(int[,] grid, int size, List<PhysicsBody2D> bodies)
     {
         // Find all the boxes in the grid
-        List<Box> boxes = FindBoxes(grid);
+        List<Rectangle> boxes = FindBoxes(grid);
 
         // Create the bodies
         AddBodies(boxes, bodies, size);
     }
-    public static List<Box> FindBoxes(int[,] grid)
+    public static List<Rectangle> FindBoxes(int[,] grid)
     {
         int rows = grid.GetLength(0);
         int cols = grid.GetLength(1);
 
-        List<Box> boxes = new List<Box>();
+        List<Rectangle> boxes = new List<Rectangle>();
 
         for (int i = 0; i < rows; i++)
         {
@@ -54,29 +43,49 @@ internal static class TileMap
                     {
                         j++;
                     }
-                    end = j - 1;
-                    boxes.Add(new Box() { left = start, right = end, y = i });
+                    end = j;
+                    int width = end - start;
+                    boxes.Add(new Rectangle(start, i, width, 1));
                 }
             }
         }
-
+        mergeVerticalBoxes(boxes);
         return boxes;
     }
 
 
-    public static void AddBodies(List<Box> boxes, List<PhysicsBody2D> bodies, int size)
+    public static void AddBodies(List<Rectangle> boxes, List<PhysicsBody2D> bodies, int size)
     {
         Console.WriteLine(boxes.Count);
         // Iterate through the edges and create the bodies
-        foreach (Box box in boxes)
+        foreach (Rectangle box in boxes)
         {
             Console.WriteLine(box);
-            Vector2 position = (size * new Vector2((box.left + box.right + 1) / 2.0f, box.y + 1 / 2.0f));
+            Vector2 position = size * (box.Position + new Vector2(box.Width / 2.0f, box.Height / 2.0f));
 
             Console.WriteLine(position);
-            float width = (box.right - box.left + 1) * size;
-            WorldCreation.CreateStaticBody(position, 0f, Vector2.One, 0.5f, width, size, out StaticBody2D staticBody);
+            float width = box.Width * size;
+            float height = box.Height * size;
+            WorldCreation.CreateStaticBody(position, 0f, Vector2.One, 0.5f, width, height, out StaticBody2D staticBody);
             bodies.Add(staticBody);
+        }
+    }
+
+    private static void mergeVerticalBoxes(List<Rectangle> boxes)
+    {
+        for (int i = 0; i < boxes.Count; i++)
+        {
+            for (int j = i + 1; j < boxes.Count; j++)
+            {
+                if (boxes[i].X == boxes[j].X && boxes[i].Width == boxes[j].Width)
+                {
+                    if (boxes[i].Y + boxes[i].Height == boxes[j].Y)
+                    {
+                        boxes[i] = new Rectangle(boxes[i].X, boxes[i].Y, boxes[i].Width, boxes[i].Height + boxes[j].Height);
+                        boxes.RemoveAt(j);
+                    }
+                }
+            }
         }
     }
 
@@ -90,11 +99,11 @@ internal static class TileMap
 
                 if (textureMap[i, j] != 0)
                 {
-                    backGround[i, j] = Raylib.LoadTexture("C:/Users/saadk/Desktop/NUST/Semester 2/Object Oriented Programming/End Semester Project/Physics Engine/res/scenes/background1.png");
+                    //backGround[i, j] = Raylib.LoadTexture("C:/Users/saadk/Desktop/NUST/Semester 2/Object Oriented Programming/End Semester Project/Physics Engine/res/scenes/background1.png");
                 }
                 else
                 {
-                    backGround[i, j] = Raylib.LoadTexture("C:/Users/saadk/Desktop/NUST/Semester 2/Object Oriented Programming/End Semester Project/Physics Engine/res/scenes/Terrain (16x16).png");
+                    //backGround[i, j] = Raylib.LoadTexture("C:/Users/saadk/Desktop/NUST/Semester 2/Object Oriented Programming/End Semester Project/Physics Engine/res/scenes/Terrain (16x16).png");
                 }
             }
         }
