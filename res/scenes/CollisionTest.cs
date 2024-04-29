@@ -7,7 +7,7 @@ using GameEngine.src.input;
 
 namespace GameEngine.res.scenes;
 
-public class PhysicsTest : World2D
+public class CollisionTest : World2D
 {
     // Member variables
     private static List<PhysicsBody2D> bodies;
@@ -15,7 +15,7 @@ public class PhysicsTest : World2D
     //public static TileMapProps tileMapProps;
 
     // Constructor for initialization
-    static PhysicsTest()
+    static CollisionTest()
     {
         colors = new List<Color>() { 
             Color.White, 
@@ -69,7 +69,7 @@ public class PhysicsTest : World2D
         //Raylib.BeginMode2D(camera);
 
 
-        Raylib.DrawText("Physics Test", 20, 20, 32, Color.Green);
+        Raylib.DrawText("Collision Test", 20, 20, 32, Color.Green);
         float rotation = InputMap.GetDirection("left", "right") / 5;
 
         // Draw

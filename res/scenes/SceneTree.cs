@@ -18,7 +18,7 @@ public static class SceneTree
         switch (scene)
         {
             case 0:
-                PhysicsTest.Update(delta);
+                CollisionTest.Update(delta);
                 break;
 
             case 1:
