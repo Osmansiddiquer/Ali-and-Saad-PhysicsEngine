@@ -146,7 +146,7 @@ internal class WorldCreation
 
     // Make a function to make a projectile which is a rigidbody with name as projectile
     public static void CreateProjectileBody(Vector2 position, Vector2 scale, float density, float restitution,
-       float radius, Vector2 velocity, List<PhysicsBody2D> bodies, out ProjectileBody2D body2D)
+       float radius, Vector2 velocity, List<PhysicsBody2D> bodies, out RigidBody2D body2D)
     {
         body2D = null;
 
@@ -168,7 +168,7 @@ internal class WorldCreation
         };
 
         // Create a rigid body 
-        body2D = new ProjectileBody2D(position, scale, mass, density, area, restitution, radius, components, velocity, bodies);
+        body2D = new ProjectileBody2D(position, scale, area, radius, components, velocity, bodies);
     }
 
     private static void ValidateParameters(float area, float density = 0)

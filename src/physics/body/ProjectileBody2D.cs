@@ -7,8 +7,7 @@ public class ProjectileBody2D : RigidCircle2D
 {
     private List<PhysicsBody2D> bodies;
 
-    internal ProjectileBody2D(Vector2 position, Vector2 scale, float mass, float density, float area, float restitution,
-        float radius, List<Component> components, Vector2 velocity, List<PhysicsBody2D> bodies, int time) : base(position, scale, mass,density, area, restitution, radius, components)
+    internal ProjectileBody2D(Vector2 position, Vector2 scale, float area, float radius, List<Component> components, Vector2 velocity, List<PhysicsBody2D> bodies, int time) : base(position, scale, 1, 1, area, 1, radius, components)
     {
         // Initialize the projectile
         this.bodies = bodies;
@@ -21,9 +20,8 @@ public class ProjectileBody2D : RigidCircle2D
         timer.Enabled = true;
     }
 
-    internal ProjectileBody2D(Vector2 position, Vector2 scale, float mass, float density, float area, float restitution,
-        float radius, List<Component> components, Vector2 velocity, List<PhysicsBody2D> bodies) :
-        this(position, scale, mass, density, area, restitution, radius, components, velocity, bodies, 2000) { }
+    internal ProjectileBody2D(Vector2 position, Vector2 scale, float area, float radius, List<Component> components, Vector2 velocity, List<PhysicsBody2D> bodies) :
+        this(position, scale, area, radius, components, velocity, bodies, 2000) { }
 
     public override void ProjectileHit (PhysicsBody2D body)
     {

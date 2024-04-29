@@ -19,7 +19,7 @@ public class World2D
         float width, float height, out StaticBody2D body2D) => WorldCreation.CreateStaticBody(position, rotation, scale, restitution, width, height, out body2D);
 
     protected static void CreateProjectileBody(Vector2 position, Vector2 scale, float density, float restitution,
-       float radius, Vector2 velocity, List<PhysicsBody2D> bodies, out ProjectileBody2D body2D) => WorldCreation.CreateProjectileBody(position, scale, density, restitution, radius, velocity, bodies, out body2D);
+       float radius, Vector2 velocity, List<PhysicsBody2D> bodies, out RigidBody2D body2D) => WorldCreation.CreateProjectileBody(position, scale, density, restitution, radius, velocity, bodies, out body2D);
 
     protected static void HandlePhysics(List<PhysicsBody2D> bodies, double delta) => WorldPhysics.HandlePhysics(bodies, delta);
 

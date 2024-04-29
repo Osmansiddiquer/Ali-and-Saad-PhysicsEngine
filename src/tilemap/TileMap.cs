@@ -7,8 +7,8 @@ namespace GameEngine.src.tilemap;
 
 public struct TileMapProps
 {
-    public int[,] tilemap;
-    public int[,] texturemap;
+    public int[,] tileMap;
+    public int[,] textureMap;
     public Texture2D[,]? backGround;
     public int size;
 }
@@ -99,11 +99,11 @@ internal static class TileMap
 
                 if (textureMap[i, j] != 0)
                 {
-                    //backGround[i, j] = Raylib.LoadTexture("C:/Users/saadk/Desktop/NUST/Semester 2/Object Oriented Programming/End Semester Project/Physics Engine/res/scenes/background1.png");
+                    backGround[i, j] = Raylib.LoadTexture("C:/Users/saadk/Desktop/NUST/Semester 2/Object Oriented Programming/End Semester Project/sprites/Dungeon Tile Set/Dungeon Tile Set");
                 }
                 else
                 {
-                    //backGround[i, j] = Raylib.LoadTexture("C:/Users/saadk/Desktop/NUST/Semester 2/Object Oriented Programming/End Semester Project/Physics Engine/res/scenes/Terrain (16x16).png");
+                    backGround[i, j] = Raylib.LoadTexture("C:/Users/saadk/Desktop/NUST/Semester 2/Object Oriented Programming/End Semester Project/Physics Engine/res/scenes/Terrain (16x16).png");
                 }
             }
         }
@@ -135,9 +135,9 @@ internal static class TileMap
     public static void GenerateTileMap(ref TileMapProps tileMapProps, List<PhysicsBody2D> bodies)
     {
         tileMapProps.size = (int)Math.Pow(2, tileMapProps.size + 2);
-        GenerateTileMapTerrain(tileMapProps.tilemap, tileMapProps.size, bodies);
+        GenerateTileMapTerrain(tileMapProps.tileMap, tileMapProps.size, bodies);
 
-        Texture2D[,] backGround = GenerateBackground(tileMapProps.texturemap);
+        Texture2D[,] backGround = GenerateBackground(tileMapProps.textureMap);
 
         tileMapProps.backGround = backGround;
     }

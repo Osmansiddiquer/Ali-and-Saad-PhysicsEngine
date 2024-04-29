@@ -11,10 +11,10 @@ public class TilemapTest : World2D
     private static List<PhysicsBody2D> bodies;
     private static List<Color> colors;
 
-    static TilemapTest() 
+    static TilemapTest()
     {
         bodies = new List<PhysicsBody2D>();
-        
+
         colors = new List<Color>() {
             Color.White,
             Color.Red,
@@ -26,7 +26,7 @@ public class TilemapTest : World2D
 
         tileMapProps = new TileMapProps()
         {
-            tilemap = new int[,]
+            tileMap = new int[,]
                 {
                     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -45,7 +45,7 @@ public class TilemapTest : World2D
                     {0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0}
 
                 },
-            texturemap = new int[,]
+            textureMap = new int[,]
                 {
                     {1, 1, 1},
                     {1, 1, 1},

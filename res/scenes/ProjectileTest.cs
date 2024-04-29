@@ -46,7 +46,7 @@ public class ProjectileTest : World2D
             velocity /= 128;
 
             // Create projectile
-            CreateProjectileBody(spawnPosition, Vector2.One, 1f, 0.5f, 16f, velocity * 0.2f, bodies, out ProjectileBody2D body);
+            CreateProjectileBody(spawnPosition, Vector2.One, 1f, 0.5f, 16f, velocity * 0.2f, bodies, out RigidBody2D body);
             bodies.Add(body);
 
         }
