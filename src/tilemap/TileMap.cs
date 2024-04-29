@@ -99,7 +99,7 @@ internal static class TileMap
 
                 if (textureMap[i, j] != 0)
                 {
-                    backGround[i, j] = Raylib.LoadTexture("C:/Users/saadk/Desktop/NUST/Semester 2/Object Oriented Programming/End Semester Project/sprites/Dungeon Tile Set/Dungeon Tile Set");
+                    backGround[i, j] = Raylib.LoadTexture("C:/Users/saadk/Desktop/NUST/Semester 2/Object Oriented Programming/End Semester Project/sprites/Dungeon Tile Set/Dungeon Tile Set.png");
                 }
                 else
                 {
@@ -117,9 +117,8 @@ internal static class TileMap
         {
             for (int j = 0; j < backGround.GetLength(1); j++)
             {
-                Rectangle sourceRec = new Rectangle(0, 0, 48, 48);
+                Rectangle sourceRec = new Rectangle(16, 16, 64, 64);
                 Rectangle destRec = new Rectangle(j * size, i * size, size, size);
-                // Raylib.DrawTextureRec(backGround[i, j], sourceRec, new Vector2(i * 60, j * 60), Color.White);
 
                 Raylib.DrawTexturePro(backGround[i, j], sourceRec, destRec, new Vector2(0, 0), 0, Color.White);
             }

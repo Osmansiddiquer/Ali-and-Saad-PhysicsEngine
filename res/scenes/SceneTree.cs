@@ -14,6 +14,7 @@ public static class SceneTree
         InputMap.AssignKey("one", KeyboardKey.One);
         InputMap.AssignKey("two", KeyboardKey.Two);
         InputMap.AssignKey("three", KeyboardKey.Three);
+        InputMap.AssignKey("four", KeyboardKey.Four);
     }
 
     public static void Update(double delta)
@@ -21,31 +22,30 @@ public static class SceneTree
         if (InputMap.IsKeyPressed("one"))
             scene = 0;
 
-
         else if (InputMap.IsKeyPressed("two"))
             scene = 1;
 
         else if (InputMap.IsKeyPressed("three"))
             scene = 2;
+        else if (InputMap.IsKeyPressed("four"))
+            scene = 3;
 
         switch (scene)
         {
             case 0:
                 CollisionTest.Update(delta);
                 break;
-
             case 1:
                 ProjectileTest.Update(delta);
                 break;
-
             case 2:
                 TilemapTest.Update(delta);
                 break;
-
+            case 3:
+                PlayerTest.Update(delta);
+                break;
             default:
                 break;
         }
     }
-
-
 }

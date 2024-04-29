@@ -1,18 +1,20 @@
 ﻿using GameEngine.src.physics.body;
-using GameEngine.src.tilemap;
 using GameEngine.src.world;
 using Raylib_cs;
+using System.Numerics;
 using GameEngine.src.tilemap;
+using GameEngine.src.input;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace GameEngine.res.scenes;
 
-public class TilemapTest : World2D
-{
+internal class PlayerTest : World2D
+    {
     private static TileMapProps tileMapProps;
     private static List<PhysicsBody2D> bodies;
     private static List<Color> colors;
 
-    static TilemapTest()
+    static PlayerTest()
     {
         bodies = new List<PhysicsBody2D>();
 
@@ -41,7 +43,7 @@ public class TilemapTest : World2D
                     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0},
-                    {0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0},
+                    {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
                     {0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0},
                     {0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0}
 
@@ -56,23 +58,41 @@ public class TilemapTest : World2D
         };
 
         TileMap.GenerateTileMap(ref tileMapProps, bodies);
+
+        // Create player
+        WorldCreation.CreatePlayerBody(new Vector2(100, 100), 0, Vector2.One, 1f, 64f, 128f, out RigidBody2D player);
+        bodies.Add(player);
+
         Raylib.ShowCursor();
+
     }
 
     public static void Update(double delta)
     {
-        Raylib.DrawText("Tilemap Test", 20, 20, 32, Color.Green);
+        Raylib.DrawText("Player Test", 20, 20, 32, Color.Green);
         Draw();
+        HandlePhysics(bodies, delta);
     }
 
     private static void Draw()
     {
+        if (InputMap.IsLMBPressed())
+        {
+            // Create box rigid body
+            CreateRigidBody(Raylib.GetMousePosition(), 0f, Vector2.One, 1f, 0.5f, 64f, 64f, out RigidBody2D rigidBody);
+            bodies.Add(rigidBody);
+        }
+
         for (int i = 0; i < bodies.Count; i++)
         {
             RenderPhysicsObject(bodies[i], colors[i % 5]);
+            if (bodies[i] is PlayerBody2D)
+            {
+                PlayerBody2D player = (PlayerBody2D)bodies[i];
+                player.DrawPlayer();
+            }
         }
-
-        TileMap.DrawBackground(tileMapProps);
     }
 
 }
+

@@ -190,5 +190,30 @@ internal class WorldCreation
 
         else return;
     }
-}
 
+
+    internal static void CreatePlayerBody(Vector2 position, float rotation, Vector2 scale, float density, float width, float height, out RigidBody2D body2D)
+    {
+
+        body2D = null;
+
+        // Calculate the area for the rigid body
+        float area = width * height;
+
+        ValidateParameters(area, density);
+
+        // For Any Object, Mass = Volume * Denisty
+        // Where Volume = Area * Depth in 3D space
+        // For 2D plane, we can assume depth to be 1
+        // Convert mass into kg
+
+        List<Component> components = new List<Component>
+            {
+                new Gravity(),
+                new Motion()
+            };
+
+        // Create a rigid body 
+        body2D = new PlayerBody2D(position, rotation, scale, width, height, components);
+    }
+}
