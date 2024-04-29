@@ -7,8 +7,8 @@ namespace GameEngine.src.tilemap;
 
 public struct TileMapProps
 {
-    public int[,] tileMap;
-    public int[,] textureMap;
+    public int[,] tilemap;
+    public int[,] texturemap;
     public Texture2D[,]? backGround;
     public int size;
 }
@@ -70,10 +70,10 @@ internal static class TileMap
         // Iterate through the edges and create the bodies
         foreach (Box box in boxes)
         {
-            Console.WriteLine(box);
+            //Console.WriteLine(box);
             Vector2 position = (size * new Vector2((box.left + box.right + 1) / 2.0f, box.y + 1 / 2.0f));
 
-            Console.WriteLine(position);
+            //Console.WriteLine(position);
             float width = (box.right - box.left + 1) * size;
             WorldCreation.CreateStaticBody(position, 0f, Vector2.One, 0.5f, width, size, out StaticBody2D staticBody);
             bodies.Add(staticBody);
@@ -126,9 +126,9 @@ internal static class TileMap
     public static void GenerateTileMap(ref TileMapProps tileMapProps, List<PhysicsBody2D> bodies)
     {
         tileMapProps.size = (int)Math.Pow(2, tileMapProps.size + 2);
-        GenerateTileMapTerrain(tileMapProps.tileMap, tileMapProps.size, bodies);
+        GenerateTileMapTerrain(tileMapProps.tilemap, tileMapProps.size, bodies);
 
-        Texture2D[,] backGround = GenerateBackground(tileMapProps.textureMap);
+        Texture2D[,] backGround = GenerateBackground(tileMapProps.texturemap);
 
         tileMapProps.backGround = backGround;
     }

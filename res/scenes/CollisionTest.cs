@@ -12,7 +12,7 @@ public class CollisionTest : World2D
     // Member variables
     private static List<PhysicsBody2D> bodies;
     private static List<Color> colors;
-    //public static TileMapProps tileMapProps;
+
 
     // Constructor for initialization
     static CollisionTest()
@@ -27,31 +27,6 @@ public class CollisionTest : World2D
 
         bodies = new List<PhysicsBody2D>();
 
-        //tileMapProps = new TileMapProps()
-        //{
-        //    tileMap = new int[,]
-        //        {
-        //            {1, 1, 1, 1, 1, 1, 1, 0, 1, 0},
-        //            {0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-        //            {1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
-        //            {0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-        //            {1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
-        //            {0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-        //            {1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
-        //            {0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-        //            {1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
-        //            {0, 1, 0, 1, 0, 1, 0, 1, 0, 1}
-        //        },
-        //    textureMap = new int[,]
-        //        {
-        //            {1, 1, 1},
-        //            {1, 1, 1},
-        //            {1, 0, 2}
-        //        },
-        //    size = 4,
-        //};
-
-        //TileMap.GenerateTileMap(ref tileMapProps, bodies);
     }
 
     public static void Update(double delta)
