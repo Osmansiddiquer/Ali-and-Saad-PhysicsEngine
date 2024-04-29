@@ -3,6 +3,7 @@ using GameEngine.src.world;
 using Raylib_cs;
 using System.Numerics;
 using GameEngine.src.physics.body;
+using GameEngine.src.input;
 
 namespace GameEngine.res.scenes;
 
@@ -69,20 +70,12 @@ public class PhysicsTest : World2D
 
 
         Raylib.DrawText("Physics Test", 20, 20, 32, Color.Green);
-
-        if (Raylib.IsKeyDown(KeyboardKey.Left)) 
-        {
-            bodies[0].Rotate(-.2f);
-        }
-
-        else if (Raylib.IsKeyDown(KeyboardKey.Right))
-        {
-            bodies[0].Rotate(.2f);
-        }
-
+        float rotation = InputMap.GetDirection("left", "right") / 5;
 
         // Draw
         Draw();
+
+        bodies[0].Rotate(rotation);
 
         // End 2D mode
         //Raylib.EndMode2D();
@@ -109,7 +102,7 @@ public class PhysicsTest : World2D
 
         Vector2 scale = new Vector2((float)scaling, (float)scaling);
 
-        if (Raylib.IsMouseButtonPressed(MouseButton.Left)) {
+        if (InputMap.IsRMBPressed()) {
             
             // Create circle rigid body
             CreateRigidBody(Raylib.GetMousePosition(), scale, 1f, 0.5f, 32f, out RigidBody2D rigidBody);
@@ -119,7 +112,7 @@ public class PhysicsTest : World2D
             // bodies.Add(new RigidCircle2D(Raylib.GetMousePosition(), Vector2.One, 1f, 0.5f, 32f));
         }
 
-        else if (Raylib.IsMouseButtonPressed(MouseButton.Right)) {
+        else if (InputMap.IsLMBPressed()) {
 
             // Create box rigid body
             CreateRigidBody(Raylib.GetMousePosition(), 0f, scale, 1f, 0.5f, 64f, 64f, out RigidBody2D rigidBody);

@@ -1,4 +1,5 @@
-﻿using GameEngine.src.main;
+﻿using GameEngine.src.input;
+using GameEngine.src.main;
 using GameEngine.src.physics.body;
 using GameEngine.src.world;
 using Raylib_cs;
@@ -39,7 +40,7 @@ public class ProjectileTest : World2D
         Raylib.DrawText("<>", Raylib.GetMouseX(), Raylib.GetMouseY(), 32, Color.Green);
         Raylib.HideCursor();
 
-        if (Raylib.IsMouseButtonPressed(MouseButton.Left))
+        if (InputMap.IsLMBPressed())
         {
             Vector2 velocity = (Raylib.GetMousePosition() - spawnPosition);
             velocity /= 128;
