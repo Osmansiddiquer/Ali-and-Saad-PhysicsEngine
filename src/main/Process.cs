@@ -27,11 +27,7 @@ internal class Process
         Raylib.InitWindow(Properties.ScreenWidth, 
             Properties.ScreenHeight, Properties.Title);
 
-        Raylib.SetTargetFPS(Properties.MaxFPS); // Set max 
-
-
-        // Begin simulation
-        Scene.Ready();
+        Raylib.SetTargetFPS(Properties.MaxFPS); // Set max FPS
     }
 
     // Game loop
@@ -39,7 +35,6 @@ internal class Process
     {
         for (; !Raylib.WindowShouldClose();)
         {
-            
             Raylib.BeginDrawing();
             Raylib.ClearBackground(Color.Black);
 
@@ -55,8 +50,8 @@ internal class Process
                 Raylib.DrawFPS((int)fpsPositionX, (int)fpsPositionY);
             }
 
-            // Update the simulation program
-            Scene.Update(Raylib.GetFrameTime() / 144);
+            double delta = Raylib.GetFrameTime() / (256);
+            SceneTree.Update(delta);
 
             Raylib.EndDrawing();
         }

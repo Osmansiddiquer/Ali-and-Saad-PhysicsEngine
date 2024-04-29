@@ -7,8 +7,8 @@ namespace GameEngine.src.tilemap;
 
 public struct TileMapProps
 {
-    public int[,] tileMap;
-    public int[,] textureMap;
+    public int[,] tilemap;
+    public int[,] texturemap;
     public Texture2D[,]? backGround;
     public int size;
 }
@@ -135,9 +135,9 @@ internal static class TileMap
     public static void GenerateTileMap(ref TileMapProps tileMapProps, List<PhysicsBody2D> bodies)
     {
         tileMapProps.size = (int)Math.Pow(2, tileMapProps.size + 2);
-        GenerateTileMapTerrain(tileMapProps.tileMap, tileMapProps.size, bodies);
+        GenerateTileMapTerrain(tileMapProps.tilemap, tileMapProps.size, bodies);
 
-        Texture2D[,] backGround = GenerateBackground(tileMapProps.textureMap);
+        Texture2D[,] backGround = GenerateBackground(tileMapProps.texturemap);
 
         tileMapProps.backGround = backGround;
     }

@@ -1,6 +1,5 @@
 ﻿using System.Numerics;
 using GameEngine.src.physics.component;
-using GameEngine.src.world;
 
 namespace GameEngine.src.physics.body;
 
@@ -31,55 +30,38 @@ public class RigidBody2D : PhysicsBody2D
     }
 
     // Self explanatory 
-    public override void Translate(Vector2 direction)
-    {
-        Transform.Translate(direction);
-        VerticesUpdateRequired = true;
-        AABBUpdateRequired = true;
-    }
+    // Translate the physics body by the specified direction vector
 
-    public override void Rotate(float angle)
-    {
-        Transform.Rotate(angle);
-        VerticesUpdateRequired = true;
-        AABBUpdateRequired = true;
-    }
 
-    public override void Scale(Vector2 factor)
-    {
-        Transform.Scaling(factor);
-        VerticesUpdateRequired = true;
-        AABBUpdateRequired = true;
-    }
-
+    // Apply a force to the physics body
     public override void ApplyForce(Vector2 amount)
     {
         Force = amount;
     }
 
-    // Add or remove components 
-    public void AddComponent(Component component) { 
-        // Check if same type of component already exists
-        if (components.Exists(components => components.GetType() == component.GetType()))
-            return;
-        components.Add(component); 
-    }
-
-    // Call this function: body.DelComponent(typeof(Gravity));
-    public void DelComponent(Type componentToRemove) 
+    // Add a component to the physics body
+    public void AddComponent(Component component)
     {
-        // Delete a component from the body
-        components.RemoveAll(components => components.GetType() == componentToRemove);
+        if (!components.Exists(c => c.GetType() == component.GetType()))
+            components.Add(component);
     }
 
-    // Run the list of components
+    // Remove a component from the physics body
+    public void RemoveComponent(Type componentToRemove)
+    {
+        components.RemoveAll(c => c.GetType() == componentToRemove);
+    }
+
+    // Run all components attached to the physics body in parallel
     internal override void RunComponents(double delta)
     {
-        foreach (Component component in components)
+        Parallel.ForEach(components, component =>
         {
             component.RunComponent(this, delta);
-        }
+        });
     }
+
+
 }
 
 public class RigidBox2D : RigidBody2D
@@ -111,39 +93,4 @@ public class RigidCircle2D : RigidBody2D
         MomentOfInertia = (1f / 2) * mass * (radius * radius);
     }
 
-    internal RigidCircle2D(Vector2 position, Vector2 scale, float density, float restitution,
-        float radius) : this (position, scale, 0f, density, 0f, restitution, radius, new List<Component>())
-    {
-        string errorMessage;
-
-        // Calculate the area for the rigid body
-        float area = MathF.PI * radius * radius;
-
-        // errorMessage = WorldCreation.ValidateParameters(area, density);
-
-        // Exit function if there is an error
-        //if (!string.IsNullOrEmpty(errorMessage))
-        //    throw new Exception(errorMessage);
-
-
-        // For Any Object, Mass = Volume * Denisty
-        // Where Volume = Area * Depth in 3D space
-        // For 2D plane, we can assume depth to be 1
-        // Convert mass into kg
-        float mass = (area * density) / 1000;
-        MomentOfInertia = (1f / 2) * mass * (radius * radius);
-
-        List<Component> components = new List<Component>
-        {
-            new Gravity(),
-            new Motion()
-        };
-
-        this.components = components;
-    }
-
-    public override void Update()
-    {
-        System.Console.WriteLine("Updating Circle");
-    }
 }

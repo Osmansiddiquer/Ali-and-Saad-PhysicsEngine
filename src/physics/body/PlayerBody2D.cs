@@ -5,6 +5,6 @@ namespace GameEngine.src.physics.body;
 public class PlayerBody2D : RigidBox2D
 {
     public PlayerBody2D(Vector2 position, float rotation, Vector2 scale, float width, float height, List<Component> components) :
-        base(position, rotation, scale, 70, 0.985f, width * height, 0f, width, height, components) { }
+        base(position, rotation, scale, 0.985f * width * height, 0.985f, width * height, 0f, width, height, components) { }
 }
 

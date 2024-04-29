@@ -5,7 +5,6 @@ using System.Numerics;
 #pragma warning disable CS8618 // Non nullable field must have non null value when exiting constructor.
 
 namespace GameEngine.src.physics.body;
-
 public enum ShapeType
 {
     Circle, Box
@@ -30,33 +29,11 @@ public abstract class PhysicsBody2D
     protected bool AABBUpdateRequired;
 
     // Current collision state
-    private bool isOnFloor;
-    public bool IsOnFloor
-    {
-        get { return isOnFloor; }
-        internal set { isOnFloor = value; }
-    }
-
-    private bool isOnCeiling;
-    public bool IsOnCeiling
-    {
-        get { return isOnCeiling; }
-        internal set { isOnCeiling = value; }
-    }
-
-    private bool isOnWallR;
-    public bool IsOnWallR
-    {
-        get { return isOnWallR; }
-        internal set { isOnWallR = value; }
-    }
-
-    private bool isOnWallL;
-    public bool IsOnWallL
-    {
-        get { return isOnWallL; }
-        internal set { isOnWallL = value; }
-    }
+    public bool IsOnFloor { get; internal set; }
+    public bool IsOnCeiling { get; internal set; }
+    public bool IsOnWallR { get; internal set; }
+    public bool IsOnWallL { get; internal set; }
+    public bool HandleCollision { get; set; }
 
     // Linear motion attributes
     public Vector2 LinVelocity { get; internal set; }
@@ -68,140 +45,140 @@ public abstract class PhysicsBody2D
     {
         // Initialize physical properties
         Transform = new Transform2D(position, rotation, scale);
-        Dimensions = new Dimensions2D();
-        Material = new Material2D();
+
+        HandleCollision = true;
 
         VerticesUpdateRequired = true;
         AABBUpdateRequired = true;
-
-        Ready();
     }
 
     // Calculate new position of vertices after transformation
     internal Vector2[] GetTransformedVertices()
     {
-        if (VerticesUpdateRequired)
-        {
-            Vector2 position = Transform.Translation;
-            float rotation = Transform.Rotation * MathF.PI / 180f;
-            Vector2 scale = Transform.Scale;
+        // Return if no need to update vertices
+        if (!VerticesUpdateRequired)
+            return TransformedVertices;
 
-            // Create separate matrices for individual transformations
-            Matrix3x2 translationMatrix = Matrix3x2.CreateTranslation(position);
-            Matrix3x2 rotationMatrix = Matrix3x2.CreateRotation(rotation);
-            Matrix3x2 scalingMatrix = Matrix3x2.CreateScale(scale);
+        Vector2 position = Transform.Translation;
+        float rotation = Transform.Rotation * MathF.PI / 180f; // Convert to radians
+        Vector2 scale = Transform.Scale;
 
-            // Combine transformations in desired order
-            Matrix3x2 transformationMatrix = scalingMatrix * rotationMatrix * translationMatrix;
+        // Create a transformation matrix
+        Matrix3x2 transformationMatrix = Matrix3x2.CreateScale(scale) *
+                                         Matrix3x2.CreateRotation(rotation) *
+                                         Matrix3x2.CreateTranslation(position);
 
-            // Update transformed vertices using the combined matrix n bn
-            for (int i = 0; i < Vertices.Length; i++)
-                TransformedVertices[i] = Vector2.Transform(Vertices[i], transformationMatrix);
-        }
+        // Update transformed vertices using the transformation matrix
+        for (int i = 0; i < Vertices.Length; i++)
+            TransformedVertices[i] = Vector2.Transform(Vertices[i], transformationMatrix);
 
-        VerticesUpdateRequired = false; // No further need to update vertices
+        VerticesUpdateRequired = false; // Mark vertices as updated
         return TransformedVertices;
     }
 
     // Calculate new AABB after transformation
     internal AxisAlignedBoundingBox GetAABB()
     {
-        if (AABBUpdateRequired)
+        // Return if no need to update AABB
+        if (!AABBUpdateRequired)
+            return AABB;
+
+        // Otherwise create new AABB based on shape
+        switch (Shape)
         {
-            float minX = float.PositiveInfinity;
-            float minY = float.PositiveInfinity;
+            case ShapeType.Box:
+                // Get transformed vertices
+                Vector2[] vertices = GetTransformedVertices();
 
-            float maxX = float.NegativeInfinity;
-            float maxY = float.NegativeInfinity;
+                // Find min and max position of edges using vertices
+                float minX = float.PositiveInfinity, minY = float.PositiveInfinity;
+                float maxX = float.NegativeInfinity, maxY = float.NegativeInfinity;
 
-            switch (Shape)
-            {
-                // Calculate new min and max values for AABB
-                case ShapeType.Box:
-                    Vector2[] vertices = GetTransformedVertices();
+                foreach (Vector2 vertex in vertices)
+                {
+                    minX = Math.Min(minX, vertex.X);
+                    minY = Math.Min(minY, vertex.Y);
+                    maxX = Math.Max(maxX, vertex.X);
+                    maxY = Math.Max(maxY, vertex.Y);
+                }
 
-                    // Find min and max position of edges using vertices
-                    foreach (Vector2 vertex in vertices)
-                    {
-                        if (vertex.X < minX) minX = vertex.X;
-                        if (vertex.Y < minY) minY = vertex.Y;
+                AABB = new AxisAlignedBoundingBox(minX, minY, maxX, maxY);
+                break;
 
-                        if (vertex.X > maxX) maxX = vertex.X;
-                        if (vertex.Y > maxY) maxY = vertex.Y;
-                    }
+            case ShapeType.Circle:
 
-                    break;
+                // Calculate AABB based on circle radius
+                float radius = Dimensions.Radius;
+                AABB = new AxisAlignedBoundingBox(Transform.Translation.X - radius, Transform.Translation.Y - radius,
+                                                   Transform.Translation.X + radius, Transform.Translation.Y + radius);
+                break;
 
-                // Find min and max position fo edges using radius
-                case ShapeType.Circle:
-                    minX = Transform.Translation.X - Dimensions.Radius;
-                    minY = Transform.Translation.Y - Dimensions.Radius;
-
-                    maxX = Transform.Translation.X + Dimensions.Radius;
-                    maxY = Transform.Translation.Y + Dimensions.Radius;
-
-                    break;
-
-                default: throw new Exception("[ERROR]: Invalid ShapeType");
-            }
-
-            AABB = new AxisAlignedBoundingBox(minX, minY, maxX, maxY);
+            default:
+                throw new Exception("[ERROR]: Invalid ShapeType");
         }
 
-        AABBUpdateRequired = false; // No further need to update AABB
+        AABBUpdateRequired = false; // Mark AABB as updated
         return AABB;
     }
 
     // Map the vertices to a box shape
     protected void MapVerticesBox()
     {
-        Vertices = CreateVerticesBox(Dimensions.Width, Dimensions.Height);
+        float width = Dimensions.Width;
+        float height = Dimensions.Height;
+
+        // Define vertices of the box shape
+        Vertices = new Vector2[]
+        {
+        new Vector2(-width / 2f, height / 2f),   // Top-left
+        new Vector2(width / 2f, height / 2f),    // Top-right
+        new Vector2(width / 2f, -height / 2f),   // Bottom-right
+        new Vector2(-width / 2f, -height / 2f)   // Bottom-left
+        };
+
+        // Initialize TransformedVertices array
         TransformedVertices = new Vector2[Vertices.Length];
-    }
-
-    // Create vertices for the box shape
-    protected static Vector2[] CreateVerticesBox(float width, float height)
-    {
-        // Sides
-        float left = -width / 2f;
-        float right = left + width;
-
-        float bottom = -height / 2f;
-        float top = bottom + height;
-
-        // Array of vertices (stored as 2D vectors)
-        Vector2[] vertices = new Vector2[4];
-
-        // Top vertices
-        vertices[0] = new Vector2(left, top);
-        vertices[1] = new Vector2(right, top);
-
-        // Bottom vertices
-        vertices[2] = new Vector2(right, bottom);
-        vertices[3] = new Vector2(left, bottom);
-
-        return vertices;
     }
 
     internal void ResetCollisionState()
     {
         // Reset all collision-related properties to false 
-        isOnCeiling = false;
-        isOnFloor = false;
-        isOnWallL = false;
-        isOnWallR = false;
+        IsOnCeiling = false;
+        IsOnFloor = false;
+        IsOnWallL = false;
+        IsOnWallR = false;
+    }
+
+    public void Translate(Vector2 direction)
+    {
+        Transform.Translate(direction);
+        SetUpdateRequiredTrue(); // Mark vertices and AABB as dirty
+    }
+
+    // Rotate the physics body by the specified angle in radians
+    public void Rotate(float angle)
+    {
+        Transform.Rotate(angle);
+        SetUpdateRequiredTrue(); // Mark vertices and AABB as dirty
+    }
+
+    // Scale the physics body by the specified factor
+    public void Scale(Vector2 factor)
+    {
+        Transform.Scaling(factor);
+        SetUpdateRequiredTrue();
+    }
+
+    // Method to update vertices and AABB
+    private void SetUpdateRequiredTrue()
+    {
+        VerticesUpdateRequired = true;
+        AABBUpdateRequired = true;
     }
 
     // Methods to be overridden
     internal virtual void RunComponents(double delta) { }
     public virtual void ProjectileHit(PhysicsBody2D body) { }
-    public virtual void Translate(Vector2 direction) { }
-    public virtual void Rotate(float angle) { }
-    public virtual void Scale(Vector2 factor) { }
     public virtual void ApplyForce(Vector2 amount) { }
-
-    public virtual void Update() { }
-
-    public virtual void Ready() { }
 }
 
