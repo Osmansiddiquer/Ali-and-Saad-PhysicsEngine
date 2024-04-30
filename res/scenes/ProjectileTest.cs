@@ -25,11 +25,12 @@ public class ProjectileTest : World2D
 
         bodies = new List<PhysicsBody2D>();
         spawnPosition = new Vector2(Properties.ScreenWidth / 2, Properties.ScreenHeight / 2);
+
+        Raylib.HideCursor();
     }
 
     public override void Update(double delta)
     {
-        Raylib.DrawText("Projectile Test", 20, 20, 32, Color.Green);
 
         Draw();
         HandlePhysics(bodies, delta);
@@ -37,8 +38,7 @@ public class ProjectileTest : World2D
 
     private void Draw()
     {
-        Raylib.DrawText("<>", Raylib.GetMouseX(), Raylib.GetMouseY(), 32, Color.Green);
-        Raylib.HideCursor();
+        Raylib.DrawText("Projectile Test", 20, 20, 32, Color.Green);
 
         if (InputMap.IsLMBPressed())
         {
@@ -54,8 +54,10 @@ public class ProjectileTest : World2D
         // Update and draw each body
         for (int i = 0; i < bodies.Count; i++)
         {
-            RenderPhysicsObject(bodies[i], colors[i % 5]);
+            RenderCollisionShapes(bodies[i], colors[i % 5]);
         }
+
+        Raylib.DrawText("<>", Raylib.GetMouseX(), Raylib.GetMouseY(), 32, Color.Green);
     }
 
 

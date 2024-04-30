@@ -6,7 +6,7 @@ public class StaticBody2D : PhysicsBody2D
 {
     // Constructor
     internal StaticBody2D(Vector2 position, float rotation, Vector2 scale, float restitution, ShapeType shape) 
-        : base(position, rotation, scale)
+        : base(position, rotation)
     {
         // Keep restitution in valid range
         restitution = Math.Clamp(restitution, 0.0f, 1.0f);

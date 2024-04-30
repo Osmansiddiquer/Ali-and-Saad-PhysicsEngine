@@ -26,6 +26,8 @@ public class CollisionTest : World2D
         };
 
         bodies = new List<PhysicsBody2D>();
+
+        Raylib.HideCursor();
     }
 
     public override void Update(double delta)
@@ -42,8 +44,6 @@ public class CollisionTest : World2D
         // Begin 2D mode with the camera
         //Raylib.BeginMode2D(camera);
 
-
-        Raylib.DrawText("Collision Test", 20, 20, 32, Color.Green);
         float rotation = InputMap.GetDirection("left", "right") / 5;
 
         // Draw
@@ -61,8 +61,7 @@ public class CollisionTest : World2D
     // Draw
     private void Draw()
     {
-
-        Raylib.HideCursor();
+        Raylib.DrawText("Collision Test", 20, 20, 32, Color.Green);
 
         // Ensure bodies are created (call once or in Ready)
         if (bodies.Count == 0) { 
@@ -71,10 +70,12 @@ public class CollisionTest : World2D
 
         }
 
+        // Random
         Random random = new Random();
-        float scaling = (float)(random.NextDouble() * (1.1 - 0.9) + 0.9);
+        float x = (float)(random.NextDouble() * (1.2 - 1) + 1);
+        float y = (float)(random.NextDouble() * (1.2 - 1) + 1);
 
-        Vector2 scale = new Vector2((float)scaling, (float)scaling);
+        Vector2 scale = new Vector2((float)x, (float)y);
 
         if (InputMap.IsRMBPressed()) {
             
@@ -98,7 +99,7 @@ public class CollisionTest : World2D
 
         // Update and draw each body
         for (int i = 0; i < bodies.Count; i++) {
-            RenderPhysicsObject(bodies[i], colors[i % 5]);
+            RenderCollisionShapes(bodies[i], colors[i % 5]);
         }
         Raylib.DrawText("<>", Raylib.GetMouseX(), Raylib.GetMouseY(), 32, Color.Green);
     }

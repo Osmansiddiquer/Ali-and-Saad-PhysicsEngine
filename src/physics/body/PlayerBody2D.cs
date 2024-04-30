@@ -7,12 +7,12 @@ namespace GameEngine.src.physics.body;
 
 internal enum PlayerStates
 {
-    Idle,
-    Running,
-    Jumping,
-    Falling,
-    Crouching,
-    Dead
+    IDLE,
+    WALK,
+    JUMP,
+    FALL,
+    CROUCH,
+    DIE
 }
 
 internal struct Animation
@@ -34,11 +34,11 @@ public class PlayerBody2D : RigidBox2D
     internal PlayerStates State { get; set; }
 
     private List<Animation> animations;
-    public PlayerBody2D(Vector2 position, float rotation, Vector2 scale, float width, float height, List<Component> components) :
-        base(position, rotation, scale, 0.985f * width * height, 0.985f, width * height, 0f, width, height, components) 
+    public PlayerBody2D(Vector2 position, float rotation, float width, float height, List<Component> components) :
+        base(position, rotation, 0.985f * width * height, 0.985f, width * height, 0f, width, height, components) 
     {
         // Initialize the player
-        State = PlayerStates.Idle;
+        State = PlayerStates.IDLE;
         animations = new List<Animation>();
 
         // Initialize the player animations

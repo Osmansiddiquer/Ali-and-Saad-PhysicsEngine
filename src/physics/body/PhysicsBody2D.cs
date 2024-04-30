@@ -1,4 +1,5 @@
-﻿using GameEngine.src.physics.collision;
+﻿using GameEngine.src.helper;
+using GameEngine.src.physics.collision;
 using Raylib_cs;
 using System.Numerics;
 
@@ -41,10 +42,10 @@ public abstract class PhysicsBody2D
     public float MomentOfInertia { get; protected set; }
 
     // Constructor
-    public PhysicsBody2D(Vector2 position, float rotation, Vector2 scale)
+    public PhysicsBody2D(Vector2 position, float rotation)
     {
         // Initialize physical properties
-        Transform = new Transform2D(position, rotation, scale);
+        Transform = new Transform2D(position, rotation);
 
         HandleCollision = true;
 
@@ -60,12 +61,10 @@ public abstract class PhysicsBody2D
             return TransformedVertices;
 
         Vector2 position = Transform.Translation;
-        float rotation = Transform.Rotation * MathF.PI / 180f; // Convert to radians
-        Vector2 scale = Transform.Scale;
+        float rotation = MathExtra.Deg2Rad(Transform.Rotation); 
 
         // Create a transformation matrix
-        Matrix3x2 transformationMatrix = Matrix3x2.CreateScale(scale) *
-                                         Matrix3x2.CreateRotation(rotation) *
+        Matrix3x2 transformationMatrix = Matrix3x2.CreateRotation(rotation) *
                                          Matrix3x2.CreateTranslation(position);
 
         // Update transformed vertices using the transformation matrix
@@ -160,13 +159,6 @@ public abstract class PhysicsBody2D
     {
         Transform.Rotate(angle);
         SetUpdateRequiredTrue(); // Mark vertices and AABB as dirty
-    }
-
-    // Scale the physics body by the specified factor
-    public void Scale(Vector2 factor)
-    {
-        Transform.Scaling(factor);
-        SetUpdateRequiredTrue();
     }
 
     // Method to update vertices and AABB

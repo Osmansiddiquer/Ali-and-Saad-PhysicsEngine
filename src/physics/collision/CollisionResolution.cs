@@ -1,4 +1,5 @@
-﻿using GameEngine.src.physics.body;
+﻿using GameEngine.src.helper;
+using GameEngine.src.physics.body;
 using System.Numerics;
 
 namespace GameEngine.src.physics.collision;
@@ -105,8 +106,9 @@ internal static class CollisionResolution
             // Velocity induced by angular motion at contact points
             Vector2 normalRA = new Vector2(-rA.Y, rA.X);
             Vector2 normalRB = new Vector2(-rB.Y, rB.X);
-            Vector2 rotLinVelA = normalRA * bodyA.RotVelocity * MathF.PI / 180;
-            Vector2 rotLinVelB = normalRB * bodyB.RotVelocity * MathF.PI / 180;
+
+            Vector2 rotLinVelA = normalRA * MathExtra.Deg2Rad(bodyA.RotVelocity);
+            Vector2 rotLinVelB = normalRB * MathExtra.Deg2Rad(bodyB.RotVelocity);
 
             // Relative velocity
             Vector2 relativeVelocity =
@@ -146,10 +148,10 @@ internal static class CollisionResolution
             Vector2 rb = rBList[i];
 
             bodyA.LinVelocity -= impulse / bodyA.Material.Mass;
-            bodyA.RotVelocity -= (Cross(ra, impulse) / bodyA.MomentOfInertia) * (180f / MathF.PI);
+            bodyA.RotVelocity -= MathExtra.Cross(ra, impulse) / bodyA.MomentOfInertia * (180f / MathF.PI);
 
             bodyB.LinVelocity += impulse / bodyB.Material.Mass;
-            bodyB.RotVelocity += (Cross(rb, impulse) / bodyB.MomentOfInertia) * (180f / MathF.PI);
+            bodyB.RotVelocity += MathExtra.Cross(rb, impulse) / bodyB.MomentOfInertia * (180f / MathF.PI);
         }
 
         // Calculate friction impulses
@@ -223,17 +225,11 @@ internal static class CollisionResolution
             Vector2 rb = rBList[i];
 
             bodyA.LinVelocity -= frictionImpulse / bodyA.Material.Mass;
-            bodyA.RotVelocity -= Cross(ra, frictionImpulse) / bodyA.MomentOfInertia * (180f / MathF.PI);
+            bodyA.RotVelocity -= MathExtra.Cross(ra, frictionImpulse) / bodyA.MomentOfInertia * (180f / MathF.PI);
 
             bodyB.LinVelocity += frictionImpulse / bodyB.Material.Mass;
-            bodyB.RotVelocity += (Cross(rb, frictionImpulse) / bodyB.MomentOfInertia) * (180f / MathF.PI);
+            bodyB.RotVelocity += MathExtra.Cross(rb, frictionImpulse) / bodyB.MomentOfInertia * (180f / MathF.PI);
         }
-    }
-
-    public static float Cross(Vector2 a, Vector2 b)
-    {
-        // cz = ax * by − ay * bx
-        return a.X * b.Y - a.Y * b.X;
     }
 
 }

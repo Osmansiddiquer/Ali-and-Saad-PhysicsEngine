@@ -24,7 +24,6 @@ internal class WorldCreation
         // Get world transform and shape
         Vector2 position = body.Transform.Translation;
         float rotation = body.Transform.Rotation;
-        Vector2 scale = body.Transform.Scale;
 
         float width = body.Dimensions.Width;
         float height = body.Dimensions.Height;
@@ -36,14 +35,9 @@ internal class WorldCreation
         switch (body.Shape)
         {
             case ShapeType.Box:
-                // Calculate scaled size
-                Vector2 scaledSize = size * scale;
-
-                // Calculate position adjustment
-                Vector2 adjustmentBox = new Vector2((scaledSize.X - size.X) / 2, (scaledSize.Y - size.Y) / 2);
 
                 // Draw the rectangle
-                Raylib.DrawRectanglePro(new Rectangle(position - adjustmentBox, scaledSize), new Vector2(width / 2, height / 2), rotation, color);
+                Raylib.DrawRectanglePro(new Rectangle(position, size), new Vector2(width / 2, height / 2), rotation, color);
                 break;
 
             case ShapeType.Circle:
@@ -61,6 +55,8 @@ internal class WorldCreation
         float radius, out RigidBody2D body2D)
     {
         body2D = null;
+
+        radius *= Vector2.Distance(new Vector2(0, 0), scale);
 
         // Calculate the area for the rigid body
         float area = MathF.PI * radius * radius;
@@ -80,7 +76,7 @@ internal class WorldCreation
         float mass = (area * density) / 1000;
 
         // Create a rigid body 
-        body2D = new RigidCircle2D(position, scale, mass, density, area, restitution, radius, components);
+        body2D = new RigidCircle2D(position, mass, density, area, restitution, radius, components);
     }
 
     // Creates a Box RigidBody
@@ -89,6 +85,8 @@ internal class WorldCreation
     {
 
         body2D = null;
+
+        width *= scale.X; height *= scale.Y;
 
         // Calculate the area for the rigid body
         float area = width * height;
@@ -108,7 +106,7 @@ internal class WorldCreation
             };
 
         // Create a rigid body 
-        body2D = new RigidBox2D(position, rotation, scale, mass, density, area, restitution, width, height, components);
+        body2D = new RigidBox2D(position, rotation, mass, density, area, restitution, width, height, components);
 
     }
 
@@ -150,6 +148,8 @@ internal class WorldCreation
     {
         body2D = null;
 
+        radius *= Vector2.Distance(new Vector2(0, 0), scale);
+
         // Calculate the area for the rigid body
         float area = MathF.PI * radius * radius;
 
@@ -168,7 +168,7 @@ internal class WorldCreation
         };
 
         // Create a rigid body 
-        body2D = new ProjectileBody2D(position, scale, area, radius, components, velocity, bodies);
+        body2D = new ProjectileBody2D(position, area, radius, components, velocity, bodies);
     }
 
     private static void ValidateParameters(float area, float density = 0)
@@ -214,6 +214,6 @@ internal class WorldCreation
             };
 
         // Create a rigid body 
-        body2D = new PlayerBody2D(position, rotation, scale, width, height, components);
+        body2D = new PlayerBody2D(position, rotation, width, height, components);
     }
 }

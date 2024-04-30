@@ -4,7 +4,6 @@ using Raylib_cs;
 using System.Numerics;
 using GameEngine.src.tilemap;
 using GameEngine.src.input;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace GameEngine.res.scenes;
 
@@ -69,13 +68,14 @@ internal class PlayerTest : World2D
 
     public override void Update(double delta)
     {
-        Raylib.DrawText("Player Test", 20, 20, 32, Color.Green);
         Draw();
         HandlePhysics(bodies, delta);
     }
 
     private void Draw()
     {
+        Raylib.DrawText("Player Test", 20, 20, 32, Color.Green);
+
         if (InputMap.IsLMBPressed())
         {
             // Create box rigid body
@@ -85,7 +85,7 @@ internal class PlayerTest : World2D
 
         for (int i = 0; i < bodies.Count; i++)
         {
-            RenderPhysicsObject(bodies[i], colors[i % 5]);
+            RenderCollisionShapes(bodies[i], colors[i % 5]);
             if (bodies[i] is PlayerBody2D)
             {
                 PlayerBody2D player = (PlayerBody2D)bodies[i];
