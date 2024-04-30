@@ -3,7 +3,7 @@ using System.Numerics;
 using GameEngine.src.physics.body;
 
 namespace GameEngine.src.world;
-public class World2D
+public abstract class World2D
 {
     protected static void RenderPhysicsObject(PhysicsBody2D body, Color color) => WorldCreation.RenderPhysicsObject(body, color);
     protected static void CreateRigidBody(Vector2 position, Vector2 scale, float density, float restitution,
@@ -22,5 +22,7 @@ public class World2D
        float radius, Vector2 velocity, List<PhysicsBody2D> bodies, out RigidBody2D body2D) => WorldCreation.CreateProjectileBody(position, scale, density, restitution, radius, velocity, bodies, out body2D);
 
     protected static void HandlePhysics(List<PhysicsBody2D> bodies, double delta) => WorldPhysics.HandlePhysics(bodies, delta);
+
+    public abstract void Update(double delta);
 
 }

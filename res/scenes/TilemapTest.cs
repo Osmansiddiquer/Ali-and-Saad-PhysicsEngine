@@ -2,17 +2,16 @@
 using GameEngine.src.tilemap;
 using GameEngine.src.world;
 using Raylib_cs;
-using GameEngine.src.tilemap;
 
 namespace GameEngine.res.scenes;
 
 public class TilemapTest : World2D
 {
-    private static TileMapProps tileMapProps;
-    private static List<PhysicsBody2D> bodies;
-    private static List<Color> colors;
+    private TileMapProps tileMapProps;
+    private List<PhysicsBody2D> bodies;
+    private List<Color> colors;
 
-    static TilemapTest()
+    internal TilemapTest()
     {
         bodies = new List<PhysicsBody2D>();
 
@@ -59,13 +58,13 @@ public class TilemapTest : World2D
         Raylib.ShowCursor();
     }
 
-    public static void Update(double delta)
+    public override void Update(double delta)
     {
         Raylib.DrawText("Tilemap Test", 20, 20, 32, Color.Green);
         Draw();
     }
 
-    private static void Draw()
+    private void Draw()
     {
         for (int i = 0; i < bodies.Count; i++)
         {

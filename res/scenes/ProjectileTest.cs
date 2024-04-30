@@ -9,11 +9,11 @@ namespace GameEngine.res.scenes;
 
 public class ProjectileTest : World2D
 {
-    private static List<PhysicsBody2D> bodies;
-    private static List<Color> colors;
-    private static Vector2 spawnPosition;
+    private List<PhysicsBody2D> bodies;
+    private List<Color> colors;
+    private Vector2 spawnPosition;
 
-    static ProjectileTest()
+    internal ProjectileTest()
     {
         colors = new List<Color>() {
             Color.White,
@@ -27,7 +27,7 @@ public class ProjectileTest : World2D
         spawnPosition = new Vector2(Properties.ScreenWidth / 2, Properties.ScreenHeight / 2);
     }
 
-    public static void Update(double delta)
+    public override void Update(double delta)
     {
         Raylib.DrawText("Projectile Test", 20, 20, 32, Color.Green);
 
@@ -35,7 +35,7 @@ public class ProjectileTest : World2D
         HandlePhysics(bodies, delta);
     }
 
-    private static void Draw()
+    private void Draw()
     {
         Raylib.DrawText("<>", Raylib.GetMouseX(), Raylib.GetMouseY(), 32, Color.Green);
         Raylib.HideCursor();

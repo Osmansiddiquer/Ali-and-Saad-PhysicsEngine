@@ -10,11 +10,11 @@ namespace GameEngine.res.scenes;
 
 internal class PlayerTest : World2D
     {
-    private static TileMapProps tileMapProps;
-    private static List<PhysicsBody2D> bodies;
-    private static List<Color> colors;
+    private TileMapProps tileMapProps;
+    private List<PhysicsBody2D> bodies;
+    private List<Color> colors;
 
-    static PlayerTest()
+    internal PlayerTest()
     {
         bodies = new List<PhysicsBody2D>();
 
@@ -67,14 +67,14 @@ internal class PlayerTest : World2D
 
     }
 
-    public static void Update(double delta)
+    public override void Update(double delta)
     {
         Raylib.DrawText("Player Test", 20, 20, 32, Color.Green);
         Draw();
         HandlePhysics(bodies, delta);
     }
 
-    private static void Draw()
+    private void Draw()
     {
         if (InputMap.IsLMBPressed())
         {

@@ -1,4 +1,5 @@
 ﻿using GameEngine.src.input;
+using GameEngine.src.world;
 using Raylib_cs;
 
 namespace GameEngine.res.scenes;
@@ -6,10 +7,12 @@ namespace GameEngine.res.scenes;
 public static class SceneTree
 {
     internal static int scene;
+    internal static World2D currentScene;
 
     static SceneTree()
     {
         scene = 0;
+        currentScene = new CollisionTest();
 
         InputMap.AssignKey("one", KeyboardKey.One);
         InputMap.AssignKey("two", KeyboardKey.Two);
@@ -20,32 +23,18 @@ public static class SceneTree
     public static void Update(double delta)
     {
         if (InputMap.IsKeyPressed("one"))
-            scene = 0;
+            currentScene = new CollisionTest();
 
         else if (InputMap.IsKeyPressed("two"))
-            scene = 1;
+            currentScene = new ProjectileTest();
 
         else if (InputMap.IsKeyPressed("three"))
-            scene = 2;
-        else if (InputMap.IsKeyPressed("four"))
-            scene = 3;
+            currentScene = new TilemapTest();
 
-        switch (scene)
-        {
-            case 0:
-                CollisionTest.Update(delta);
-                break;
-            case 1:
-                ProjectileTest.Update(delta);
-                break;
-            case 2:
-                TilemapTest.Update(delta);
-                break;
-            case 3:
-                PlayerTest.Update(delta);
-                break;
-            default:
-                break;
-        }
+        else if (InputMap.IsKeyPressed("four"))
+            currentScene = new PlayerTest();
+
+        currentScene.Update(delta);
+
     }
 }

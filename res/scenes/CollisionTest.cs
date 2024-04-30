@@ -10,12 +10,12 @@ namespace GameEngine.res.scenes;
 public class CollisionTest : World2D
 {
     // Member variables
-    private static List<PhysicsBody2D> bodies;
-    private static List<Color> colors;
+    private List<PhysicsBody2D> bodies;
+    private List<Color> colors;
 
 
     // Constructor for initialization
-    static CollisionTest()
+    internal CollisionTest()
     {
         colors = new List<Color>() { 
             Color.White, 
@@ -26,10 +26,9 @@ public class CollisionTest : World2D
         };
 
         bodies = new List<PhysicsBody2D>();
-
     }
 
-    public static void Update(double delta)
+    public override void Update(double delta)
     {
         //// Create a camera centered at the middle of the screen
         //Camera2D camera = new Camera2D(Vector2.Zero, Vector2.Zero, 0, 1f);
@@ -60,7 +59,7 @@ public class CollisionTest : World2D
     }
 
     // Draw
-    private static void Draw()
+    private void Draw()
     {
 
         Raylib.HideCursor();
