@@ -19,7 +19,7 @@ internal class WorldCreation
 
 
     // Render the shape for a physics body
-    internal static void RenderPhysicsObject(PhysicsBody2D body, Color color)
+    internal static void RenderCollisionShapes(PhysicsBody2D body, Color color)
     {
         // Get world transform and shape
         Vector2 position = body.Transform.Translation;

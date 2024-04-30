@@ -36,7 +36,11 @@ internal class Process
         for (; !Raylib.WindowShouldClose();)
         {
             Raylib.BeginDrawing();
-            Raylib.ClearBackground(Color.Black);
+            Raylib.ClearBackground(new Color(15, 15, 15, 255));
+
+            // Toggle fullscreen
+            if (Raylib.IsKeyPressed(KeyboardKey.F))
+                Raylib.ToggleFullscreen();
 
             // Calculate initial FPS position based on window size
             fpsPositionX = Raylib.GetScreenWidth() * FPS_POSITION_X_PERCENTAGE;
