@@ -14,44 +14,6 @@ internal static class CollisionResolution
     private static Vector2[] rAList = new Vector2[2];
     private static Vector2[] rBList = new Vector2[2];
 
-    internal static void ResolveCollisionBasic(in CollisionManifold contact)
-    {
-        PhysicsBody2D bodyA = contact.BodyA;
-        PhysicsBody2D bodyB = contact.BodyB;
-
-        // If either body is a projectile, handle projectile collision
-        if (bodyA is ProjectileBody2D projectileA)
-        {
-            projectileA.ProjectileHit(bodyB);
-            return;
-        }
-        else if (bodyB is ProjectileBody2D projectileB)
-        {
-            projectileB.ProjectileHit(bodyA);
-            return;
-        }
-
-        Vector2 normal = contact.Normal;
-
-        // Calculate relative velocity of the two bodies
-        Vector2 relativeVelocity = bodyB.LinVelocity - bodyA.LinVelocity;
-
-        // Calculate restitution of the bodies
-        float restitution = MathF.Min(bodyA.Material.Restitution, bodyB.Material.Restitution);
-
-        // Calculate collision impulse for linear motion
-        float impulse = -((1 + restitution) * Vector2.Dot(relativeVelocity, normal))
-            / ((1f / bodyA.Material.Mass) + (1f / bodyB.Material.Mass));
-
-        // Update velocities after collision for linear motion
-        Vector2 accelerationA = impulse / bodyA.Material.Mass * normal;
-        Vector2 accelerationB = impulse / bodyB.Material.Mass * normal;
-
-        // Apply impulses to update velocities for linear motion
-        bodyA.LinVelocity -= accelerationA;
-        bodyB.LinVelocity += accelerationB;
-    }
-
     internal static void ResolveCollisionAdvanced(in CollisionManifold contact)
     {
         // Bodies in contact
@@ -96,24 +58,8 @@ internal static class CollisionResolution
         // Calculate impulses 
         for (int i = 0; i < contactCount; i++)
         {
-            // Vectors pointing from center to contact point
-            Vector2 rA = contactList[i] - bodyA.Transform.Translation;
-            Vector2 rB = contactList[i] - bodyB.Transform.Translation;
-
-            rAList[i] = rA;
-            rBList[i] = rB;
-
-            // Velocity induced by angular motion at contact points
-            Vector2 normalRA = new Vector2(-rA.Y, rA.X);
-            Vector2 normalRB = new Vector2(-rB.Y, rB.X);
-
-            Vector2 rotLinVelA = normalRA * MathExtra.Deg2Rad(bodyA.RotVelocity);
-            Vector2 rotLinVelB = normalRB * MathExtra.Deg2Rad(bodyB.RotVelocity);
-
-            // Relative velocity
             Vector2 relativeVelocity =
-                (bodyB.LinVelocity + rotLinVelB) -
-                (bodyA.LinVelocity + rotLinVelA);
+                CaclulateRelativeVelocity(bodyA, bodyB, contactList[i], i, out Vector2 normalRA, out Vector2 normalRB);
 
             // If objects are separating, skip this contact point
             if (Vector2.Dot(relativeVelocity, normal) > 0f)
@@ -143,35 +89,14 @@ internal static class CollisionResolution
         // Apply linear and rotational impulse
         for (int i = 0; i < contactCount; i++)
         {
-            Vector2 impulse = impulseList[i];
-            Vector2 ra = rAList[i];
-            Vector2 rb = rBList[i];
-
-            bodyA.LinVelocity -= impulse / bodyA.Material.Mass;
-            bodyA.RotVelocity -= MathExtra.Cross(ra, impulse) / bodyA.MomentOfInertia * (180f / MathF.PI);
-
-            bodyB.LinVelocity += impulse / bodyB.Material.Mass;
-            bodyB.RotVelocity += MathExtra.Cross(rb, impulse) / bodyB.MomentOfInertia * (180f / MathF.PI);
+            ApplyImpulse(bodyA, bodyB, impulseList[i], rAList[i], rBList[i]);
         }
 
         // Calculate friction impulses
         for (int i = 0; i < contactCount; i++)
         {
-            // Calculate relative positions of contact points
-            Vector2 rA = contactList[i] - bodyA.Transform.Translation;
-            Vector2 rB = contactList[i] - bodyB.Transform.Translation;
-
-
-            // Velocity induced by angular motion at contact points
-            Vector2 normalRA = new Vector2(-rA.Y, rA.X);
-            Vector2 normalRB = new Vector2(-rB.Y, rB.X);
-            Vector2 rotLinVelA = normalRA * bodyA.RotVelocity * MathF.PI / 180;
-            Vector2 rotLinVelB = normalRB * bodyB.RotVelocity * MathF.PI / 180;
-
-            // Relative velocity
             Vector2 relativeVelocity =
-                (bodyB.LinVelocity + rotLinVelB) -
-                (bodyA.LinVelocity + rotLinVelA);
+                CaclulateRelativeVelocity(bodyA, bodyB, contactList[i], i, out Vector2 normalRA, out Vector2 normalRB);
 
             // Calculate tangent direction
             Vector2 tangent = relativeVelocity - Vector2.Dot(relativeVelocity, normal) * normal;
@@ -214,22 +139,44 @@ internal static class CollisionResolution
             }
 
             // Store friction impulse
-            frictionImpulseList[i] = frictionImpulse;
+            frictionImpulseList[i] = frictionImpulse; 
         }
 
         // Apply linear and rotational friction impulses
         for (int i = 0; i < contactCount; i++)
         {
-            Vector2 frictionImpulse = frictionImpulseList[i];
-            Vector2 ra = rAList[i];
-            Vector2 rb = rBList[i];
-
-            bodyA.LinVelocity -= frictionImpulse / bodyA.Material.Mass;
-            bodyA.RotVelocity -= MathExtra.Cross(ra, frictionImpulse) / bodyA.MomentOfInertia * (180f / MathF.PI);
-
-            bodyB.LinVelocity += frictionImpulse / bodyB.Material.Mass;
-            bodyB.RotVelocity += MathExtra.Cross(rb, frictionImpulse) / bodyB.MomentOfInertia * (180f / MathF.PI);
+            ApplyImpulse(bodyA, bodyB, frictionImpulseList[i], rAList[i], rBList[i]);
         }
+    }
+
+    private static Vector2 CaclulateRelativeVelocity(PhysicsBody2D bodyA, PhysicsBody2D bodyB, Vector2 contact, 
+        int i, out Vector2 normalRA, out Vector2 normalRB)
+    {
+        // Calculate relative positions of contact points
+        Vector2 rA = contactList[i] - bodyA.Transform.Translation;
+        Vector2 rB = contactList[i] - bodyB.Transform.Translation;
+
+        rAList[i] = rA;
+        rBList[i] = rB;
+
+        // Velocity induced by angular motion at contact points
+        normalRA = new Vector2(-rA.Y, rA.X);
+        normalRB = new Vector2(-rB.Y, rB.X);
+        
+        Vector2 rotLinVelA = normalRA * bodyA.RotVelocity * MathF.PI / 180;
+        Vector2 rotLinVelB = normalRB * bodyB.RotVelocity * MathF.PI / 180;
+
+        // Relative velocity
+        return (bodyB.LinVelocity + rotLinVelB) - (bodyA.LinVelocity + rotLinVelA);
+    }
+
+    private static void ApplyImpulse(PhysicsBody2D bodyA, PhysicsBody2D bodyB, Vector2 impulse, Vector2 ra, Vector2 rb)
+    {
+        bodyA.LinVelocity -= impulse / bodyA.Material.Mass;
+        bodyA.RotVelocity -= MathExtra.Cross(ra, impulse) / bodyA.MomentOfInertia * (180f / MathF.PI);
+
+        bodyB.LinVelocity += impulse / bodyB.Material.Mass;
+        bodyB.RotVelocity += MathExtra.Cross(rb, impulse) / bodyB.MomentOfInertia * (180f / MathF.PI);
     }
 
 }
