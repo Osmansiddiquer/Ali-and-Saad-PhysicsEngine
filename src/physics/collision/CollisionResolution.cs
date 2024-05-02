@@ -163,8 +163,8 @@ internal static class CollisionResolution
         normalRA = new Vector2(-rA.Y, rA.X);
         normalRB = new Vector2(-rB.Y, rB.X);
         
-        Vector2 rotLinVelA = normalRA * bodyA.RotVelocity * MathF.PI / 180;
-        Vector2 rotLinVelB = normalRB * bodyB.RotVelocity * MathF.PI / 180;
+        Vector2 rotLinVelA = normalRA * MathExtra.Deg2Rad(bodyA.RotVelocity);
+        Vector2 rotLinVelB = normalRB * MathExtra.Deg2Rad(bodyB.RotVelocity);
 
         // Relative velocity
         return (bodyB.LinVelocity + rotLinVelB) - (bodyA.LinVelocity + rotLinVelA);
