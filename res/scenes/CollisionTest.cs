@@ -3,6 +3,7 @@ using Raylib_cs;
 using System.Numerics;
 using GameEngine.src.physics.body;
 using GameEngine.src.input;
+using GameEngine.src.helper;
 
 namespace GameEngine.res.scenes;
 
@@ -26,6 +27,9 @@ public class CollisionTest : World2D
 
         bodies = new List<PhysicsBody2D>();
 
+        Gamepad.AssignButton("l1", GamepadButton.LeftTrigger1);
+        Gamepad.AssignButton("r1", GamepadButton.RightTrigger1);
+
         Raylib.HideCursor();
     }
 
@@ -43,7 +47,7 @@ public class CollisionTest : World2D
         // Begin 2D mode with the camera
         //Raylib.BeginMode2D(camera);
 
-        float rotation = InputMap.GetDirection("left", "right") / 5;
+        float rotation = Input.GetDirection("left", "right") / 5;
 
         // Draw
         Draw();
@@ -60,6 +64,16 @@ public class CollisionTest : World2D
     // Draw
     private void Draw()
     {
+        Vector2 cursorPos = Mouse.GetPos();
+        Vector2 leftAxis = Gamepad.GetLeftAxis();
+
+        if (leftAxis.LengthSquared() > 0.025)
+        {
+            cursorPos += leftAxis * 10;
+        }
+
+        Mouse.SetPos(cursorPos);
+
         Raylib.DrawText("Collision Test", 20, 20, 32, Color.Green);
 
         // Ensure bodies are created (call once or in Ready)
@@ -71,35 +85,34 @@ public class CollisionTest : World2D
 
         // Random
         Random random = new Random();
-        float x = (float)(random.NextDouble() * (1.2 - 1) + 1);
-        float y = (float)(random.NextDouble() * (1.2 - 1) + 1);
+        float xBox = (float)(random.NextDouble() * (1.2 - 1) + 1);
+        float yBox = (float)(random.NextDouble() * (1.2 - 1) + 1);
 
-        Vector2 scale = new Vector2((float)x, (float)y);
+        float sCir = (float)(random.NextDouble() * (1 - 0.8) + 0.8);
 
-        if (InputMap.IsRMBPressed()) {
+        Vector2 scaleBox = new Vector2(xBox, yBox);
+        Vector2 scaleCir = new Vector2(sCir, sCir);
+
+        if (Mouse.IsRMBPressed() || Gamepad.IsButtonPressed("r1")) {
             
             // Create circle rigid body
-            CreateRigidBody(Raylib.GetMousePosition(), scale, 1f, 0.5f, 32f, out RigidBody2D rigidBody);
+            CreateRigidBody(Mouse.GetPos(), scaleCir, 1f, 0.5f, 32f, out RigidBody2D rigidBody);
             bodies.Add(rigidBody);
 
-
-            // bodies.Add(new RigidCircle2D(Raylib.GetMousePosition(), Vector2.One, 1f, 0.5f, 32f));
         }
 
-        else if (InputMap.IsLMBPressed()) {
+        else if (Mouse.IsLMBPressed() || Gamepad.IsButtonPressed("l1")) {
 
             // Create box rigid body
-            CreateRigidBody(Raylib.GetMousePosition(), 0f, scale, 1f, 0.5f, 64f, 64f, out RigidBody2D rigidBody);
+            CreateRigidBody(Raylib.GetMousePosition(), 0f, scaleBox, 1f, 0.5f, 64f, 64f, out RigidBody2D rigidBody);
             bodies.Add(rigidBody);
 
         } 
-
-        //TileMap.DrawBackground(tileMapProps);
 
         // Update and draw each body
         for (int i = 0; i < bodies.Count; i++) {
             RenderCollisionShapes(bodies[i], colors[i % 5]);
         }
-        Raylib.DrawText("<>", Raylib.GetMouseX(), Raylib.GetMouseY(), 32, Color.Green);
+        Raylib.DrawText("<>", (int)cursorPos.X, (int)cursorPos.Y, 32, Color.Green);
     }
 }

@@ -3,7 +3,7 @@ using GameEngine.src.world;
 using Raylib_cs;
 using System.Numerics;
 using GameEngine.src.tilemap;
-using GameEngine.src.input;
+using GameEngine.src.helper;
 
 namespace GameEngine.res.scenes;
 
@@ -76,7 +76,7 @@ internal class PlayerTest : World2D
     {
         Raylib.DrawText("Player Test", 20, 20, 32, Color.Green);
 
-        if (InputMap.IsLMBPressed())
+        if (Mouse.IsLMBPressed())
         {
             // Create box rigid body
             CreateRigidBody(Raylib.GetMousePosition(), 0f, Vector2.One, 1f, 0.5f, 64f, 64f, out RigidBody2D rigidBody);

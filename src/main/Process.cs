@@ -27,7 +27,7 @@ internal class Process
         Raylib.InitWindow(Properties.ScreenWidth, 
             Properties.ScreenHeight, Properties.Title);
 
-        Raylib.SetTargetFPS(Properties.MaxFPS); // Set max FPS
+        Raylib.SetTargetFPS(60); // Set max FPS
     }
 
     // Game loop
@@ -39,7 +39,7 @@ internal class Process
             Raylib.ClearBackground(new Color(15, 15, 15, 255));
 
             // Toggle fullscreen
-            if (Raylib.IsKeyPressed(KeyboardKey.F))
+            if (Raylib.IsKeyPressed(KeyboardKey.F) && Properties.AllowToggleFullscreen)
                 Raylib.ToggleFullscreen();
 
             // Calculate initial FPS position based on window size
