@@ -1,10 +1,9 @@
-﻿
-
-using Raylib_cs;
+﻿using Raylib_cs;
+using System.Numerics;
 
 namespace GameEngine.src.helper;
 
-public struct GamePad
+public struct Gamepad
 {
     // Dictionary of key bindings
     private static Dictionary<string, GamepadButton> controllerBindings = new Dictionary<string, GamepadButton>()
@@ -74,6 +73,55 @@ public struct GamePad
         return Raylib.IsGamepadButtonReleased(player, GetButton(action)); 
     }
 
-   
+    public static float GetDirection(string actionA, string actionB)
+    {
+        float neg = IsButtonDown(actionA) ? -1 : 0;
+        float pos = IsButtonDown(actionB) ? 1 : 0;
+
+        return neg + pos;
+    }
+
+    // Returns a vector based on 4 inputs
+    public static Vector2 GetVector(string actionA, string actionB, string actionC, string actionD)
+    {
+        float x = GetDirection(actionA, actionB);
+        float y = GetDirection(actionC, actionD);
+
+        Vector2 direction = new Vector2(x, y);
+        Vector2.Normalize(direction);
+
+        return direction;
+    }
+
+    // Get gamepad movement axis 
+    public static float GetLeftXAxis(int player = 0)
+    {
+        return Raylib.GetGamepadAxisMovement(player, GamepadAxis.LeftX);
+    }
+
+    public static float GetLeftYAxis(int player = 0)
+    {
+        return Raylib.GetGamepadAxisMovement(player, GamepadAxis.LeftY);
+    }
+
+    public static float GetRightXAxis(int player = 0)
+    {
+        return Raylib.GetGamepadAxisMovement(player, GamepadAxis.RightX);
+    }
+
+    public static float GetRightYAxis(int player = 0)
+    {
+        return Raylib.GetGamepadAxisMovement(player, GamepadAxis.RightY);
+    }
+
+    public static Vector2 GetLeftAxis(int player = 0)
+    {
+        return new Vector2(GetLeftXAxis(player), GetLeftYAxis(player));
+    }
+
+    public static Vector2 GetRightAxis(int player = 0)
+    {
+        return new Vector2(GetRightXAxis(player), GetRightYAxis(player));
+    }
 
 }

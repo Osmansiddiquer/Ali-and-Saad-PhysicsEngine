@@ -29,7 +29,17 @@ public struct Mouse
     // Mouse Position
     public static int GetX() { return Raylib.GetMouseX(); }
     public static int GetY() { return Raylib.GetMouseY(); }
-    public static Vector2 GetPos() { return new Vector2(GetX(), GetY()); }
+
     public static Vector2 GetDelta() { return Raylib.GetMouseDelta(); }
+    public static Vector2 GetPos() 
+    {
+        return new Vector2(GetX(), GetY()); 
+    }
+ 
+    public static void SetPos(Vector2 pos) 
+    { 
+        Raylib.SetMousePosition((int)pos.X, (int)pos.Y); 
+    }
+
 
 }

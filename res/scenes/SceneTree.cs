@@ -1,4 +1,5 @@
-﻿using GameEngine.src.input;
+﻿using GameEngine.src.helper;
+using GameEngine.src.input;
 using GameEngine.src.world;
 using Raylib_cs;
 
@@ -18,23 +19,58 @@ public static class SceneTree
         Input.AssignKey("two", KeyboardKey.Two);
         Input.AssignKey("three", KeyboardKey.Three);
         Input.AssignKey("four", KeyboardKey.Four);
+
+        Gamepad.AssignButton("l2", GamepadButton.LeftTrigger2);
+        Gamepad.AssignButton("r2", GamepadButton.RightTrigger2);
     }
 
     public static void Update(double delta)
     {
         if (Input.IsKeyPressed("one"))
-            currentScene = new CollisionTest();
-
+            scene = 0;
         else if (Input.IsKeyPressed("two"))
-            currentScene = new ProjectileTest();
-
+            scene = 1;
         else if (Input.IsKeyPressed("three"))
-            currentScene = new TilemapTest();
-
+            scene = 2;
         else if (Input.IsKeyPressed("four"))
-            currentScene = new PlayerTest();
+            scene = 3;
+        else if (Gamepad.IsButtonPressed("r2"))
+            scene = (scene + 1) % 4; // 4 represents the total number of scenes
+        else if (Gamepad.IsButtonPressed("l2"))
+            scene = (scene - 1 + 4) % 4; // 4 represents the total number of scenes
+
+        switch (scene)
+        {
+            case 0:
+                if (currentScene is not CollisionTest)
+                    currentScene = new CollisionTest();
+                break;
+
+            case 1:
+                if (currentScene is not ProjectileTest)
+                    currentScene = new ProjectileTest();
+                break;
+
+            case 2:
+                if (currentScene is not TilemapTest)
+                    currentScene = new TilemapTest();
+                break;
+
+            case 3:
+                if (currentScene is not PlayerTest)
+                    currentScene = new PlayerTest();
+                break;
+
+            default:
+                if (scene > 3)
+                    scene = 0;
+
+                else if (scene < 0)
+                    scene = 3;
+                break;
+        }
 
         currentScene.Update(delta);
-            
     }
+  
 }

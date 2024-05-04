@@ -3,7 +3,6 @@ using GameEngine.src.world;
 using Raylib_cs;
 using System.Numerics;
 using GameEngine.src.tilemap;
-using GameEngine.src.input;
 using GameEngine.src.helper;
 
 namespace GameEngine.res.scenes;
