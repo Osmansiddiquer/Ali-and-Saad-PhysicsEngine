@@ -9,7 +9,10 @@ public struct Properties
     public static bool Fullscreen = false;
     public static bool EnableVSync = true;
     public static int MaxFPS = 60;
+  
+    public static bool EnableMT = false; // Added by Osman
+  
+    public static bool AllowToggleFullscreen = true;
 
-    public static bool EnableMT = false;
 }
 

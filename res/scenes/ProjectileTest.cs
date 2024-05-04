@@ -1,4 +1,4 @@
-﻿using GameEngine.src.input;
+﻿using GameEngine.src.helper;
 using GameEngine.src.main;
 using GameEngine.src.physics.body;
 using GameEngine.src.world;
@@ -26,6 +26,8 @@ public class ProjectileTest : World2D
         bodies = new List<PhysicsBody2D>();
         spawnPosition = new Vector2(Properties.ScreenWidth / 2, Properties.ScreenHeight / 2);
 
+        Gamepad.AssignButton("x", GamepadButton.RightFaceDown);
+
         Raylib.HideCursor();
     }
 
@@ -38,11 +40,21 @@ public class ProjectileTest : World2D
 
     private void Draw()
     {
+        Vector2 cursorPos = Mouse.GetPos();
+        Vector2 leftAxis = Gamepad.GetLeftAxis();
+
+        if (leftAxis.LengthSquared() > 0.025)
+        {
+            cursorPos += leftAxis * 10;
+        }
+
+        Mouse.SetPos(cursorPos);
+
         Raylib.DrawText("Projectile Test", 20, 20, 32, Color.Green);
 
-        if (InputMap.IsLMBPressed())
+        if (Mouse.IsLMBPressed() || Gamepad.IsButtonPressed("x"))
         {
-            Vector2 velocity = (Raylib.GetMousePosition() - spawnPosition);
+            Vector2 velocity = (Mouse.GetPos() - spawnPosition);
             velocity /= 128;
 
             // Create projectile
@@ -57,7 +69,7 @@ public class ProjectileTest : World2D
             RenderCollisionShapes(bodies[i], colors[i % 5]);
         }
 
-        Raylib.DrawText("<>", Raylib.GetMouseX(), Raylib.GetMouseY(), 32, Color.Green);
+        Raylib.DrawText("<>", (int)cursorPos.X, (int)cursorPos.Y, 32, Color.Green);
     }
 
 

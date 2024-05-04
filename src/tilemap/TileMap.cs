@@ -9,8 +9,32 @@ public struct TileMapProps
 {
     public int[,] tileMap;
     public int[,] textureMap;
-    public Texture2D[,]? backGround;
+    public TileSet tileSet;
     public int size;
+}
+
+public struct TileSet
+{
+    public Texture2D texture;
+    public Rectangle rect;
+    public int columns;
+    public int rows;
+
+    public TileSet(Texture2D texture, Rectangle rect, int columns, int rows)
+    {
+        this.texture = texture;
+        this.rect = rect;
+        this.columns = columns;
+        this.rows = rows;
+    }
+
+    public TileSet(string path, Rectangle rect, int columns, int rows)
+    {
+        this.texture = Raylib.LoadTexture(path);
+        this.rect = rect;
+        this.columns = columns;
+        this.rows = rows;
+    }
 }
 
 
@@ -111,23 +135,26 @@ internal static class TileMap
         return backGround;
     }
 
-    public static void DrawBackground(Texture2D[,] backGround, int size)
+    public static void DrawBackground(TileSet tileSet, int[,] textureMap, int size)
     {
-        for (int i = 0; i < backGround.GetLength(0); i++)
+        for (int i = 0; i < textureMap.GetLength(0); i++)
         {
-            for (int j = 0; j < backGround.GetLength(1); j++)
+            for (int j = 0; j < textureMap.GetLength(1); j++)
             {
-                Rectangle sourceRec = new Rectangle(16, 16, 64, 64);
-                Rectangle destRec = new Rectangle(j * size, i * size, size, size);
-
-                Raylib.DrawTexturePro(backGround[i, j], sourceRec, destRec, new Vector2(0, 0), 0, Color.White);
+                if (textureMap[i, j] >= 0)
+                {
+                    Rectangle source = new Rectangle((textureMap[i, j] % 10 % tileSet.columns * tileSet.rect.Width) + tileSet.rect.X, (textureMap[i, j] / 10 % tileSet.rows * tileSet.rect.Height) + tileSet.rect.Y, tileSet.rect.Width, tileSet.rect.Height);
+                    Rectangle dest = new Rectangle(j * size, i * size, size, size);
+                    Raylib.DrawTexturePro(tileSet.texture, source, dest, new Vector2(0, 0), 0, Color.White);
+                    // System.Console.WriteLine("Drawing");
+                }
             }
         }
     }
 
     public static void DrawBackground(TileMapProps tileMapProps)
     {
-        DrawBackground(tileMapProps.backGround, tileMapProps.size);
+        DrawBackground(tileMapProps.tileSet, tileMapProps.textureMap, tileMapProps.size);
     }
 
     // Make a method that takes in both tilemap and background and draws the tilemap
@@ -135,9 +162,5 @@ internal static class TileMap
     {
         tileMapProps.size = (int)Math.Pow(2, tileMapProps.size + 2);
         GenerateTileMapTerrain(tileMapProps.tileMap, tileMapProps.size, bodies);
-
-        Texture2D[,] backGround = GenerateBackground(tileMapProps.textureMap);
-
-        tileMapProps.backGround = backGround;
     }
 }

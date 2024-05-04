@@ -14,6 +14,26 @@ internal static class CollisionResolution
     private static Vector2[] rAList = new Vector2[2];
     private static Vector2[] rBList = new Vector2[2];
 
+    internal static void ResolveCollisionBasic(PhysicsBody2D bodyA, PhysicsBody2D bodyB, Vector2 normal, float depth)
+    {
+        Vector2 relativeVelocity = bodyB.LinVelocity - bodyA.LinVelocity;
+
+        if (Vector2.Dot(relativeVelocity, normal) > 0f)
+        {
+            return;
+        }
+
+        float restitution = MathF.Min(bodyA.Material.Restitution, bodyB.Material.Restitution);
+
+        float j = -(1f + restitution) * Vector2.Dot(relativeVelocity, normal);
+        j /= (1f / bodyA.Material.Mass + 1f / bodyB.Material.Mass);
+
+        Vector2 impulse = j * normal;
+
+        bodyA.LinVelocity -= impulse / bodyA.Material.Mass;
+        bodyB.LinVelocity += impulse / bodyB.Material.Mass;
+    }
+
     internal static void ResolveCollisionAdvanced(in CollisionManifold contact)
     {
         // Bodies in contact

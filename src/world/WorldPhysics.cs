@@ -69,6 +69,10 @@ internal class WorldPhysics
         {
             CollisionHelper.FindContactPoints(bodyA, bodyB, out Vector2 contactP1, out Vector2 contactP2, out int contactCount);
             CollisionManifold contact = new CollisionManifold(bodyA, bodyB, normal, depth, contactP1, contactP2, contactCount);
+            
+            if (bodyA is PlayerBody2D || bodyB is PlayerBody2D)
+                        CollisionResolution.ResolveCollisionBasic(bodyA, bodyB, normal, depth);
+          
             CollisionResolution.ResolveCollisionAdvanced(in contact);
             lock (lockOject)
             {

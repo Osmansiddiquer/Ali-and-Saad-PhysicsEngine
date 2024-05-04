@@ -210,7 +210,8 @@ internal class WorldCreation
         List<Component> components = new List<Component>
             {
                 new Gravity(),
-                new Motion()
+                new Motion(),
+                new PlayerMovement()
             };
 
         // Create a rigid body 
