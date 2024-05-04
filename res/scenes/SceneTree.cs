@@ -14,24 +14,24 @@ public static class SceneTree
         scene = 0;
         currentScene = new CollisionTest();
 
-        InputMap.AssignKey("one", KeyboardKey.One);
-        InputMap.AssignKey("two", KeyboardKey.Two);
-        InputMap.AssignKey("three", KeyboardKey.Three);
-        InputMap.AssignKey("four", KeyboardKey.Four);
+        Input.AssignKey("one", KeyboardKey.One);
+        Input.AssignKey("two", KeyboardKey.Two);
+        Input.AssignKey("three", KeyboardKey.Three);
+        Input.AssignKey("four", KeyboardKey.Four);
     }
 
     public static void Update(double delta)
     {
-        if (InputMap.IsKeyPressed("one"))
+        if (Input.IsKeyPressed("one"))
             currentScene = new CollisionTest();
 
-        else if (InputMap.IsKeyPressed("two"))
+        else if (Input.IsKeyPressed("two"))
             currentScene = new ProjectileTest();
 
-        else if (InputMap.IsKeyPressed("three"))
+        else if (Input.IsKeyPressed("three"))
             currentScene = new TilemapTest();
 
-        else if (InputMap.IsKeyPressed("four"))
+        else if (Input.IsKeyPressed("four"))
             currentScene = new PlayerTest();
 
         currentScene.Update(delta);

@@ -24,6 +24,7 @@ public class Motion : Component
 
         // Update position based on linear velocity
         body.Translate(body.LinVelocity);
+
         body.Rotate(body.RotVelocity);
 
         // Reset force applied to the body

@@ -8,17 +8,17 @@ internal class PlayerMovement : Component
 {
     public void RunComponent(RigidBody2D body, double delta)
     {
-        movePlayer(body, delta);
+        MovePlayer(body, delta);
     }
 
-    private void movePlayer(RigidBody2D body, double delta)
+    private void MovePlayer(RigidBody2D body, double delta)
     {
         // Move the player
-        if (InputMap.IsKeyDown("left"))
+        if (Input.IsKeyDown("left"))
         {
             body.LinVelocity = new Vector2(-1, body.LinVelocity.Y);
         }
-        else if (InputMap.IsKeyDown("right"))
+        else if (Input.IsKeyDown("right"))
         {
             body.LinVelocity = new Vector2(1, body.LinVelocity.Y);
         }

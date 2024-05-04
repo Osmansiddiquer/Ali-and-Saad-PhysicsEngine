@@ -2,7 +2,7 @@
 using System.Numerics;
 
 namespace GameEngine.src.input;
-public struct InputMap
+public struct Input
 {
     // Dictionary of key bindings
     private static Dictionary<string, KeyboardKey> keyBindings = new Dictionary<string, KeyboardKey>()
@@ -60,27 +60,6 @@ public struct InputMap
     public static bool IsKeyDown(string action) { return Raylib.IsKeyDown(GetKey(action)); }
     public static bool IsKeyUp(string action) { return Raylib.IsKeyUp(GetKey(action)); }
     public static bool IsKeyReleased(string action) { return Raylib.IsKeyReleased(GetKey(action)); }
-
-    // Check for mouse input
-
-    // Left mouse button
-    public static bool IsLMBPressed() { return Raylib.IsMouseButtonPressed(MouseButton.Left); }
-    public static bool IsLMBDown() { return Raylib.IsMouseButtonDown(MouseButton.Left); }
-    public static bool IsLMBReleased() { return Raylib.IsMouseButtonReleased(MouseButton.Left); }
-    public static bool IsLMBUp() { return Raylib.IsMouseButtonUp(MouseButton.Left); }
-
-
-    // Middle mouse button
-    public static bool IsMMBPressed() { return Raylib.IsMouseButtonPressed(MouseButton.Middle); }
-    public static bool IsMMBDown() { return Raylib.IsMouseButtonDown(MouseButton.Middle); }
-    public static bool IsMMBUp() { return Raylib.IsMouseButtonUp(MouseButton.Middle); }
-    public static bool IsMMBReleased() { return Raylib.IsMouseButtonReleased(MouseButton.Middle); }
-
-    // Right mouse button
-    public static bool IsRMBPressed() { return Raylib.IsMouseButtonPressed(MouseButton.Right); }
-    public static bool IsRMBDown() { return Raylib.IsMouseButtonDown(MouseButton.Right); }
-    public static bool IsRMBUp() { return Raylib.IsMouseButtonUp(MouseButton.Right); }
-    public static bool IsRMBReleased() { return Raylib.IsMouseButtonReleased(MouseButton.Right); }
 
     // Returns a direction based on 2 inputs
     public static float GetDirection(string actionA, string actionB)

@@ -1,4 +1,4 @@
-﻿using GameEngine.src.input;
+﻿using GameEngine.src.helper;
 using GameEngine.src.main;
 using GameEngine.src.physics.body;
 using GameEngine.src.world;
@@ -40,9 +40,9 @@ public class ProjectileTest : World2D
     {
         Raylib.DrawText("Projectile Test", 20, 20, 32, Color.Green);
 
-        if (InputMap.IsLMBPressed())
+        if (Mouse.IsLMBPressed())
         {
-            Vector2 velocity = (Raylib.GetMousePosition() - spawnPosition);
+            Vector2 velocity = (Mouse.GetPos() - spawnPosition);
             velocity /= 128;
 
             // Create projectile
@@ -57,7 +57,7 @@ public class ProjectileTest : World2D
             RenderCollisionShapes(bodies[i], colors[i % 5]);
         }
 
-        Raylib.DrawText("<>", Raylib.GetMouseX(), Raylib.GetMouseY(), 32, Color.Green);
+        Raylib.DrawText("<>", Mouse.GetX(), Mouse.GetY(), 32, Color.Green);
     }
 
 

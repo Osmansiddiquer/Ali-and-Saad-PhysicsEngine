@@ -3,6 +3,7 @@ using Raylib_cs;
 using System.Numerics;
 using GameEngine.src.physics.body;
 using GameEngine.src.input;
+using GameEngine.src.helper;
 
 namespace GameEngine.res.scenes;
 
@@ -43,7 +44,7 @@ public class CollisionTest : World2D
         // Begin 2D mode with the camera
         //Raylib.BeginMode2D(camera);
 
-        float rotation = InputMap.GetDirection("left", "right") / 5;
+        float rotation = Input.GetDirection("left", "right") / 5;
 
         // Draw
         Draw();
@@ -76,17 +77,17 @@ public class CollisionTest : World2D
 
         Vector2 scale = new Vector2((float)x, (float)y);
 
-        if (InputMap.IsRMBPressed()) {
+        if (Mouse.IsRMBPressed()) {
             
             // Create circle rigid body
-            CreateRigidBody(Raylib.GetMousePosition(), scale, 1f, 0.5f, 32f, out RigidBody2D rigidBody);
+            CreateRigidBody(Mouse.GetPos(), scale, 1f, 0.5f, 32f, out RigidBody2D rigidBody);
             bodies.Add(rigidBody);
 
 
             // bodies.Add(new RigidCircle2D(Raylib.GetMousePosition(), Vector2.One, 1f, 0.5f, 32f));
         }
 
-        else if (InputMap.IsLMBPressed()) {
+        else if (Mouse.IsLMBPressed()) {
 
             // Create box rigid body
             CreateRigidBody(Raylib.GetMousePosition(), 0f, scale, 1f, 0.5f, 64f, 64f, out RigidBody2D rigidBody);
@@ -100,6 +101,6 @@ public class CollisionTest : World2D
         for (int i = 0; i < bodies.Count; i++) {
             RenderCollisionShapes(bodies[i], colors[i % 5]);
         }
-        Raylib.DrawText("<>", Raylib.GetMouseX(), Raylib.GetMouseY(), 32, Color.Green);
+        Raylib.DrawText("<>", Mouse.GetX(), Mouse.GetY(), 32, Color.Green);
     }
 }
