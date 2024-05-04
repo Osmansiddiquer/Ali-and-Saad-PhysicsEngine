@@ -34,7 +34,7 @@ internal static class CollisionResolution
         bodyB.LinVelocity += impulse / bodyB.Material.Mass;
     }
 
-    internal static void ResolveCollisionAdvance(in CollisionManifold contact)
+    internal static void ResolveCollisionAdvanced(in CollisionManifold contact)
     {
         // Bodies in contact
         PhysicsBody2D bodyA = contact.BodyA;

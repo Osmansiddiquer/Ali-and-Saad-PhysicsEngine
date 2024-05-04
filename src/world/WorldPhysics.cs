@@ -74,7 +74,7 @@ internal class WorldPhysics
                     if (bodyA is PlayerBody2D || bodyB is PlayerBody2D)
                         CollisionResolution.ResolveCollisionBasic(bodyA, bodyB, normal, depth);
 
-                    CollisionResolution.ResolveCollisionAdvance(in contact);
+                    CollisionResolution.ResolveCollisionAdvanced(in contact);
                     
                     SeparateBodies(bodyA, bodyB, normal * depth);
                     UpdateCollisionState(bodyA, bodyB, normal);
