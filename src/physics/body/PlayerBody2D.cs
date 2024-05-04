@@ -19,7 +19,6 @@ internal struct Animation
 {
     public Texture2D atlas;
     public int framesPerSecond;
-
     public List<Rectangle> rectangles;
 
     public Animation(Texture2D atlas, int framesPerSecond, List<Rectangle> rectangles)
@@ -46,7 +45,7 @@ public class PlayerBody2D : RigidBox2D
 
     }
 
-    private void DrawPlayerAnimation(Rectangle dest, Vector2 origin, float rotation, Color tint)
+    public void DrawPlayer()
     {
         Animation currAnimation = animations[0];
         switch (State)
@@ -71,22 +70,21 @@ public class PlayerBody2D : RigidBox2D
                 break;
             default:
                 break;
-        } 
+        }
 
+
+        Rectangle dest = new Rectangle(Transform.Translation.X, Transform.Translation.Y, Dimensions.Height, Dimensions.Height);
+        Vector2 origin = new Vector2(Dimensions.Height / 2.75f, Dimensions.Height / 2);
+        
         int index = (int)(Raylib.GetTime() * currAnimation.framesPerSecond) % currAnimation.rectangles.Count;
-        Raylib.DrawTexturePro(currAnimation.atlas, currAnimation.rectangles[index], dest, origin, rotation, tint);
-    }
-
-    public void DrawPlayer()
-    {
-        DrawPlayerAnimation(new Rectangle((Transform.Translation + new Vector2(-90, -180)), 180, 360), new Vector2(0, 0), 0, Color.White);
+        Raylib.DrawTexturePro(currAnimation.atlas, currAnimation.rectangles[index], dest, origin, 0, Color.White);
     }
 
     private void createAnimations()
     {
         // Implement the new AddAnimation method
         String path = "C:/Users/saadk/Desktop/NUST/Semester 2/Object Oriented Programming/End Semester Project/sprites/Hero Knight/Sprites/";
-        AddAnimation(PlayerStates.IDLE, path + "Idle.png", 10, 11, new Rectangle(0, 0, 180, 180));
+        AddAnimation(PlayerStates.IDLE, path + "_Idle.png", 1, 10, new Rectangle(0, 40, 40, 40));
         AddAnimation(PlayerStates.WALK, path + "Run.png", 10, 8, new Rectangle(0, 0, 180, 180));
     }
 
@@ -95,7 +93,7 @@ public class PlayerBody2D : RigidBox2D
         List<Rectangle> rectangles = new List<Rectangle>();
         for (int i = 0; i < numberOfSprite; i++)
         {
-            rectangles.Add(new Rectangle(spriteSize.X + (i) * spriteSize.Width, spriteSize.Y, spriteSize.Width, spriteSize.Height));
+            rectangles.Add(new Rectangle(spriteSize.X + (i * 3 + 1) * spriteSize.Width, spriteSize.Y, spriteSize.Width, spriteSize.Height));
         }
         Animation anim = new Animation(Raylib.LoadTexture(path), framesPerSecond, rectangles);
         animations[(int)state] = anim;
