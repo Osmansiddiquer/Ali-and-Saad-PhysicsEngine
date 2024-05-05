@@ -2,10 +2,14 @@
 using GameEngine.src.physics.body;
 using GameEngine.src.physics.collision;
 
+using System.Threading;
+using GameEngine.src.main;
+
 namespace GameEngine.src.world;
 
 internal class WorldPhysics
 {
+    private static object lockOject = new object();
     private static HashSet<(int, int)> contactPairs = new HashSet<(int, int)>();
 
     internal static void HandlePhysics(List<PhysicsBody2D> bodies, double delta)
@@ -53,6 +57,33 @@ internal class WorldPhysics
         }
     }
 
+    private static void ResolvePair(List<PhysicsBody2D> bodies, (int, int) pair)
+    {
+        PhysicsBody2D bodyA = bodies[pair.Item1];
+        PhysicsBody2D bodyB = bodies[pair.Item2];
+
+        Vector2 normal;
+        float depth;
+
+        if (CollisionDetection.CheckCollision(bodyA, bodyB, out normal, out depth))
+        {
+            CollisionHelper.FindContactPoints(bodyA, bodyB, out Vector2 contactP1, out Vector2 contactP2, out int contactCount);
+            CollisionManifold contact = new CollisionManifold(bodyA, bodyB, normal, depth, contactP1, contactP2, contactCount);
+            
+            if (bodyA is PlayerBody2D || bodyB is PlayerBody2D)
+                        CollisionResolution.ResolveCollisionBasic(bodyA, bodyB, normal, depth);
+          
+            CollisionResolution.ResolveCollisionAdvanced(in contact);
+            lock (lockOject)
+            {
+                SeparateBodies(bodyA, bodyB, normal * depth);
+            }
+            UpdateCollisionState(bodyA, bodyB, normal);
+        }
+    }
+
+    struct State { public List<PhysicsBody2D> bodies; public (int, int) pair; public State(List<PhysicsBody2D> bodies, (int, int) pair) { this.bodies = bodies; this.pair = pair; } }
+
     private static void CollisionNarrowPhase(List<PhysicsBody2D> bodies)
     {
         // Sometimes a projectile body might be destroyed in the middle of the loop, so we need to handle the exception
@@ -60,25 +91,10 @@ internal class WorldPhysics
         {
             foreach ((int, int) pair in contactPairs)
             {
-                PhysicsBody2D bodyA = bodies[pair.Item1];
-                PhysicsBody2D bodyB = bodies[pair.Item2];
-
-                Vector2 normal;
-                float depth;
-
-                if (CollisionDetection.CheckCollision(bodyA, bodyB, out normal, out depth))
-                {
-                    CollisionHelper.FindContactPoints(bodyA, bodyB, out Vector2 contactP1, out Vector2 contactP2, out int contactCount);
-                    CollisionManifold contact = new CollisionManifold(bodyA, bodyB, normal, depth, contactP1, contactP2, contactCount);
-
-                    if (bodyA is PlayerBody2D || bodyB is PlayerBody2D)
-                        CollisionResolution.ResolveCollisionBasic(bodyA, bodyB, normal, depth);
-
-                    CollisionResolution.ResolveCollisionAdvanced(in contact);
-                    
-                    SeparateBodies(bodyA, bodyB, normal * depth);
-                    UpdateCollisionState(bodyA, bodyB, normal);
-                }
+                if (Properties.EnableMT)
+                    ThreadPool.QueueUserWorkItem((Object state) => { ResolvePair(((State)state).bodies, ((State)state).pair); }, (Object)(new State(bodies, pair)));
+                else
+                    ResolvePair(bodies, pair);
             }
         }
         catch (Exception e)
