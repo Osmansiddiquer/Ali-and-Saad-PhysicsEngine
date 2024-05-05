@@ -66,7 +66,7 @@ public class ProjectileTest : World2D
         // Update and draw each body
         for (int i = 0; i < bodies.Count; i++)
         {
-            RenderCollisionShapes(bodies[i], colors[i % 5]);
+            DrawCollisionShapes(bodies[i], colors[i % 5]);
         }
 
         Raylib.DrawText("<>", (int)cursorPos.X, (int)cursorPos.Y, 32, Color.Green);

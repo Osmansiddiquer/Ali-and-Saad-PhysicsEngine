@@ -15,19 +15,6 @@ public enum PlayerStates
     DIE
 }
 
-internal struct Animation
-{
-    public Texture2D atlas;
-    public int framesPerSecond;
-    public List<Rectangle> rectangles;
-
-    public Animation(Texture2D atlas, int framesPerSecond, List<Rectangle> rectangles)
-    {
-        this.atlas = atlas;
-        this.framesPerSecond = framesPerSecond;
-        this.rectangles = rectangles;
-    }
-}
 public class PlayerBody2D : RigidBox2D
 {
     internal PlayerStates State { get; set; }
@@ -53,18 +40,23 @@ public class PlayerBody2D : RigidBox2D
             case PlayerStates.IDLE:
                 currAnimation = animations[0];
                 break;
+
             case PlayerStates.WALK:
                 currAnimation = animations[1];
                 break;
+
             case PlayerStates.JUMP:
                 currAnimation = animations[2];
                 break;
+
             case PlayerStates.FALL:
                 currAnimation = animations[3];
                 break;
+
             case PlayerStates.CROUCH:
                 currAnimation = animations[4];
                 break;
+
             case PlayerStates.DIE:
                 currAnimation = animations[5];
                 break;

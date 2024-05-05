@@ -25,7 +25,7 @@ internal class PlayerTest : World2D
             Color.Gold
         };
 
-
+        // Tilemap
         tileMapProps = new TileMapProps()
         {
             tileMap = new int[,]
@@ -74,18 +74,12 @@ internal class PlayerTest : World2D
 
     private void Draw()
     {
+        // Scene title
         Raylib.DrawText("Player Test", 20, 20, 32, Color.Green);
-
-        if (Mouse.IsLMBPressed())
-        {
-            // Create box rigid body
-            CreateRigidBody(Raylib.GetMousePosition(), 0f, Vector2.One, 1f, 0.5f, 64f, 64f, out RigidBody2D rigidBody);
-            bodies.Add(rigidBody);
-        }
 
         for (int i = 0; i < bodies.Count; i++)
         {
-            RenderCollisionShapes(bodies[i], colors[i % 5]);
+            DrawCollisionShapes(bodies[i], colors[i % 5]);
             if (bodies[i] is PlayerBody2D)
             {
                 PlayerBody2D player = (PlayerBody2D)bodies[i];

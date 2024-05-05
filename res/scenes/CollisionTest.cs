@@ -64,6 +64,7 @@ public class CollisionTest : World2D
     // Draw
     private void Draw()
     {
+        // Set cursor position (works with controller)
         Vector2 cursorPos = Mouse.GetPos();
         Vector2 leftAxis = Gamepad.GetLeftAxis();
 
@@ -74,6 +75,7 @@ public class CollisionTest : World2D
 
         Mouse.SetPos(cursorPos);
 
+        // Scene title
         Raylib.DrawText("Collision Test", 20, 20, 32, Color.Green);
 
         // Ensure bodies are created (call once or in Ready)
@@ -93,11 +95,14 @@ public class CollisionTest : World2D
         Vector2 scaleBox = new Vector2(xBox, yBox);
         Vector2 scaleCir = new Vector2(sCir, sCir);
 
+        // Create bodies (testing)
         if (Mouse.IsRMBPressed() || Gamepad.IsButtonPressed("r1")) {
             
             // Create circle rigid body
             CreateRigidBody(Mouse.GetPos(), scaleCir, 1f, 0.5f, 32f, out RigidBody2D rigidBody);
             bodies.Add(rigidBody);
+
+            Console.WriteLine(bodies.Count);
 
         }
 
@@ -111,8 +116,10 @@ public class CollisionTest : World2D
 
         // Update and draw each body
         for (int i = 0; i < bodies.Count; i++) {
-            RenderCollisionShapes(bodies[i], colors[i % 5]);
+            DrawCollisionShapes(bodies[i], colors[i % 5]);
         }
+
+        // Cursor icon
         Raylib.DrawText("<>", (int)cursorPos.X, (int)cursorPos.Y, 32, Color.Green);
     }
 }

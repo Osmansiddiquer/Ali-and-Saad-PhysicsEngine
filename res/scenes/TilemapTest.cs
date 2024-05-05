@@ -81,7 +81,7 @@ public class TilemapTest : World2D
     {
         for (int i = 0; i < bodies.Count; i++)
         {
-            RenderCollisionShapes(bodies[i], colors[i % 5]);
+            DrawCollisionShapes(bodies[i], colors[i % 5]);
         }
 
         TileMap.DrawBackground(tileMapProps);
