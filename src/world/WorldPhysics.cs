@@ -2,7 +2,6 @@
 using GameEngine.src.physics.body;
 using GameEngine.src.physics.collision;
 
-using System.Threading;
 using GameEngine.src.main;
 
 namespace GameEngine.src.world;
@@ -14,6 +13,7 @@ internal class WorldPhysics
 
     internal static void HandlePhysics(List<PhysicsBody2D> bodies, double delta)
     {
+        // Catch exception caused by projectiles
         try
         {
             for (int it = 0; it < 16; it++)
@@ -34,6 +34,7 @@ internal class WorldPhysics
         CollisionNarrowPhase(bodies);
     }
 
+    // Check if 2 bodies may or may not be colliding
     private static void CollisionBroadPhase(List<PhysicsBody2D> bodies)
     {
         for (int i = 0; i < bodies.Count; i++)
@@ -57,6 +58,21 @@ internal class WorldPhysics
         }
     }
 
+    struct State { public List<PhysicsBody2D> bodies; public (int, int) pair; public State(List<PhysicsBody2D> bodies, (int, int) pair) { this.bodies = bodies; this.pair = pair; } }
+
+    // Check if 2 bodies are colliding
+    private static void CollisionNarrowPhase(List<PhysicsBody2D> bodies)
+    {
+        foreach ((int, int) pair in contactPairs)
+        {
+            if (Properties.EnableMT)
+                ThreadPool.QueueUserWorkItem((state) => { ResolvePair(((State)state).bodies, ((State)state).pair); }, (new State(bodies, pair)));
+            else
+                ResolvePair(bodies, pair);
+        }
+    }
+
+    // Decide what do to after collision
     private static void ResolvePair(List<PhysicsBody2D> bodies, (int, int) pair)
     {
         PhysicsBody2D bodyA = bodies[pair.Item1];
@@ -79,7 +95,6 @@ internal class WorldPhysics
             UpdateCollisionState(bodyA, bodyB, normal);
         }
     }
-
     struct State { public List<PhysicsBody2D> bodies; public (int, int) pair; public State(List<PhysicsBody2D> bodies, (int, int) pair) { this.bodies = bodies; this.pair = pair; } }
 
     private static void CollisionNarrowPhase(List<PhysicsBody2D> bodies)
@@ -104,7 +119,7 @@ internal class WorldPhysics
             Console.WriteLine(e.Message);
         }
     }
-
+    // Seperate colliding bodies
     private static void SeparateBodies(PhysicsBody2D bodyA, PhysicsBody2D bodyB, Vector2 direction)
     {
         if (bodyA is ProjectileBody2D || bodyB is ProjectileBody2D)
@@ -124,6 +139,7 @@ internal class WorldPhysics
         }
     }
 
+    // Set collision states for bodies
     private static void UpdateCollisionState(PhysicsBody2D bodyA, PhysicsBody2D bodyB, Vector2 normal)
     {
         bodyA.IsOnCeiling = normal.Y < -0.5f;
@@ -139,6 +155,7 @@ internal class WorldPhysics
         bodyB.IsOnWallR = bodyA.IsOnWallL;
     }
 
+    // Run body components
     private static void UpdateBodies(List<PhysicsBody2D> bodies, double delta)
     {
         foreach (PhysicsBody2D body in bodies)

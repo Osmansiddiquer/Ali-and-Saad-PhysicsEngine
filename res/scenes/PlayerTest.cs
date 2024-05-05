@@ -3,7 +3,6 @@ using GameEngine.src.world;
 using Raylib_cs;
 using System.Numerics;
 using GameEngine.src.tilemap;
-using GameEngine.src.helper;
 
 namespace GameEngine.res.scenes;
 
@@ -17,6 +16,10 @@ internal class PlayerTest : World2D
     {
         bodies = new List<PhysicsBody2D>();
 
+        // Create player
+        CreatePlayerBody(new Vector2(128, 512), 0, 1f, 64f, 128f, out PlayerBody2D player);
+        bodies.Add(player);
+
         colors = new List<Color>() {
             Color.White,
             Color.Red,
@@ -25,7 +28,7 @@ internal class PlayerTest : World2D
             Color.Gold
         };
 
-
+        // Tilemap
         tileMapProps = new TileMapProps()
         {
             tileMap = new int[,]
@@ -58,39 +61,28 @@ internal class PlayerTest : World2D
 
         TileMap.GenerateTileMap(ref tileMapProps, bodies);
 
-        // Create player
-        WorldCreation.CreatePlayerBody(new Vector2(100, 100), 0, Vector2.One, 1f, 64f, 128f, out RigidBody2D player);
-        bodies.Add(player);
-
         Raylib.ShowCursor();
 
     }
 
     public override void Update(double delta)
-    {
+    {            
         Draw();
         HandlePhysics(bodies, delta);
+
+        PlayerBody2D player = (PlayerBody2D)bodies[0];
+        player.DrawPlayer();
+        player.UseDefaultMotion(delta);
     }
 
     private void Draw()
     {
+        // Scene title
         Raylib.DrawText("Player Test", 20, 20, 32, Color.Green);
-
-        if (Mouse.IsLMBPressed())
-        {
-            // Create box rigid body
-            CreateRigidBody(Raylib.GetMousePosition(), 0f, Vector2.One, 1f, 0.5f, 64f, 64f, out RigidBody2D rigidBody);
-            bodies.Add(rigidBody);
-        }
 
         for (int i = 0; i < bodies.Count; i++)
         {
-            RenderCollisionShapes(bodies[i], colors[i % 5]);
-            if (bodies[i] is PlayerBody2D)
-            {
-                PlayerBody2D player = (PlayerBody2D)bodies[i];
-                player.DrawPlayer();
-            }
+            DrawCollisionShapes(bodies[i], colors[i % 5]);
         }
     }
 

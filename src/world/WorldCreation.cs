@@ -3,6 +3,7 @@ using GameEngine.src.physics.body;
 using Raylib_cs;
 
 using System.Numerics;
+using System.Formats.Asn1;
 
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
 
@@ -17,9 +18,15 @@ internal class WorldCreation
     private static readonly float MIN_DENSITY = 0.10f;
     private static readonly float MAX_DENSITY = 22.5f;
 
+    private static List<Component> components = new List<Component>
+    {
+        new Motion(),
+        new Gravity()
+    };
+
 
     // Render the shape for a physics body
-    internal static void RenderCollisionShapes(PhysicsBody2D body, Color color)
+    internal static void DrawCollisionShapes(PhysicsBody2D body, Color color)
     {
         // Get world transform and shape
         Vector2 position = body.Transform.Translation;
@@ -56,18 +63,12 @@ internal class WorldCreation
     {
         body2D = null;
 
-        radius *= Vector2.Distance(new Vector2(0, 0), scale);
+        radius *= scale.Length();
 
         // Calculate the area for the rigid body
         float area = MathF.PI * radius * radius;
 
         ValidateParameters(area, density);
-
-        List<Component> components = new List<Component>
-        {
-            new Gravity(),
-            new Motion()
-        };
 
         // For Any Object, Mass = Volume * Denisty
         // Where Volume = Area * Depth in 3D space
@@ -99,12 +100,6 @@ internal class WorldCreation
         // Convert mass into kg
         float mass = (area * density) / 1000;
 
-        List<Component> components = new List<Component>
-            {
-                new Gravity(),
-                new Motion()
-            };
-
         // Create a rigid body 
         body2D = new RigidBox2D(position, rotation, mass, density, area, restitution, width, height, components);
 
@@ -116,13 +111,15 @@ internal class WorldCreation
     {
         body2D = null;
 
+        radius *= scale.Length();
+
         // Calculate the area for the static body
         float area = MathF.PI * radius * radius;
 
         ValidateParameters(area);
 
         // Create a static body
-        body2D = new StaticCircle2D(position, scale, restitution, area, radius);
+        body2D = new StaticCircle2D(position, restitution, area, radius);
 
     }
 
@@ -132,13 +129,15 @@ internal class WorldCreation
     {
         body2D = null;
 
+        width *= scale.X; height *= scale.Y;
+
         // Calculate the area for the static body
         float area = width * height;
 
         ValidateParameters(area);
 
         // Create a static body
-        body2D = new StaticBox2D(position, rotation, scale, area, restitution, width, height);
+        body2D = new StaticBox2D(position, rotation, area, restitution, width, height);
     }
 
 
@@ -148,7 +147,7 @@ internal class WorldCreation
     {
         body2D = null;
 
-        radius *= Vector2.Distance(new Vector2(0, 0), scale);
+        radius *= scale.Length();
 
         // Calculate the area for the rigid body
         float area = MathF.PI * radius * radius;
@@ -161,14 +160,21 @@ internal class WorldCreation
         // Convert mass into kg
         float mass = (area * density) / 1000;
 
-        List<Component> components = new List<Component>
-        {
-            new Gravity(),
-            new Motion()
-        };
-
         // Create a rigid body 
         body2D = new ProjectileBody2D(position, area, radius, components, velocity, bodies);
+    }
+
+    internal static void CreatePlayerBody(Vector2 position, float rotation, float density, 
+        float width, float height, out PlayerBody2D body2D)
+    {
+        body2D = null;
+
+        float area = width * height;
+
+        ValidateParameters(area, density);
+
+        // Create a rigid body 
+        body2D = new PlayerBody2D(position, rotation, width, height, components);
     }
 
     private static void ValidateParameters(float area, float density = 0)
@@ -191,30 +197,4 @@ internal class WorldCreation
         else return;
     }
 
-
-    internal static void CreatePlayerBody(Vector2 position, float rotation, Vector2 scale, float density, float width, float height, out RigidBody2D body2D)
-    {
-
-        body2D = null;
-
-        // Calculate the area for the rigid body
-        float area = width * height;
-
-        ValidateParameters(area, density);
-
-        // For Any Object, Mass = Volume * Denisty
-        // Where Volume = Area * Depth in 3D space
-        // For 2D plane, we can assume depth to be 1
-        // Convert mass into kg
-
-        List<Component> components = new List<Component>
-            {
-                new Gravity(),
-                new Motion(),
-                new PlayerMovement()
-            };
-
-        // Create a rigid body 
-        body2D = new PlayerBody2D(position, rotation, width, height, components);
-    }
 }

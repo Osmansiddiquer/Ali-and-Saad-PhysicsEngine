@@ -55,10 +55,10 @@ public class RigidBody2D : PhysicsBody2D
     // Run all components attached to the physics body in parallel
     internal override void RunComponents(double delta)
     {
-        Parallel.ForEach(components, component =>
-        {
-            component.RunComponent(this, delta);
-        });
+        components[0].RunComponent(this, delta);
+
+        if (ApplyGravity)
+            components[1].RunComponent(this, delta);
     }
 }
 

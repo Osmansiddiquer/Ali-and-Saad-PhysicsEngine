@@ -34,11 +34,13 @@ public abstract class PhysicsBody2D
     public bool IsOnCeiling { get; internal set; }
     public bool IsOnWallR { get; internal set; }
     public bool IsOnWallL { get; internal set; }
-    public bool HandleCollision { get; set; }
 
-    // Linear motion attributes
-    public Vector2 LinVelocity { get; internal set; }
-    public float RotVelocity { get; internal set; }
+    public bool HandleCollision;
+    public bool ApplyGravity;
+
+    // Motion attributes
+    public Vector2 LinVelocity;
+    public float RotVelocity;
     public float MomentOfInertia { get; protected set; }
 
     // Constructor
@@ -48,6 +50,7 @@ public abstract class PhysicsBody2D
         Transform = new Transform2D(position, rotation);
 
         HandleCollision = true;
+        ApplyGravity = true;
 
         VerticesUpdateRequired = true;
         AABBUpdateRequired = true;

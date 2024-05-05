@@ -20,8 +20,12 @@ public static class SceneTree
         Input.AssignKey("three", KeyboardKey.Three);
         Input.AssignKey("four", KeyboardKey.Four);
 
+        Input.AssignKey("jump", KeyboardKey.Space);
+
         Gamepad.AssignButton("l2", GamepadButton.LeftTrigger2);
         Gamepad.AssignButton("r2", GamepadButton.RightTrigger2);
+
+        Gamepad.AssignButton("jump", GamepadButton.RightFaceDown);
     }
 
     public static void Update(double delta)
