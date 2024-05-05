@@ -60,18 +60,6 @@ internal class WorldPhysics
 
     struct State { public List<PhysicsBody2D> bodies; public (int, int) pair; public State(List<PhysicsBody2D> bodies, (int, int) pair) { this.bodies = bodies; this.pair = pair; } }
 
-    // Check if 2 bodies are colliding
-    private static void CollisionNarrowPhase(List<PhysicsBody2D> bodies)
-    {
-        foreach ((int, int) pair in contactPairs)
-        {
-            if (Properties.EnableMT)
-                ThreadPool.QueueUserWorkItem((state) => { ResolvePair(((State)state).bodies, ((State)state).pair); }, (new State(bodies, pair)));
-            else
-                ResolvePair(bodies, pair);
-        }
-    }
-
     // Decide what do to after collision
     private static void ResolvePair(List<PhysicsBody2D> bodies, (int, int) pair)
     {
@@ -95,8 +83,8 @@ internal class WorldPhysics
             UpdateCollisionState(bodyA, bodyB, normal);
         }
     }
-    struct State { public List<PhysicsBody2D> bodies; public (int, int) pair; public State(List<PhysicsBody2D> bodies, (int, int) pair) { this.bodies = bodies; this.pair = pair; } }
 
+    // Check if 2 bodies are colliding
     private static void CollisionNarrowPhase(List<PhysicsBody2D> bodies)
     {
         List<Task> tasks = new List<Task>();
