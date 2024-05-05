@@ -1,7 +1,8 @@
-﻿using GameEngine.src.input;
-using GameEngine.src.physics.component;
+﻿using GameEngine.src.physics.component;
 using Raylib_cs;
 using System.Numerics;
+using GameEngine.src.helper;
+using GameEngine.src.input;
 
 namespace GameEngine.src.physics.body;
 
@@ -30,6 +31,29 @@ public class PlayerBody2D : RigidBox2D
         // Initialize the player animations
         createAnimations();
 
+    }
+
+    public void UseDefaultMotion(double delta)
+    {
+        MovePlayer(delta);
+        Jump(delta);
+    }
+
+    private void MovePlayer(double delta)
+    {
+        float direction = Input.GetDirection("left", "right");
+        float magnitude = 6000;
+        direction *= magnitude;
+
+        LinVelocity.X = direction * (float)delta;
+    }
+
+    private void Jump(double delta)
+    {
+        if (Input.IsKeyPressed("jump") && IsOnFloor)
+        {
+            LinVelocity.Y = -5000 * (float)delta;
+        }
     }
 
     public void DrawPlayer()
@@ -75,12 +99,12 @@ public class PlayerBody2D : RigidBox2D
     private void createAnimations()
     {
         // Implement the new AddAnimation method
-        String path = "C:/Users/saadk/Desktop/NUST/Semester 2/Object Oriented Programming/End Semester Project/sprites/Hero Knight/Sprites/";
+        string path = "C:/Users/saadk/Desktop/NUST/Semester 2/Object Oriented Programming/End Semester Project/sprites/Hero Knight/Sprites/";
         AddAnimation(PlayerStates.IDLE, path + "_Idle.png", 1, 10, new Rectangle(0, 40, 40, 40));
         AddAnimation(PlayerStates.WALK, path + "Run.png", 10, 8, new Rectangle(0, 0, 180, 180));
     }
 
-    public void AddAnimation(PlayerStates state, String path, int framesPerSecond, int numberOfSprite, Rectangle spriteSize)
+    public void AddAnimation(PlayerStates state, string path, int framesPerSecond, int numberOfSprite, Rectangle spriteSize)
     {
         List<Rectangle> rectangles = new List<Rectangle>();
         for (int i = 0; i < numberOfSprite; i++)

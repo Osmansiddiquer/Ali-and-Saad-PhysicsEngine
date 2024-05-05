@@ -38,9 +38,9 @@ public abstract class PhysicsBody2D
     public bool HandleCollision;
     public bool ApplyGravity;
 
-    // Linear motion attributes
-    public Vector2 LinVelocity { get; internal set; }
-    public float RotVelocity { get; internal set; }
+    // Motion attributes
+    public Vector2 LinVelocity;
+    public float RotVelocity;
     public float MomentOfInertia { get; protected set; }
 
     // Constructor

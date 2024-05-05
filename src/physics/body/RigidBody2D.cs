@@ -59,9 +59,6 @@ public class RigidBody2D : PhysicsBody2D
 
         if (ApplyGravity)
             components[1].RunComponent(this, delta);
-
-        if (this is PlayerBody2D)
-            components[2].RunComponent(this, delta);
     }
 }
 

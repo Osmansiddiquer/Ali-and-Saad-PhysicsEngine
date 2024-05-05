@@ -17,6 +17,12 @@ internal class WorldCreation
     private static readonly float MIN_DENSITY = 0.10f;
     private static readonly float MAX_DENSITY = 22.5f;
 
+    private static List<Component> components = new List<Component>
+    {
+        new Motion(),
+        new Gravity()
+    };
+
 
     // Render the shape for a physics body
     internal static void DrawCollisionShapes(PhysicsBody2D body, Color color)
@@ -63,12 +69,6 @@ internal class WorldCreation
 
         ValidateParameters(area, density);
 
-        List<Component> components = new List<Component>
-        {
-            new Motion(),
-            new Gravity()
-        };
-
         // For Any Object, Mass = Volume * Denisty
         // Where Volume = Area * Depth in 3D space
         // For 2D plane, we can assume depth to be 1
@@ -98,12 +98,6 @@ internal class WorldCreation
         // For 2D plane, we can assume depth to be 1
         // Convert mass into kg
         float mass = (area * density) / 1000;
-
-        List<Component> components = new List<Component>
-            {
-                new Motion(),
-                new Gravity()
-            };
 
         // Create a rigid body 
         body2D = new RigidBox2D(position, rotation, mass, density, area, restitution, width, height, components);
@@ -161,17 +155,11 @@ internal class WorldCreation
         // Convert mass into kg
         float mass = (area * density) / 1000;
 
-        List<Component> components = new List<Component>
-        {
-            new Motion(),
-            new Gravity()
-        };
-
         // Create a rigid body 
         body2D = new ProjectileBody2D(position, area, radius, components, velocity, bodies);
     }
 
-    internal static void CreatePlayerBody(Vector2 position, float rotation, Vector2 scale, float density, float width, float height, out RigidBody2D body2D)
+    internal static void CreatePlayerBody(Vector2 position, float rotation, Vector2 scale, float density, float width, float height, out PlayerBody2D body2D)
     {
         body2D = null;
 
@@ -179,18 +167,6 @@ internal class WorldCreation
         float area = width * height;
 
         ValidateParameters(area, density);
-
-        // For Any Object, Mass = Volume * Denisty
-        // Where Volume = Area * Depth in 3D space
-        // For 2D plane, we can assume depth to be 1
-        // Convert mass into kg
-
-        List<Component> components = new List<Component>
-            {
-                new Motion(),
-                new Gravity(),
-                new PlayerMovement()
-            };
 
         // Create a rigid body 
         body2D = new PlayerBody2D(position, rotation, width, height, components);

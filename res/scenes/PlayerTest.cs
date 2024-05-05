@@ -17,6 +17,10 @@ internal class PlayerTest : World2D
     {
         bodies = new List<PhysicsBody2D>();
 
+        // Create player
+        CreatePlayerBody(new Vector2(100, 100), 0, Vector2.One, 1f, 64f, 128f, out PlayerBody2D player);
+        bodies.Add(player);
+
         colors = new List<Color>() {
             Color.White,
             Color.Red,
@@ -58,18 +62,18 @@ internal class PlayerTest : World2D
 
         TileMap.GenerateTileMap(ref tileMapProps, bodies);
 
-        // Create player
-        WorldCreation.CreatePlayerBody(new Vector2(100, 100), 0, Vector2.One, 1f, 64f, 128f, out RigidBody2D player);
-        bodies.Add(player);
-
         Raylib.ShowCursor();
 
     }
 
     public override void Update(double delta)
-    {
+    {            
         Draw();
         HandlePhysics(bodies, delta);
+
+        PlayerBody2D player = (PlayerBody2D)bodies[0];
+        player.DrawPlayer();
+        player.UseDefaultMotion(delta);
     }
 
     private void Draw()
@@ -80,11 +84,6 @@ internal class PlayerTest : World2D
         for (int i = 0; i < bodies.Count; i++)
         {
             DrawCollisionShapes(bodies[i], colors[i % 5]);
-            if (bodies[i] is PlayerBody2D)
-            {
-                PlayerBody2D player = (PlayerBody2D)bodies[i];
-                player.DrawPlayer();
-            }
         }
     }
 
