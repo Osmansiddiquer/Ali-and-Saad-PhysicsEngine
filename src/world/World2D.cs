@@ -21,8 +21,8 @@ public abstract class World2D
     protected static void CreateProjectileBody(Vector2 position, Vector2 scale, float density, float restitution,
        float radius, Vector2 velocity, List<PhysicsBody2D> bodies, out RigidBody2D body2D) => WorldCreation.CreateProjectileBody(position, scale, density, restitution, radius, velocity, bodies, out body2D);
 
-    protected static void CreatePlayerBody(Vector2 position, float rotation, Vector2 scale, float density,
-        float width, float height, out PlayerBody2D body2D) => WorldCreation.CreatePlayerBody(position, rotation, scale, density, width, height, out body2D);
+    protected static void CreatePlayerBody(Vector2 position, float rotation, float density,
+        float width, float height, out PlayerBody2D body2D) => WorldCreation.CreatePlayerBody(position, rotation, density, width, height, out body2D);
 
     protected static void HandlePhysics(List<PhysicsBody2D> bodies, double delta) => WorldPhysics.HandlePhysics(bodies, delta);
 

@@ -3,7 +3,6 @@ using GameEngine.src.world;
 using Raylib_cs;
 using System.Numerics;
 using GameEngine.src.tilemap;
-using GameEngine.src.helper;
 
 namespace GameEngine.res.scenes;
 
@@ -18,7 +17,7 @@ internal class PlayerTest : World2D
         bodies = new List<PhysicsBody2D>();
 
         // Create player
-        CreatePlayerBody(new Vector2(100, 100), 0, Vector2.One, 1f, 64f, 128f, out PlayerBody2D player);
+        CreatePlayerBody(new Vector2(100, 100), 0, 1f, 64f, 128f, out PlayerBody2D player);
         bodies.Add(player);
 
         colors = new List<Color>() {

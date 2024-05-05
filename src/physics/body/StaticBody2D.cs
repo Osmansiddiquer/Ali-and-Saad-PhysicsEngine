@@ -5,7 +5,7 @@ namespace GameEngine.src.physics.body;
 public class StaticBody2D : PhysicsBody2D
 {
     // Constructor
-    internal StaticBody2D(Vector2 position, float rotation, Vector2 scale, float restitution, ShapeType shape) 
+    internal StaticBody2D(Vector2 position, float rotation, float restitution, ShapeType shape) 
         : base(position, rotation)
     {
         // Keep restitution in valid range
@@ -24,11 +24,11 @@ public class StaticBody2D : PhysicsBody2D
 public class StaticBox2D : StaticBody2D
 {
     // Constructor
-    public StaticBox2D(Vector2 position, float rotation, Vector2 scale, float area, float restitution, float width, float height) 
-        : base(position, rotation, scale, restitution, ShapeType.Box)
+    public StaticBox2D(Vector2 position, float rotation, float area, float restitution, float width, float height) 
+        : base(position, rotation, restitution, ShapeType.Box)
     {
         // Initialize dimensions and vertices
-        Dimensions = new Dimensions2D(new Vector2(width, height) * scale, area);
+        Dimensions = new Dimensions2D(new Vector2(width, height), area);
         MapVerticesBox();
     }
 }
@@ -36,10 +36,10 @@ public class StaticBox2D : StaticBody2D
 public class StaticCircle2D : StaticBody2D
 {
     // Constructor 
-    public StaticCircle2D(Vector2 position, Vector2 scale, float area, float restitution, float radius) 
-        : base(position, 0f, scale, restitution, ShapeType.Circle)
+    public StaticCircle2D(Vector2 position, float area, float restitution, float radius) 
+        : base(position, 0f, restitution, ShapeType.Circle)
     {
         // Initialize dimensions 
-        Dimensions = new Dimensions2D(radius * scale.Length(), area);
+        Dimensions = new Dimensions2D(radius, area);
     }
 }

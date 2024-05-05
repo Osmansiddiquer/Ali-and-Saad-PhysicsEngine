@@ -3,6 +3,7 @@ using GameEngine.src.physics.body;
 using Raylib_cs;
 
 using System.Numerics;
+using System.Formats.Asn1;
 
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
 
@@ -62,7 +63,7 @@ internal class WorldCreation
     {
         body2D = null;
 
-        radius *= Vector2.Distance(new Vector2(0, 0), scale);
+        radius *= scale.Length();
 
         // Calculate the area for the rigid body
         float area = MathF.PI * radius * radius;
@@ -110,13 +111,15 @@ internal class WorldCreation
     {
         body2D = null;
 
+        radius *= scale.Length();
+
         // Calculate the area for the static body
         float area = MathF.PI * radius * radius;
 
         ValidateParameters(area);
 
         // Create a static body
-        body2D = new StaticCircle2D(position, scale, restitution, area, radius);
+        body2D = new StaticCircle2D(position, restitution, area, radius);
 
     }
 
@@ -126,13 +129,15 @@ internal class WorldCreation
     {
         body2D = null;
 
+        width *= scale.X; height *= scale.Y;
+
         // Calculate the area for the static body
         float area = width * height;
 
         ValidateParameters(area);
 
         // Create a static body
-        body2D = new StaticBox2D(position, rotation, scale, area, restitution, width, height);
+        body2D = new StaticBox2D(position, rotation, area, restitution, width, height);
     }
 
 
@@ -142,7 +147,7 @@ internal class WorldCreation
     {
         body2D = null;
 
-        radius *= Vector2.Distance(new Vector2(0, 0), scale);
+        radius *= scale.Length();
 
         // Calculate the area for the rigid body
         float area = MathF.PI * radius * radius;
@@ -159,11 +164,11 @@ internal class WorldCreation
         body2D = new ProjectileBody2D(position, area, radius, components, velocity, bodies);
     }
 
-    internal static void CreatePlayerBody(Vector2 position, float rotation, Vector2 scale, float density, float width, float height, out PlayerBody2D body2D)
+    internal static void CreatePlayerBody(Vector2 position, float rotation, float density, 
+        float width, float height, out PlayerBody2D body2D)
     {
         body2D = null;
 
-        // Calculate the area for the rigid body
         float area = width * height;
 
         ValidateParameters(area, density);
