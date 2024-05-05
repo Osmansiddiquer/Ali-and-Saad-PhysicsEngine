@@ -47,7 +47,17 @@ public class CollisionTest : World2D
         // Begin 2D mode with the camera
         //Raylib.BeginMode2D(camera);
 
-        float rotation = Input.GetDirection("left", "right") / 5;
+        float keyboardRotation = Input.GetDirection("left", "right") / 5;
+        float gamepadRotation = 0f;
+
+        // Check gamepad input if connected
+        if (Raylib.IsGamepadAvailable(0))
+        {
+            gamepadRotation = Gamepad.GetRightXAxis() / 5;
+        }
+
+        // Use gamepad rotation only if keyboard rotation is not providing input
+        float rotation = keyboardRotation != 0f ? keyboardRotation : gamepadRotation;
 
         // Draw
         Draw();
@@ -101,9 +111,6 @@ public class CollisionTest : World2D
             // Create circle rigid body
             CreateRigidBody(Mouse.GetPos(), scaleCir, 1f, 0.5f, 32f, out RigidBody2D rigidBody);
             bodies.Add(rigidBody);
-
-            Console.WriteLine(bodies.Count);
-
         }
 
         else if (Mouse.IsLMBPressed() || Gamepad.IsButtonPressed("l1")) {

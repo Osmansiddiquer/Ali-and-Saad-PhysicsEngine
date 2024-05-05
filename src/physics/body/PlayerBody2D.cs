@@ -41,16 +41,32 @@ public class PlayerBody2D : RigidBox2D
 
     private void MovePlayer(double delta)
     {
-        float direction = Input.GetDirection("left", "right");
+        float keyboardDirection = 0f;
+        float gamepadDirection = 0f;
         float magnitude = 6000;
+
+        // Check keyboard input
+        keyboardDirection = Input.GetDirection("left", "right");
+
+        // Check gamepad input if connected
+        if (Raylib.IsGamepadAvailable (0))
+        {
+            gamepadDirection = Gamepad.GetDirection("left", "right");
+        }
+
+        // Use gamepad direction only if keyboard direction is not providing input
+        float direction = keyboardDirection != 0f ? keyboardDirection : gamepadDirection;
+
+        // Adjust magnitude
         direction *= magnitude;
 
+        // Apply velocity
         LinVelocity.X = direction * (float)delta;
     }
 
     private void Jump(double delta)
     {
-        if (Input.IsKeyPressed("jump") && IsOnFloor)
+        if ((Input.IsKeyPressed("jump") || Gamepad.IsButtonPressed("jump")) && IsOnFloor)
         {
             LinVelocity.Y = -5000 * (float)delta;
         }

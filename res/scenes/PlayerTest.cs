@@ -17,7 +17,7 @@ internal class PlayerTest : World2D
         bodies = new List<PhysicsBody2D>();
 
         // Create player
-        CreatePlayerBody(new Vector2(100, 100), 0, 1f, 64f, 128f, out PlayerBody2D player);
+        CreatePlayerBody(new Vector2(128, 512), 0, 1f, 64f, 128f, out PlayerBody2D player);
         bodies.Add(player);
 
         colors = new List<Color>() {
